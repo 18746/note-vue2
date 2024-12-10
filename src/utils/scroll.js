@@ -34,18 +34,4 @@ export function autoScrollFun(scrollEl, el) {
             behavior: 'smooth',
         })
     }
-
-    // if (positionTop <= topLen) {
-    //     console.log(top, scrollTop)
-    //     scrollEl.scrollTo({
-    //         top: top - topLen,
-    //         behavior: 'smooth',
-    //     })
-    // } else if(positionTop >= bottomLen) {
-    //     console.log(top, scrollTop, top - bottomLen)
-    //     scrollEl.scrollTo({
-    //         top: top - bottomLen,
-    //         behavior: 'smooth',
-    //     })
-    // }
 } 

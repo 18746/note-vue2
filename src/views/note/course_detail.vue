@@ -17,10 +17,6 @@ export default {
     components: {
         courseDetail
     },
-    created() {
-        // console.log();
-     },
-    mounted() { },
     methods: { }
 };
 </script>

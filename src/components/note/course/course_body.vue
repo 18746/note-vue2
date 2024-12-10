@@ -211,7 +211,6 @@ export default {
             this.addUnit(data.unit_no, data.child);
         },
         addSuccess(data) {
-            console.log(data);
             this.initUnit()
         },
 
@@ -221,7 +220,6 @@ export default {
             this.unit = {...data};
         },
         updateSuccess(data) {
-            console.log(data);
             this.initUnit()
         },
 

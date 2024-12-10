@@ -12,12 +12,13 @@ const service = axios.create({
 // 2.请求拦截器
 service.interceptors.request.use(async config => {
     console.log(store.state.user.token, process.env.BASE_API)
-    if (store.state.user.token) {
-        if (!config.url.includes("/login/refresh") && needUpdateToken(store.state.user.token.update_time, store.state.user.token.time_limit)) {
+    const token = localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null; // 获取token
+    if (token) {
+        if (!config.url.includes("/login/refresh") && needUpdateToken(token.update_time, token.time_limit)) {
             await store.dispatch('user/refreshToken')
         }
-        config.headers['phone'] = store.state.user.token.phone
-        config.headers['token'] = store.state.user.token.token
+        config.headers['phone'] = token.phone
+        config.headers['token'] = token.token
     }
     return config
 }, error => {

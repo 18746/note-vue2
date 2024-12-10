@@ -14,10 +14,6 @@ export default {
     components: {
         unitDetail
     },
-    created() {
-        // console.log();
-     },
-    mounted() { },
     methods: { }
 };
 </script>

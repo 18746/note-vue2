@@ -135,12 +135,9 @@ export default {
             this.addVisible = true;
         },
         addSuccess(add_course) {
-            console.log(add_course)
-            console.log(add_course.type_no === this.type_no)
             if (add_course.type_no === this.type_no) {
                 this.course_list = [add_course, ...this.course_list]
             }
-            console.log(this.course_list)
         },
 
         // 编辑
