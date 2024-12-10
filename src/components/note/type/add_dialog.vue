@@ -22,16 +22,9 @@
 </template>
 
 <script>
-import {
-    addType,
-} from '@/api/note';
-import {
-    FormValidate,
-    FormResetValidate
-} from '@/utils/validate';
-import {
-    TypeNameRules,
-} from '@/components/note/validate.js';
+import { addType } from '@/api/note';
+import { FormValidate, FormResetValidate } from '@/utils/validate';
+import { TypeNameRules } from '@/components/note/validate.js';
 export default {
     name: 'add-type',
     props: {

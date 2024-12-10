@@ -38,13 +38,17 @@
             <el-tree
                 :data="unit_list"
                 :props="defaultProps"
-                @node-click="handleNodeClick"
+                default-expand-all
+                draggable
+                :allow-drag="allowDrag"
+                :allow-drop="allowDrop"
+                @node-drop="handleDrop"
             >
                 <span class="custom-tree-node" slot-scope="{ node, data }">
                     <span class="info">
                         <i v-if="data.is_menu" :class="node.expanded ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>
                         <i v-else class="el-icon-tickets"></i>
-                        <span>{{ data.name }}</span>
+                        <span class="unit-name" @click.stop="handleNodeClick(data)">{{ data.name }}</span>
                     </span>
                     <span class="action">
                         <el-button
@@ -89,14 +93,14 @@
 </template>
 
 <script>
-import { getType, getCourse, getUnit, delUnit } from '@/api/note';
+import { getType, getCourse, getUnit, updateUnit, delUnit } from '@/api/note';
 
 import { getCourseImg } from '@/utils/index.js';
 
 import addDialog from '../unit/add_dialog.vue';
 import updateDialog from '../unit/update_dialog.vue';
 export default {
-    name: 'course-detail',
+    name: 'course',
     components: {
         addDialog,
         updateDialog,
@@ -200,7 +204,7 @@ export default {
             this.addVisible = true;
             this.unit = {
                 parent_no: parent_no, // 父节点
-                next_no: unit_list.length > 0 ? unit_list[0].unit_no : null, // 下一个节点
+                next_no: null, // 下一个节点
             };
         },
         append(node, data) {
@@ -247,9 +251,58 @@ export default {
             }).catch(action => {});
         },
 
-        //
+        // 判断当前节点能否拖拽
+        allowDrag(node) {
+            return true
+        },
+        // 判断当前位置能否放置
+        allowDrop(draggingNode, dropNode, dropType) {
+            // console.log(draggingNode, dropNode, dropType)
+            if (dropType == 'prev') {
+                // console.log('放置在目标节点前')
+            } else if (dropType == 'inner') {
+                // console.log('插入至目标节点')
+                return dropNode.data.is_menu
+            } else if (dropType == 'next') {
+                // console.log('放置在目标节点后')
+            }
+            return true
+        },
+        // 拖拽成功后
+        async handleDrop(draggingNode, dropNode, dropType, ev) {
+            console.log('tree drop: ', draggingNode, dropNode, dropType, ev);
+            draggingNode.data.name = draggingNode.data.name.split('.').slice(1).join('.')
+            if (dropType == 'before') {
+                console.log('放置在目标节点前')
+                draggingNode.data.parent_no = dropNode.data.parent_no
+                draggingNode.data.next_no = dropNode.data.unit_no
+                await this.updateUnit(draggingNode.data)
+            } else if (dropType == 'inner') {
+                console.log('插入至目标节点')
+                draggingNode.data.parent_no = dropNode.data.unit_no
+                draggingNode.data.next_no = null
+                await this.updateUnit(draggingNode.data)
+            } else if (dropType == 'after') {
+                console.log('放置在目标节点后')
+                draggingNode.data.parent_no = dropNode.data.parent_no
+                draggingNode.data.next_no = dropNode.data.next_no
+                await this.updateUnit(draggingNode.data)
+            }
+            this.initUnit()
+        },
+        async updateUnit(unit) {
+            await updateUnit(unit).then(res => {
+                this.$message.success('更新成功')
+            }).catch(err => {
+                this.$message.error(err.data.detail)
+            })
+        },
+
+        // 点击章节节点
         handleNodeClick(data) {
-            // console.log(data);
+            this.$router.push({
+                path: '/note/' + data.course_no + '/' + data.unit_no,
+            })
         },
     }
 };

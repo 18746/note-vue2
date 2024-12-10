@@ -22,17 +22,11 @@
 </template>
 
 <script>
-import {
-    updateType,
-} from '@/api/note';
-import {
-    FormValidate,
-    FormResetValidate,
-} from '@/utils/validate';
+import { TypeNameRules, } from '../validate.js';
 
-import {
-    TypeNameRules,
-} from '@/components/note/validate.js';
+import { updateType } from '@/api/note';
+import { FormValidate, FormResetValidate } from '@/utils/validate';
+
 export default {
     name: 'update-type',
     props: {

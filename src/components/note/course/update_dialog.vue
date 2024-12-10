@@ -71,14 +71,13 @@
 </template>
 
 <script>
-import {
-    getType,
-    updateCourse,
-} from '@/api/note';
+import uploadFile from '../upload_img.vue';
+
+import { CourseNameRules, DescriptionRules } from '../validate.js';
+
+import { getType, updateCourse } from '@/api/note';
 import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
-import { CourseNameRules, DescriptionRules } from '@/components/note/validate.js';
 import { getCourseImg } from '@/utils/index.js';
-import uploadFile from '@/components/note/upload_img.vue';
 export default {
     name: 'update-course',
     props: {

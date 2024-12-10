@@ -39,15 +39,12 @@
 </template>
 
 <script>
-import typeAddDialog from '@/components/note/type/add_dialog.vue';
-import typeUpdateDialog from '@/components/note/type/update_dialog.vue';
+import typeAddDialog from './add_dialog.vue';
+import typeUpdateDialog from './update_dialog.vue';
 
-import {
-    getType,
-    delType,
-} from '@/api/note';
+import { getType, delType } from '@/api/note';
 export default {
-    name: 'note',
+    name: 'type',
     components: {
         typeAddDialog,
         typeUpdateDialog,

@@ -43,15 +43,13 @@
 </template>
 
 <script>
-import {
-    getTypeCourse,
-    delCourse,
-} from '@/api/note';
-import { getCourseImg } from '@/utils/index.js';
 import addDialog from './add_dialog.vue';
 import updateDialog from './update_dialog.vue';
+
+import { getTypeCourse, delCourse } from '@/api/note';
+import { getCourseImg } from '@/utils/index.js';
 export default {
-    name: 'couorse-body',
+    name: 'note-list',
     props: {
         type_no: {
             type: String,
@@ -127,17 +125,8 @@ export default {
         },
         // 点击课程跳转
         select(course) {
-            // this.$router.push({
-            //     path: '/note/detail',
-            //     query: {
-            //         course_no: course.course_no
-            //     }
-            // })
             this.$router.push({
                 path: '/note/' + course.course_no,
-                // params: {
-                //     course_no: course.course_no,
-                // }
             })
 
         },

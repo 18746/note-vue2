@@ -43,13 +43,13 @@ export default new Router({
                 name: "home",
                 component: () => import('@/views/note'),
             }, {
-                path: "detail",
-                name: "detail",
-                component: () => import('@/views/note/detail.vue'),
-            }, {
                 path: ":course_no",
                 name: "detail",
-                component: () => import('@/views/note/detail.vue'),
+                component: () => import('@/views/note/course_detail.vue'),
+            }, {
+                path: ":course_no/:unit_no",
+                name: "unit-detail",
+                component: () => import('@/views/note/unit_detail.vue'),
             }]
         },
         // {

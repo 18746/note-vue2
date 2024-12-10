@@ -38,14 +38,10 @@
 </template>
 
 <script>
-import {
-    addUnit,
-} from '@/api/note';
-import {
-    FormValidate,
-    FormResetValidate
-} from '@/utils/validate';
-import { UnitNameRules } from '@/components/note/validate.js';
+import { UnitNameRules } from '../validate.js';
+
+import { addUnit } from '@/api/note';
+import { FormValidate, FormResetValidate } from '@/utils/validate';
 export default {
     name: 'add-unit',
     props: {

@@ -71,13 +71,11 @@
 </template>
 
 <script>
-import {
-    getType,
-    addCourse,
-} from '@/api/note';
+import uploadFile from '../upload_img.vue';
+
+import { getType, addCourse } from '@/api/note';
 import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
-import { CourseNameRules, DescriptionRules } from '@/components/note/validate.js';
-import uploadFile from '@/components/note/upload_img.vue';
+import { CourseNameRules, DescriptionRules } from '../validate.js';
 export default {
     name: 'add-course',
     props: {

@@ -39,9 +39,10 @@
 </template>
 
 <script>
+import { UnitNameRules } from '../validate.js';
+
 import { updateUnit } from '@/api/note';
 import { FormValidate, FormResetValidate } from '@/utils/validate';
-import { UnitNameRules } from '@/components/note/validate.js';
 export default {
     name: 'update-unit',
     props: {
@@ -89,7 +90,7 @@ export default {
             await FormResetValidate(this.$refs.Form)
             this.form = {
                 ...this.unit,
-                name: this.unit.name.split('.').slice(1).join(''),
+                name: this.unit.name.split('.').slice(1).join('.'),
             }
         },
         async update() {

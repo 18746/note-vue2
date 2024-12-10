@@ -7,7 +7,7 @@
 
 <script>
 import typeBody from '@/components/note/type/type_body.vue';
-import courseBody from '@/components/note/course/body.vue';
+import courseBody from '@/components/note/course/note_body.vue';
 export default {
     name: 'note',
     components: {
