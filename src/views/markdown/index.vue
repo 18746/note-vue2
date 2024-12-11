@@ -15,7 +15,7 @@
             ></Menu>
         </template>
         <!-- 标题 -->
-        <template #Title>
+        <template #title>
             <SpaceBetween>
                 <template #Title-Left>
                     东败是VS的收到v

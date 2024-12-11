@@ -5,8 +5,6 @@
 </template>
 
 <script>
-import { getType, getCourse, getUnit } from '@/api/note';
-
 import { getCourseImg } from '@/utils/index.js';
 import courseDetail from '@/components/note/course/course_body.vue';
 export default {

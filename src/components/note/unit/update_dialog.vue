@@ -110,6 +110,7 @@ export default {
         changeIsMenu(checked) {
             if (this.unit.is_menu && !checked) {
                 this.$confirm("该操作更新后，会删除目录下的所有子目录和笔记，是否继续？", '确认信息', {
+                    type: 'warning',
                     distinguishCancelAndClose: true,
                     confirmButtonText: '继续',
                     cancelButtonText: '取消'

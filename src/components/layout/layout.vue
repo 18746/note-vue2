@@ -13,7 +13,7 @@
         <main class="main">
             <div class="Page_Right">
                 <div class="Title" :style="'height: ' + TitleHeight + ';'">
-                    <slot name="Title"></slot>
+                    <slot name="title"></slot>
                 </div>
                 <div class="Body scrollbar-y" :style="'height: ' + BodyHeight + ';'">
                     <slot></slot>

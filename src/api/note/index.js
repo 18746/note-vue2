@@ -115,10 +115,17 @@ export function delCourse(params) {
 }
 // -------------------------------------------------------------unit
 
-export function getUnit(params) {
+export function getUnitList(params) {
     return request({
         method: "get",
         url: "/unit/" + params.course_no,
+        // data: params
+    })
+}
+export function getUnit(params) {
+    return request({
+        method: "get",
+        url: "/unit/" + params.course_no + "/" + params.unit_no,
         // data: params
     })
 }
@@ -142,5 +149,20 @@ export function delUnit(params) {
         method: "delete",
         url: "/note/unit/" + params.course_no + "/" + params.unit_no,
         data: params
+    })
+}
+
+export function getUnitContent(params) {
+    return request({
+        method: "get",
+        url: "/unit/content/" + params.course_no + "/" + params.unit_no,
+        // data: params
+    })
+}
+export function updateUnitContent(params) {
+    return request({
+        method: "put",
+        url: "/note/unit/context/" + params.course_no + "/" + params.unit_no,
+        data: params.content
     })
 }

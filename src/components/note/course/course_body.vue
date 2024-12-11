@@ -24,8 +24,8 @@
                         </div>
                     </div>
                     <div class="course-date">
-                        <div>创建时间：{{ course.create_time }}</div>
                         <div>更新时间：{{ course.update_time }}</div>
+                        <div>创建时间：{{ course.create_time }}</div>
                     </div>
                 </div>
             </div>
@@ -33,7 +33,13 @@
         <el-card class="detail-content box-card">
             <div slot="header" class="clearfix">
                 <span>目录</span>
-                <el-button style="float: right; padding: 3px 0" type="text" @click="addUnit(null, unit_list)">增加章节</el-button>
+                <el-button
+                    type="text"
+                    class="add-unit-button"
+                    icon="el-icon el-icon-folder-add"
+                    style="float: right;"
+                    @click="addUnit(null, unit_list)"
+                >章节</el-button>
             </div>
             <el-tree
                 :data="unit_list"
@@ -43,11 +49,12 @@
                 :allow-drag="allowDrag"
                 :allow-drop="allowDrop"
                 @node-drop="handleDrop"
+                @node-click="nodeClick"
             >
                 <span class="custom-tree-node" slot-scope="{ node, data }">
                     <span class="info">
-                        <i v-if="data.is_menu" :class="node.expanded ? 'el-icon-folder-opened' : 'el-icon-folder'"></i>
-                        <i v-else class="el-icon-tickets"></i>
+                        <i v-if="data.is_menu" :class="node.expanded ? 'el-icon el-icon-folder-opened' : 'el-icon el-icon-folder'"></i>
+                        <i v-else class="el-icon el-icon-tickets"></i>
                         <span class="unit-name" @click.stop="handleNodeClick(data)">{{ data.name }}</span>
                     </span>
                     <span class="action">
@@ -93,7 +100,7 @@
 </template>
 
 <script>
-import { getType, getCourse, getUnit, updateUnit, delUnit } from '@/api/note';
+import { getType, getCourse, getUnitList, updateUnit, delUnit } from '@/api/note';
 
 import { getCourseImg } from '@/utils/index.js';
 
@@ -140,11 +147,11 @@ export default {
             return getCourseImg(this.course);
         },
         type_name() {
-            const type_no = this.course.type_no;
-            if (type_no === "0") {
-                return "默认";
-            } else if (this.type_list.length > 0) {
-                return this.type_list.find(item => item.type_no === type_no).name;
+            if (this.course.type_no) {
+                const type_no = this.course.type_no;
+                if (this.type_list.length > 0) {
+                    return this.type_list.find(item => item.type_no === type_no).name;
+                }
             }
             return "默认";
         }
@@ -155,11 +162,8 @@ export default {
         }
     },
     created() {
-        const course_no = this.$route.query.course_no || this.$route.params.course_no;
-        if (course_no) {
-            this.course_no = course_no
-            this.init();
-        }
+        this.course_no = this.$route.params.course_no || "";
+        this.init();
     },
     methods: {
         async init() {
@@ -172,12 +176,13 @@ export default {
                     message: err.data.detail || '获取课程信息失败'
                 });
             })
-            await this.initUnit()
-            this.initType()
-            
+            if (this.course.course_no) {
+                this.initUnitList()
+                this.initType()
+            }
         },
-        async initUnit() {
-            await getUnit({course_no: this.course_no}).then(res => {
+        async initUnitList() {
+            await getUnitList({course_no: this.course_no}).then(res => {
                 this.unit_list = res.data;
             }).catch(err => {
                 console.error(err);
@@ -198,6 +203,9 @@ export default {
                 });
             })
         },
+        nodeClick(data, node, component) {
+            console.log(data, node, component);
+        },
 
         // 添加目录
         addUnit(parent_no, unit_list) {
@@ -211,7 +219,7 @@ export default {
             this.addUnit(data.unit_no, data.child);
         },
         addSuccess(data) {
-            this.initUnit()
+            this.initUnitList()
         },
 
         // 修改目录
@@ -220,7 +228,7 @@ export default {
             this.unit = {...data};
         },
         updateSuccess(data) {
-            this.initUnit()
+            this.initUnitList()
         },
 
         // 删除目录
@@ -232,6 +240,7 @@ export default {
                 info = "确认删除该目录？"
             }
             await this.$confirm(info, '确认信息', {
+                type: 'warning',
                 distinguishCancelAndClose: true,
                 confirmButtonText: '删除',
                 cancelButtonText: '取消'
@@ -244,7 +253,7 @@ export default {
                         type: 'success',
                         message: '删除成功'
                     });
-                    this.initUnit()
+                    this.initUnitList()
                 })
             }).catch(action => {});
         },
@@ -286,7 +295,7 @@ export default {
                 draggingNode.data.next_no = dropNode.data.next_no
                 await this.updateUnit(draggingNode.data)
             }
-            this.initUnit()
+            this.initUnitList()
         },
         async updateUnit(unit) {
             await updateUnit(unit).then(res => {
@@ -427,36 +436,67 @@ export default {
     }
 
     .detail-content {
+        .add-unit-button {
+            padding: 3px 0;
+            font-size: 16px;
+            /deep/ .el-icon {
+                font-size: 20px;
+            }
+        }
         .custom-tree-node {
             display: flex;
             flex: 1;
             align-items: center;
             justify-content: space-between;
             font-size: 14px;
-            padding-right: 8px;
 
             .info {
                 font-size: 16px;
                 line-height: 24px;
+                .unit-name:hover {
+                    color: #409EFF;
+                    text-decoration: underline;
+                }
+                .el-icon {
+                    font-size: 20px;
+                }
             }
             .action {
                 .button {
-                    font-size: 18px;
+                    font-size: 22px;
                     &.button-add {
-                        color: #409EFF;
+                        color: #67C23A;
+                    }
+                    &.button-add:hover {
+                        text-shadow: 2px 2px 2px #67C23A;
                     }
                     &.button-edit {
-                        color: #67C23A;
+                        color: #409EFF;
+                    }
+                    &.button-edit:hover {
+                        text-shadow: 2px 2px 2px #409EFF;
                     }
                     &.button-delete {
                         color: #F56C6C;
+                    }
+                    &.button-delete:hover {
+                        text-shadow: 2px 2px 2px #F56C6C;
                     }
                 }
             }
         }
         /deep/ .el-tree-node__content {
-            height: 30px;
+            height: 35px;
         }
     }
+}
+/deep/ .el-tree-node__expand-icon.is-leaf {
+    display: none;
+}
+/deep/ .el-tree-node__expand-icon.expanded {
+    display: none;
+}
+/deep/ .el-tree-node__content>.el-tree-node__expand-icon {
+    display: none;
 }
 </style>

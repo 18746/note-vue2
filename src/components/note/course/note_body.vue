@@ -158,6 +158,7 @@ export default {
         // 删除
         del(del_course) {
             this.$confirm('课程删除后无法找回，确定要删除吗？', '确认信息', {
+                type: 'warning',
                 distinguishCancelAndClose: true,
                 confirmButtonText: '删除',
                 cancelButtonText: '取消'

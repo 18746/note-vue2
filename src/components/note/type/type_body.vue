@@ -145,6 +145,7 @@ export default {
         // 删除类型
         deleteType(targetName) {
             this.$confirm('类型删除后，该类型下的课程会被放到默认类型下，是否继续？', '确认信息', {
+                type: 'warning',
                 distinguishCancelAndClose: true,
                 confirmButtonText: '删除',
                 cancelButtonText: '取消'
