@@ -1,18 +1,27 @@
 <template>
     <section class="container">
-        <aside class="aside">
-            <div class="Page_Left">
-                <div class="Search" :style="'height: ' + TitleHeight + ';'">
-                    <slot name="left-search"></slot>
+        <transition name="fade">
+            <aside class="aside" v-if="!isSmallScreen || isShow" @click.stop="isShow = false">
+                <div class="Page_Left">
+                    <div class="Search" :style="'height: ' + TitleHeight + ';'">
+                        <slot name="left-search"></slot>
+                    </div>
+                    <div class="Menu" :style="'height: ' + BodyHeight + ';'">
+                        <slot name="left-menu"></slot>
+                    </div>
                 </div>
-                <div class="Menu" :style="'height: ' + BodyHeight + ';'">
-                    <slot name="left-menu"></slot>
-                </div>
-            </div>
-        </aside>
+            </aside>
+        </transition>
         <main class="main">
             <div class="Page_Right">
                 <div class="Title" :style="'height: ' + TitleHeight + ';'">
+                    <el-button
+                        v-if="isSmallScreen"
+                        class="btn"
+                        type="text"
+                        icon="el-icon-s-fold"
+                        @click="isShow = !isShow"
+                    ></el-button>
                     <slot name="title"></slot>
                 </div>
                 <div class="Body scrollbar-y" :style="'height: ' + BodyHeight + ';'">
@@ -24,6 +33,16 @@
 </template>
 
 <script>
+function throttle(fn, delay) {
+    var last = 0;
+    return function() {
+        var now = Date.now();
+        if (now - last > delay) {
+            last = now;
+            fn.apply(this, arguments);
+        }
+    };
+}
 export default {
     name: 'layout',
     props: {
@@ -34,7 +53,10 @@ export default {
         }
     },
     data() {
-        return {}
+        return {
+            isShow: false,
+            isSmallScreen: false,
+        }
     },
     computed: {
         TitleHeight() {
@@ -42,8 +64,26 @@ export default {
         },
         BodyHeight() {
             return 'calc(100% - ' + this.TitleHeight +')'
+        },
+
+    },
+    created() {
+        const resize = throttle(this.resize, 10);
+        window.addEventListener('resize', resize)
+        this.resize()
+    },
+    methods: {
+        resize() {
+            const offsetWidth = window.document.body.offsetWidth;
+            console.log(offsetWidth)
+            if (offsetWidth < 1000) {
+                this.isSmallScreen = true;
+                this.isShow = false;
+            } else {
+                this.isSmallScreen = false;
+            }
         }
-    }
+    },
 }
 </script>
 
@@ -74,9 +114,11 @@ export default {
     box-sizing: border-box;
     -ms-flex-negative: 0;
     flex-shrink: 0;
+    width: 300px;
     .Page_Left {
         height: 100%;
         overflow: hidden;
+        border-right: 1px solid #dddddd;
         .Search {
             padding: 10px;
             border-bottom: 1px solid #dddddd;
@@ -84,6 +126,18 @@ export default {
         }
         .Menu {
             width: 100%;
+        }
+    }
+    @media (max-width: 1000px) {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: 2;
+        
+        .Page_Left {
+            width: 80%;
+            background: #fff;
+            box-shadow: 4px 0px 10px #b0b0b0;
         }
     }
 }
@@ -102,16 +156,18 @@ export default {
     .Page_Right {
         height: 100%;
         overflow: hidden;
+        .el-button.btn {
+            font-size: 25px;
+            padding: 5px 11px 10px 0px;
+        }
         .Title {
             padding: 10px 20px;
             border-bottom: 1px solid #dddddd;
-            border-left: 1px solid #dddddd;
             box-sizing: border-box;
 
             display: flex;
         }
         .Body {
-            border-left: 1px solid #dddddd;
             width: 100%;
             overflow: hidden auto;
             box-sizing: border-box;
@@ -120,4 +176,10 @@ export default {
     }
 }
 
+.fade-enter-active {
+  transition: opacity .3s;
+}
+.fade-enter {
+  opacity: 0;
+}
 </style>

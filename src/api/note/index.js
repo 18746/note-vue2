@@ -1,5 +1,5 @@
 import request from '@/utils/request'
-
+import { getURL } from '@/utils';
 // -----------------------------------------------------------type
 export function getType() {
     // return new Promise((resolve,reject) => {
@@ -152,17 +152,45 @@ export function delUnit(params) {
     })
 }
 
-export function getUnitContent(params) {
-    return request({
-        method: "get",
-        url: "/unit/content/" + params.course_no + "/" + params.unit_no,
-        // data: params
+export function getUnitContent(course, unit) {
+    const phone = course.phone
+    return new Promise((resolve, reject) => {
+        request({
+            method: "get",
+            url: "/unit/content/" + course.course_no + "/" + unit.unit_no,
+            // data: params
+        }).then(res => {
+            res.data.content = (res.data.content || '').replaceAll(`./picture.${unit.name}`, `${getURL()}/unit/picture/${phone}/${course.course_no}/${unit.unit_no}/picture.${unit.name}`)
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
     })
 }
-export function updateUnitContent(params) {
+export function updateUnitContent(course, unit, content) {
+    const phone = course.phone
+    content = (content || '').replaceAll(`${getURL()}/unit/picture/${phone}/${course.course_no}/${unit.unit_no}/picture.${unit.name}`, `./picture.${unit.name}`)
     return request({
         method: "put",
-        url: "/note/unit/context/" + params.course_no + "/" + params.unit_no,
-        data: params.content
+        url: "/note/unit/context/" + course.course_no + "/" + unit.unit_no,
+        data: content
+    })
+}
+export function uploadUnitPicture(course, unit, picture) {
+    const phone = course.phone
+    const formData = new FormData();
+    formData.append('picture', picture);
+
+    return new Promise((resolve, reject) => {
+        request({
+            method: "post",
+            url: "/note/unit/picture/" + course.course_no + "/" + unit.unit_no,
+            data: formData
+        }).then(res => {
+            res.data.path = `${getURL()}/unit/picture/${phone}/${course.course_no}/${unit.unit_no}/${res.data.path}`
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
     })
 }

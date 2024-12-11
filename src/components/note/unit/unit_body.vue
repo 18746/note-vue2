@@ -43,7 +43,7 @@
             </div>
         </template>
         <!-- 内容 -->
-        <div class="body">
+        <div class="body" style="background-color: beige;">
             <!-- <v-md-preview v-if="!isEdit" :text="unit_content.content"></v-md-preview> -->
             <v-md-editor
                 ref="mdEditor"
@@ -52,8 +52,12 @@
                 placeholder="在此输入内容"
                 left-toolbar="undo redo | h bold italic strikethrough quote | ul ol table hr | link image code"
                 right-toolbar=""
-                height="calc(100vh - 110px)"
+                :include-level="[1, 2, 3, 4]"
+                height="calc(100vh - 97px)"
+                style="background-color: beige;"
                 @save="save"
+                :disabled-menus="[]"
+                @upload-image="uploadImage"
             ></v-md-editor>
             <div class="time">
                 <div>更新时间：{{ unit.update_time }}</div>
@@ -126,7 +130,7 @@
 
 <script>
 import layout from '@/components/layout/layout.vue';
-import { getType, getCourse, getUnitList, getUnit, getUnitContent, updateUnitContent } from '@/api/note';
+import { getType, getCourse, getUnitList, getUnit, getUnitContent, updateUnitContent, uploadUnitPicture } from '@/api/note';
 export default {
     name: 'unit-detail',
     components: {
@@ -249,10 +253,21 @@ export default {
                 });
             })
             if (this.course.course_no) {
-                this.initUnitList()
-                this.initUnit()
                 this.initType()
+                await this.initUnitList()
+                await this.initUnit()
             }
+        },
+        async initType() {
+            await getType().then(res => {
+                this.type_list = res.data
+            }).catch(err => {
+                console.error(err);
+                this.$message({
+                    type: 'error',
+                    message: err.data.detail
+                });
+            })
         },
         async initUnitList() {
             await getUnitList({course_no: this.course_no}).then(res => {
@@ -278,24 +293,10 @@ export default {
                     message: err.data.detail || '获取章节信息失败'
                 });
             })
-            this.getUnitContent()
-        },
-        async initType() {
-            await getType().then(res => {
-                this.type_list = res.data
-            }).catch(err => {
-                console.error(err);
-                this.$message({
-                    type: 'error',
-                    message: err.data.detail
-                });
-            })
+            await this.getUnitContent()
         },
         async getUnitContent() {
-            await getUnitContent({
-                course_no: this.course_no,
-                unit_no: this.unit_no,
-            }).then(res => {
+            await getUnitContent(this.course, this.unit).then(res => {
                 this.unit_content = res.data;
                 this.content = res.data.content;
             }).catch(err => {
@@ -317,6 +318,7 @@ export default {
             this.$router.push({
                 path: '/note/' + data.course_no + '/' + data.unit_no,
             })
+            this.isEdit = false;
         },
 
         toEdit() {
@@ -337,11 +339,7 @@ export default {
             this.$refs.mdEditor.save();
         },
         async save(text, html) {
-            await updateUnitContent({
-                course_no: this.course_no,
-                unit_no: this.unit_no,
-                content: this.content,
-            }).then(res => {
+            await updateUnitContent(this.course, this.unit, this.content).then(res => {
                 this.unit_content.content = res.data
                 this.$message.success('内容已更新')
             }).catch(err => {
@@ -353,6 +351,26 @@ export default {
             console.log(text)
             window.mdEditor = this.$refs.mdEditor
             console.log(this.$refs.mdEditor)
+        },
+        async uploadImage(event, insertImage, files) {
+            console.log(event)
+            console.log(insertImage)
+            console.log(files)
+            await uploadUnitPicture(this.course, this.unit, files[0]).then(res => {
+                console.log(res.data.path)
+                insertImage({
+                    url: res.data.path,
+                    desc: '图片描述',
+                    width: '80%',
+                    height: '80%',
+                });
+                // ![图片描述](http://localhost:8070/unit/picture/15530717659/C_202412061357846719/U_202412101410823896/picture.03.示例2/img_202412111722717498.jpg)
+            }).catch(err => {
+                this.$message({
+                    type: 'error',
+                    message: err.data.detail || '接口报错，请稍后重试'
+                });
+            })
         },
     }
 };
@@ -429,14 +447,20 @@ export default {
 }
 .body {
     width: 100%;
-    padding: 10px;
     box-sizing: border-box;
+    /deep/ img {
+        max-width: 800px;
+        display: block;
+        margin: auto;
+        width: 80%;
+    }
     .time {
         display: flex;
         justify-content: space-between;
         font-size: 12px;
         color: #363636;
         margin-top: 15px;
+        padding-bottom: 10px;
     }
 
     .button-bottom {
@@ -448,6 +472,7 @@ export default {
         flex-direction: column;
         .el-button {
             margin-bottom: 12px;
+            font-size: 18px;
         }
         .el-button:last-child {
             margin-bottom: 0px;
