@@ -2,7 +2,7 @@
     <div class="detail-body">
         <div class="detail-header">
             <div class="header-left">
-                <img class="course-img" :src="img_url" :alt="course.name">
+                <img v-if="course && course.name" class="course-img" :src="img_url" :alt="course.name">
             </div>
             <div class="header-right">
                 <div class="course-info">

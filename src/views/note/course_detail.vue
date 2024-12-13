@@ -1,6 +1,6 @@
 <template>
     <div class="home">
-        <courseDetail
+        <courseBody
             :phone="phone"
         />
     </div>
@@ -8,14 +8,14 @@
 
 <script>
 import { getCourseImg } from '@/utils/index.js';
-import courseDetail from '@/components/note/course/course_body.vue';
+import courseBody from '@/components/note/course/course_body.vue';
 export default {
     name: 'course-detail',
     data() {
         return { };
     },
     components: {
-        courseDetail,
+        courseBody,
     },
     computed: {
         phone() {

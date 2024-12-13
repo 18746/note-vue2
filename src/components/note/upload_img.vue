@@ -17,16 +17,22 @@
             <i class="el-icon el-icon-upload"></i>
             <input ref="file" class="file" type="file" @change="selectFiles" />
         </div>
-        
-        <el-dialog :visible.sync="dialogVisible" append-to-body>
-            <img width="100%" :src="dialogImageUrl" alt="">
-        </el-dialog>
+        <imgPreview
+            v-if="dialogVisible"
+            :visible.sync="dialogVisible"
+            :preview-src-list="[dialogImageUrl]"
+            :init_index="0"
+        />
     </div>
 </template>
 
 <script>
+import imgPreview from './img_preview.vue';
 export default {
     name: 'upload-img',
+    components: {
+        imgPreview,
+    },
     props: {
         type_list: {
             type: Array,

@@ -19,7 +19,7 @@
                         v-if="isSmallScreen"
                         class="btn"
                         type="text"
-                        icon="el-icon-s-fold"
+                        icon="el-icon-s-unfold"
                         @click="isShow = !isShow"
                     ></el-button>
                     <slot name="title"></slot>
