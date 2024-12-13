@@ -14,6 +14,7 @@
             @image-click="imageClick"
             @upload-image="uploadImage"
         ></v-md-editor>
+        <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
         <div class="time">
             <div>更新时间：{{ unit.update_time }}</div>
             <div>创建时间：{{ unit.create_time }}</div>
@@ -228,6 +229,7 @@ export default {
 .body {
     width: 100%;
     box-sizing: border-box;
+    position: relative;
     /deep/ .v-md-editor img {
         max-width: 800px;
         display: block;
@@ -284,6 +286,12 @@ export default {
         .el-button+.el-button {
             margin-left: unset;
         }
+    }
+    .empty {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
     }
 }
 .children {

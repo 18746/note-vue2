@@ -171,7 +171,10 @@ export function updateUnitContent(phone, course, unit, content) {
         request({
             method: "put",
             url: `/note/unit/context/${phone}/${course.course_no}/${unit.unit_no}`,
-            data: content
+            data: content,
+            headers: {
+                'content-type': 'application/json'
+            }
         }).then(res => {
             res.data = (res.data || '').replaceAll(`./picture.${unit.name}`, `${getURL()}/unit/picture/${phone}/${course.course_no}/${unit.unit_no}/picture.${unit.name}`)
             resolve(res)
