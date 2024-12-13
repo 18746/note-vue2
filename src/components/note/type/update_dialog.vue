@@ -76,7 +76,6 @@ export default {
             this.buttonLoading = true
             let flag = await FormValidate(this.$refs.Form);
             if (flag) {
-                console.log(this.phone, this.type_no, this.form)
                 await updateType(this.phone, this.type_no, this.form).then(res => {
                     this.$message.success('更新成功')
                     this.$emit('success', res.data)

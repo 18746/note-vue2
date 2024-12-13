@@ -112,10 +112,7 @@ export default {
     methods: {
         async init() {
             const type_no = this.type_no
-            await getTypeCourse(this.phone, {
-                phone: this.phone,
-                type_no: type_no
-            }).then(res => {
+            await getTypeCourse(this.phone, type_no).then(res => {
                 this.course_list = res.data
             }).catch(err => {
                 console.error(err);

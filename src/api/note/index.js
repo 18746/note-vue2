@@ -2,15 +2,21 @@ import request from '@/utils/request'
 import { getURL } from '@/utils';
 // -----------------------------------------------------------type
 export function getType(phone) {
-    // return new Promise((resolve,reject) => {
-    //     request({
-    //         method: "get",
-    //         url: "/course_type",
-    //     }).then(res => resolve(res)).catch(err => reject(err))
-    // })
-    return request({
-        method: "get",
-        url: `/type/${phone}`,
+    return new Promise((resolve, reject) => {
+        request({
+            method: "get",
+            url: `/type/${phone}`,
+        }).then(res => {
+            res.data.unshift({
+                "type_no": "0",
+                "name": "默认",
+                "create_time": "",
+                "update_time": ""
+            })
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
     })
 }
 export function addType(phone, params) {
@@ -35,12 +41,12 @@ export function delType(phone, type_no) {
     })
 }
 // -------------------------------------------------------------course
-export function getTypeCourse(phone, params) {
-    params.type_no = params.type_no === "0" ? "" : params.type_no
+export function getTypeCourse(phone, type_no) {
+    type_no = type_no === "0" ? "" : type_no
     return new Promise((resolve, reject) => {
         request({
             method: "get",
-            url: `/course/type?phone=${phone}&type_no=${params.type_no}`,
+            url: `/course/type/${phone}?type_no=${type_no}`,
             // data: params
         }).then(res => {
             res.data.forEach(item => {

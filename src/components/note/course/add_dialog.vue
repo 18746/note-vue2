@@ -36,11 +36,6 @@
             >
                 <el-select v-model="form.type_no" filterable style="width: 100%;" placeholder="请选择">
                     <el-option
-                        :key="'0'"
-                        :label="'默认'"
-                        :value="'0'"
-                    ></el-option>
-                    <el-option
                         v-for="item in type_list" :key="item.value"
                         :label="item.name"
                         :value="item.type_no"

@@ -119,10 +119,7 @@ export default {
             if (this.course.type_no) {
                 const type_no = this.course.type_no;
                 if (this.type_list.length > 0) {
-                    const type = this.type_list.find(item => item.type_no === type_no);
-                    if (type) {
-                        return type.name;
-                    }
+                    return this.type_list.find(item => item.type_no === type_no).name;
                 }
             }
             return "默认";

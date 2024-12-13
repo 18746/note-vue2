@@ -2,17 +2,6 @@
     <div class="type_body">
         <el-tabs v-model="checked" type="card" editable @edit="tabsEdit" :before-leave="beforeLeave">
             <el-tab-pane
-                :key="'0'"
-                :label="'默认'"
-                :name="'0'"
-            >
-                <span
-                    slot="label"
-                    style="display: inline-block;height: 100%;"
-                    @contextmenu.prevent.stop="updateTypeFun({type_no: '0', name: '默认'})"
-                > 默认 </span>
-            </el-tab-pane>
-            <el-tab-pane
                 v-for="item in type_list" :key="item.type_no"
                 :label="item.name"
                 :name="item.type_no"
@@ -160,7 +149,6 @@ export default {
                     let tabs = this.type_list;
                     let activeName = this.checked;
                     if (activeName === type_no) {
-                        activeName = '0';
                         tabs.forEach((tab, index) => {
                             if (tab.type_no === type_no) {
                                 let nextTab = tabs[index + 1] || tabs[index - 1];

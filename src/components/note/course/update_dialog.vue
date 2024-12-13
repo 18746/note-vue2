@@ -37,11 +37,6 @@
             >
                 <el-select v-model="form.type_no" filterable style="width: 100%;" placeholder="请选择">
                     <el-option
-                        :key="'0'"
-                        :label="'默认'"
-                        :value="'0'"
-                    ></el-option>
-                    <el-option
                         v-for="item in type_list" :key="item.value"
                         :label="item.name"
                         :value="item.type_no"
@@ -137,9 +132,6 @@ export default {
                 this.$message.error(err.data.detail | "未获取到类型列表")
             })
             this.form = this.course
-            if (!this.form.type_no) {
-                this.form.type_no = "0"
-            }
         },
         async update() {
             this.buttonLoading = true
@@ -147,7 +139,6 @@ export default {
             if (flag) {
                 await updateCourse(this.phone, {
                     ...this.form,
-                    type_no: this.form.type_no === "0" ?  "" : this.form.type_no,
                     picture: this.file_list[0] ? this.file_list[0] : this.form.picture
                 }).then(async res => {
                     this.$message.success('更新成功')
