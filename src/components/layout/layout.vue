@@ -1,7 +1,7 @@
 <template>
     <section class="container">
         <transition name="fade">
-            <aside class="aside" v-if="!isSmallScreen || isShow" @click.stop="isShow = false">
+            <aside class="aside" v-if="showMenu" @click.stop="showMenu = false">
                 <div class="Page_Left">
                     <div class="Search" :style="'height: ' + TitleHeight + ';'">
                         <slot name="left-search"></slot>
@@ -16,11 +16,11 @@
             <div class="Page_Right">
                 <div class="Title" :style="'height: ' + TitleHeight + ';'">
                     <el-button
-                        v-if="isSmallScreen"
+                        v-if="showFoldButton"
                         class="btn"
                         type="text"
-                        icon="el-icon-s-unfold"
-                        @click="isShow = !isShow"
+                        :icon="!showMenu ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
+                        @click="showMenu = !showMenu"
                     ></el-button>
                     <slot name="title"></slot>
                 </div>
@@ -33,16 +33,8 @@
 </template>
 
 <script>
-function throttle(fn, delay) {
-    var last = 0;
-    return function() {
-        var now = Date.now();
-        if (now - last > delay) {
-            last = now;
-            fn.apply(this, arguments);
-        }
-    };
-}
+import { throttle } from '@/utils';
+
 export default {
     name: 'layout',
     props: {
@@ -50,11 +42,15 @@ export default {
             type: Number,
             required: false,
             default: 54
+        },
+        AlwaysDisplayFold: {
+            type: Boolean,
+            default: false,
         }
     },
     data() {
         return {
-            isShow: false,
+            showMenu: false,
             isSmallScreen: false,
         }
     },
@@ -65,7 +61,15 @@ export default {
         BodyHeight() {
             return 'calc(100% - ' + this.TitleHeight +')'
         },
-
+        showFoldButton() {
+            if (this.AlwaysDisplayFold) {
+                return true;
+            } else if (this.isSmallScreen) {
+                return true;
+            } else {
+                return false;
+            }
+        },
     },
     created() {
         const resize = throttle(this.resize, 10);
@@ -76,11 +80,12 @@ export default {
         resize() {
             const offsetWidth = window.document.body.offsetWidth;
             // console.log(offsetWidth)
-            if (offsetWidth < 1000) {
+            if (offsetWidth <= 1000) {
                 this.isSmallScreen = true;
-                this.isShow = false;
+                this.showMenu = false;
             } else {
                 this.isSmallScreen = false;
+                this.showMenu = true;
             }
         }
     },
@@ -128,18 +133,18 @@ export default {
             width: 100%;
         }
     }
-    @media (max-width: 1000px) {
+    @media (max-width: 950px) {
         width: 100%;
         height: 100%;
         position: absolute;
         z-index: 3000;
-        background-color: #00000044;
+        background-color: #00000011;
         
         .Page_Left {
             width: 80%;
             max-width: 350px;
             background: #fff;
-            box-shadow: 4px 0px 10px #b0b0b0;
+            // box-shadow: 4px 0px 10px #b0b0b0;
         }
     }
 }

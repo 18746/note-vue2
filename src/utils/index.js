@@ -36,3 +36,26 @@ export const getCourseImg = (course) => {
     return getURL() + "/course/picture/" + course.phone + '/' + course.name + '/' + course.picture
 }
 
+// 防抖，一定时间内只允许执行一次（只执行第一次）
+export const debounce = (fn, delay) => {
+    var timer = undefined;
+    return function() {
+        if (timer !== undefined) clearTimeout(timer);
+        timer = setTimeout(() => {
+            fn.apply(this, arguments);
+        }, delay);
+    };
+}
+
+// 节流，一定时间内只允许执行一次（只执行最后一次）
+export const throttle = (fn, delay) => {
+    var last = 0;
+    return function() {
+        var now = Date.now();
+        if (now - last > delay) {
+            last = now;
+            fn.apply(this, arguments);
+        }
+    };
+}
+
