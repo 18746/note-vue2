@@ -58,7 +58,7 @@
                     type="textarea"
                     placeholder="暂无"
                     maxlength="150"
-                    rows="4"
+                    rows="3"
                     show-word-limit
                 />
             </el-form-item>
@@ -86,6 +86,10 @@ export default {
         type_no: {
             type: String,
             default: '0'
+        },
+        phone: {
+            type: String,
+            required: true
         }
     },
     components: {
@@ -118,13 +122,13 @@ export default {
             set(val) {
                 this.$emit('update:visible', val)
             }
-        }
+        },
     },
     methods: {
         async init() {
             await this.$nextTick()
             await FormResetValidate(this.$refs.Form)
-            getType().then(res => {
+            await getType(this.phone).then(res => {
                 this.type_list = res.data
                 this.form.type_no = this.type_no
             }).catch(err => {
@@ -137,7 +141,7 @@ export default {
             this.buttonLoading = true
             let flag = await FormValidate(this.$refs.Form);
             if (flag) {
-                await addCourse({
+                await addCourse(this.phone, {
                     ...this.form,
                     picture: this.file_list[0] ? this.file_list[0] : ""
                 }).then(async res => {

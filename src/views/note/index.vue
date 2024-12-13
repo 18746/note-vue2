@@ -1,18 +1,18 @@
 <template>
     <div class="home">
-        <typeBody :type_no.sync="checked" />
-        <courseBody :type_no="checked" />
+        <typeBody :type_no.sync="checked" :phone="phone" />
+        <noteBody :type_no="checked" :phone="phone" />
     </div>
 </template>
 
 <script>
 import typeBody from '@/components/note/type/type_body.vue';
-import courseBody from '@/components/note/course/note_body.vue';
+import noteBody from '@/components/note/course/note_body.vue';
 export default {
     name: 'note',
     components: {
         typeBody,
-        courseBody,
+        noteBody,
     },
     data() {
         return {
@@ -25,6 +25,12 @@ export default {
                 this.checked = to.query.type_no || "0"
             },
             immediate: true
+        },
+    },
+    computed: {
+        phone() {
+            const info = this.$store.state.user.info
+            return info ? info.phone : ''
         }
     },
     methods: {

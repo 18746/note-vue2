@@ -20,7 +20,7 @@
                 <el-input v-model="form.name" placeholder="请输入类型名"></el-input>
             </el-form-item>
             <el-form-item
-                label="是目录"
+                label="目录"
                 prop="is_menu"
             >
                 <el-switch
@@ -81,6 +81,9 @@ export default {
             set(val) {
                 this.$emit('update:visible', val)
             }
+        },
+        phone() {
+            return this.course.phone
         }
     },
     methods: {
@@ -97,7 +100,7 @@ export default {
             this.buttonLoading = true
             let flag = await FormValidate(this.$refs.Form);
             if (flag) {
-                await updateUnit(this.form).then(res => {
+                await updateUnit(this.phone, this.form.course_no, this.form.unit_no, this.form).then(res => {
                     this.$message.success('更新成功')
                     this.$emit('success', res.data)
                     this.$emit('update:visible', false)

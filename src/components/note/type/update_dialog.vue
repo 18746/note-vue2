@@ -38,6 +38,10 @@ export default {
             type: Object,
             required: true
         },
+        phone: {
+            type: String,
+            required: true
+        },
     },
     data() {
         return {
@@ -57,6 +61,9 @@ export default {
             set(val) {
                 this.$emit('update:visible', val)
             }
+        },
+        type_no() {
+            return this.type.type_no
         }
     },
     methods: {
@@ -69,7 +76,8 @@ export default {
             this.buttonLoading = true
             let flag = await FormValidate(this.$refs.Form);
             if (flag) {
-                await updateType(this.form).then(res => {
+                console.log(this.phone, this.type_no, this.form)
+                await updateType(this.phone, this.type_no, this.form).then(res => {
                     this.$message.success('更新成功')
                     this.$emit('success', res.data)
                     this.$emit('update:visible', false)

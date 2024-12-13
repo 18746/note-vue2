@@ -31,6 +31,10 @@ export default {
         visible: {
             type: Boolean,
             default: false
+        },
+        phone: {
+            type: String,
+            required: true
         }
     },
     data() {
@@ -51,7 +55,7 @@ export default {
             set(val) {
                 this.$emit('update:visible', val)
             }
-        }
+        },
     },
     methods: {
         async init() {
@@ -63,7 +67,7 @@ export default {
             this.buttonLoading = true
             let flag = await FormValidate(this.$refs.Form);
             if (flag) {
-                await addType(this.form).then(res => {
+                await addType(this.phone, this.form).then(res => {
                     this.$message.success('添加成功')
                     this.$emit('success', res.data)
                     this.$emit('update:visible', false)

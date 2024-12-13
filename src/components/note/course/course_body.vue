@@ -108,6 +108,12 @@ import addDialog from '../unit/add_dialog.vue';
 import updateDialog from '../unit/update_dialog.vue';
 export default {
     name: 'course',
+    props: {
+        phone: {
+            type: String,
+            required: true
+        }
+    },
     components: {
         addDialog,
         updateDialog,
@@ -150,11 +156,14 @@ export default {
             if (this.course.type_no) {
                 const type_no = this.course.type_no;
                 if (this.type_list.length > 0) {
-                    return this.type_list.find(item => item.type_no === type_no).name;
+                    const type = this.type_list.find(item => item.type_no === type_no);
+                    if (type) {
+                        return type.name;
+                    }
                 }
             }
             return "默认";
-        }
+        },
     },
     filters: {
         description(des) {
@@ -167,7 +176,7 @@ export default {
     },
     methods: {
         async init() {
-            await getCourse({ course_no: this.course_no }).then(res => {
+            await getCourse(this.phone, this.course_no).then(res => {
                 this.course = res.data;
             }).catch(err => {
                 console.error(err);
@@ -177,12 +186,12 @@ export default {
                 });
             })
             if (this.course.course_no) {
-                this.initUnitList()
                 this.initType()
+                this.initUnitList()
             }
         },
         async initUnitList() {
-            await getUnitList({course_no: this.course_no}).then(res => {
+            await getUnitList(this.phone, this.course_no).then(res => {
                 this.unit_list = res.data;
             }).catch(err => {
                 console.error(err);
@@ -193,7 +202,7 @@ export default {
             })
         },
         async initType() {
-            await getType().then(res => {
+            await getType(this.phone).then(res => {
                 this.type_list = res.data
             }).catch(err => {
                 console.error(err);
@@ -245,10 +254,7 @@ export default {
                 confirmButtonText: '删除',
                 cancelButtonText: '取消'
             }).then(async () => {
-                await delUnit({
-                    course_no: this.course_no,
-                    unit_no: data.unit_no
-                }).then(res => {
+                await delUnit(this.phone, this.course_no, data.unit_no).then(res => {
                     this.$message({
                         type: 'success',
                         message: '删除成功'
@@ -298,7 +304,7 @@ export default {
             this.initUnitList()
         },
         async updateUnit(unit) {
-            await updateUnit(unit).then(res => {
+            await updateUnit(this.phone, unit.course_no, unit.unit_no, unit).then(res => {
                 this.$message.success('更新成功')
             }).catch(err => {
                 this.$message.error(err.data.detail)

@@ -1,6 +1,8 @@
 <template>
     <div class="home">
-        <courseDetail ></courseDetail>
+        <courseDetail
+            :phone="phone"
+        />
     </div>
 </template>
 
@@ -13,7 +15,13 @@ export default {
         return { };
     },
     components: {
-        courseDetail
+        courseDetail,
+    },
+    computed: {
+        phone() {
+            const info = this.$store.state.user.info
+            return info ? info.phone : ''
+        }
     },
     methods: { }
 };

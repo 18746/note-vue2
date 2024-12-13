@@ -75,7 +75,7 @@ export default {
     methods: {
         resize() {
             const offsetWidth = window.document.body.offsetWidth;
-            console.log(offsetWidth)
+            // console.log(offsetWidth)
             if (offsetWidth < 1000) {
                 this.isSmallScreen = true;
                 this.isShow = false;
@@ -132,10 +132,12 @@ export default {
         width: 100%;
         height: 100%;
         position: absolute;
-        z-index: 2;
+        z-index: 3000;
+        background-color: #00000044;
         
         .Page_Left {
             width: 80%;
+            max-width: 350px;
             background: #fff;
             box-shadow: 4px 0px 10px #b0b0b0;
         }

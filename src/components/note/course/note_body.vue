@@ -16,7 +16,7 @@
                     <div class="icon">
                         <div class="body">
                             <i class="el-icon el-icon-edit-outline" @click="edit(course)"></i>
-                            <i class="el-icon el-icon-delete" @click="del(course)"></i>
+                            <i class="el-icon el-icon-delete" @click="del(course.course_no)"></i>
                         </div>
                     </div>
                 </div>
@@ -32,6 +32,7 @@
         <addDialog
             :visible.sync="addVisible"
             :type_no="type_no"
+            :phone="phone"
             @success="addSuccess"
         />
         <updateDialog
@@ -55,14 +56,10 @@ export default {
             type: String,
             required: true,
         },
-        // line_type: {
-        //     type: Boolean,
-        //     default: true,
-        // },
-        // card_type: {
-        //     type: Boolean,
-        //     default: false,
-        // }
+        phone: {
+            type: String,
+            required: true
+        }
     },
     components: {
         addDialog,
@@ -105,12 +102,15 @@ export default {
                 return 'course-line'
             }
             return 'course-line'
-        }
+        },
     },
     methods: {
         async init() {
             const type_no = this.type_no
-            getTypeCourse({type_no: type_no}).then(res => {
+            await getTypeCourse(this.phone, {
+                phone: this.phone,
+                type_no: type_no
+            }).then(res => {
                 this.course_list = res.data
             }).catch(err => {
                 console.error(err);
@@ -143,7 +143,10 @@ export default {
         // 编辑
         edit(course) {
             this.updateVisible = true;
-            this.updateCourse = {...course};
+            console.log(course);
+            this.updateCourse = {
+                ...course,
+            };
         },
         // 更新成功
         updateSuccess(update_course) {
@@ -156,33 +159,26 @@ export default {
             }
         },
         // 删除
-        del(del_course) {
+        del(course_no) {
             this.$confirm('课程删除后无法找回，确定要删除吗？', '确认信息', {
                 type: 'warning',
                 distinguishCancelAndClose: true,
                 confirmButtonText: '删除',
                 cancelButtonText: '取消'
             }).then(() => {
-                delCourse(del_course).then(res => {
+                delCourse(this.phone, course_no).then(res => {
                     this.$message({
                         type: 'success',
                         message: '删除成功'
                     });
-                    this.course_list = this.course_list.filter(item => item.course_no != del_course.course_no)
+                    this.course_list = this.course_list.filter(item => item.course_no != course_no)
                 }).catch(err => {
                     this.$message({
                         type: 'error',
                         message: err.data.detail || '删除失败，请重试'
                     });
                 })
-            }).catch(action => {
-                // this.$message({
-                //     type: 'info',
-                //     message: action === 'cancel'
-                //         ? '放弃保存并离开页面'
-                //         : '停留在当前页面'
-                // })
-            });
+            }).catch(action => {});
         },
     }
 }

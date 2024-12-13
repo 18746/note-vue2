@@ -58,7 +58,7 @@
                     type="textarea"
                     placeholder="暂无"
                     maxlength="150"
-                    rows="4"
+                    rows="3"
                     show-word-limit
                 />
             </el-form-item>
@@ -121,13 +121,16 @@ export default {
                 this.$emit('update:visible', val)
             }
         },
+        phone() {
+            return this.course.phone
+        }
     },
     methods: {
         async init() {
             this.img_url = getCourseImg(this.course)
             await this.$nextTick()
             await FormResetValidate(this.$refs.Form)
-            getType().then(res => {
+            await getType(this.phone).then(res => {
                 this.type_list = res.data
             }).catch(err => {
                 console.error(err)
@@ -142,7 +145,7 @@ export default {
             this.buttonLoading = true
             let flag = await FormValidate(this.$refs.Form);
             if (flag) {
-                await updateCourse({
+                await updateCourse(this.phone, {
                     ...this.form,
                     type_no: this.form.type_no === "0" ?  "" : this.form.type_no,
                     picture: this.file_list[0] ? this.file_list[0] : this.form.picture

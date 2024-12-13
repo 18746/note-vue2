@@ -27,10 +27,12 @@
         
         <typeAddDialog
             :visible.sync="addVisible"
+            :phone="phone"
             @success="addTypeSuccess"
         />
         <typeUpdateDialog
             :visible.sync="updateVisible"
+            :phone="phone"
             :type="updateType"
             @success="updateTypeSuccess"
         />
@@ -53,6 +55,10 @@ export default {
         type_no: {
             type: String,
             default: "0"
+        },
+        phone: {
+            type: String,
+            required: true
         }
     },
     data() {
@@ -73,14 +79,14 @@ export default {
             set(val) {
                 this.$emit("update:type_no", val);
             }
-        }
+        },
     },
     created() {
         this.init();
     },
     methods: {
         async init() {
-            await getType().then(res => {
+            await getType(this.phone).then(res => {
                 this.type_list = res.data
             }).catch(err => {
                 console.error(err);
@@ -101,7 +107,7 @@ export default {
             // return false
         },
 
-        tabsEdit(targetName, action) {
+        async tabsEdit(targetName, action) {
             if (action === 'add') {
                 this.addVisible = true;
             }
@@ -113,7 +119,7 @@ export default {
                     });
                     return false;
                 }
-                this.deleteType(targetName);
+                await this.deleteType(targetName);
             }
         },
 
@@ -143,20 +149,20 @@ export default {
         },
 
         // 删除类型
-        deleteType(targetName) {
-            this.$confirm('类型删除后，该类型下的课程会被放到默认类型下，是否继续？', '确认信息', {
+        async deleteType(type_no) {
+            await this.$confirm('类型删除后，该类型下的课程会被放到默认类型下，是否继续？', '确认信息', {
                 type: 'warning',
                 distinguishCancelAndClose: true,
                 confirmButtonText: '删除',
                 cancelButtonText: '取消'
-            }).then(() => {
-                delType({ type_no: targetName }).then(res => {
+            }).then(async () => {
+                await delType(this.phone, type_no).then(res => {
                     let tabs = this.type_list;
                     let activeName = this.checked;
-                    if (activeName === targetName) {
+                    if (activeName === type_no) {
                         activeName = '0';
                         tabs.forEach((tab, index) => {
-                            if (tab.type_no === targetName) {
+                            if (tab.type_no === type_no) {
                                 let nextTab = tabs[index + 1] || tabs[index - 1];
                                 if (nextTab) {
                                     activeName = nextTab.type_no;
@@ -165,7 +171,7 @@ export default {
                         });
                     }
                     this.checked = activeName;
-                    this.type_list = tabs.filter(tab => tab.type_no !== targetName);
+                    this.type_list = tabs.filter(tab => tab.type_no !== type_no);
 
                     this.$message({
                         type: 'success',
@@ -177,14 +183,7 @@ export default {
                         message: err.data.detail || '删除失败，请重试'
                     });
                 })
-            }).catch(action => {
-                // this.$message({
-                //     type: 'info',
-                //     message: action === 'cancel'
-                //         ? '放弃保存并离开页面'
-                //         : '停留在当前页面'
-                // })
-            });
+            }).catch(action => {});
         },
     }
 }
