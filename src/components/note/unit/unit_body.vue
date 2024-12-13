@@ -1,6 +1,5 @@
 <template>
-    <div class="body" style="background-color: beige;">
-        <!-- <v-md-preview v-if="!isEdit" :text="unit_content.content"></v-md-preview> -->
+    <div class="body">
         <v-md-editor
             ref="mdEditor"
             :mode="mode"
@@ -10,7 +9,6 @@
             right-toolbar=""
             :include-level="[1, 2, 3, 4]"
             height="calc(100vh - 97px)"
-            style="background-color: beige;"
             @save="save"
             :disabled-menus="[]"
             @image-click="imageClick"

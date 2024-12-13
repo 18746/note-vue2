@@ -3,7 +3,11 @@
         <div style="text-align: right;margin: 0 10px 5px;" :key="course_list.length">
             <el-button-group>
                 <el-button type="primary" icon="el-icon-document-add" @click="add"></el-button>
-                <el-button :icon="!card_type ? 'el-icon-s-grid' : 'el-icon-document'" @click="changCardOrLine"></el-button>
+                <el-button
+                    :type="card_type ? 'primary' : ''"
+                    :icon="!card_type ? 'el-icon-s-grid' : 'el-icon-document'"
+                    @click="changCardOrLine"
+                ></el-button>
             </el-button-group>
         </div>
         <div :class="Class" v-for="course in course_list" :key="course.course_no">
@@ -28,6 +32,7 @@
                 </div>
             </div>
         </div>
+        <el-empty v-if="course_list.length == 0" :image-size="150"></el-empty>
         
         <addDialog
             :visible.sync="addVisible"
