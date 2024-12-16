@@ -42,7 +42,7 @@ export default {
     position: absolute;
     top: 50%;
     right: 40px;
-    transform: translate(0, -50%);
+    translate: 0 -50%;
     padding: 30px 45px;
 
     display: flex;
@@ -68,7 +68,7 @@ export default {
     @media (max-width: 900px) {
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
+        translate: -50% -50%;
     }
 }
 

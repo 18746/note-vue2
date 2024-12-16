@@ -20,7 +20,7 @@
                 @phoneToLogin="phoneToLogin"
             />
         </transition>
-</div>
+    </div>
 </template>
 
 <script>
@@ -41,24 +41,38 @@ export default {
             loginOrRegister: "login",
         }
     },
+    watch: {
+        $route: {
+            handler(to, from) {
+                let toPath = to.query.to || 'login'
+                if (toPath) {
+                    if (toPath == 'login') {
+                        this.loginOrRegister = 'login'
+                    } else if (toPath == 'register') {
+                        this.loginOrRegister = 'register'
+                    } else if (toPath == 'forgetPwd') {
+                        this.loginOrRegister = 'forgetPwd'
+                    }
+                }
+            },
+            immediate: true,
+        },
+    },
     created() {
-        let to = this.$route.query.to
-        if (to) {
-            if (to == 'login') {
-                this.loginOrRegister = 'login'
-            } else if (to == 'register') {
-                this.loginOrRegister = 'register'
-            } else if (to == 'forgetPwd') {
-                this.loginOrRegister = 'forgetPwd'
-            }
-        }
+        
     },
     methods: {
         changeTab(tab) {
-            this.loginOrRegister = tab
+            this.$router.replace({
+                path: '/login',
+                query: { to: tab }
+            })
         },
         async phoneToLogin(phone) {
-            this.loginOrRegister = 'login'
+            this.$router.replace({
+                path: '/login',
+                query: { to: 'login' }
+            })
             await sleep(520)
             // 等待动画结束再赋值
             this.$refs.loginCom.init(phone)
@@ -85,15 +99,15 @@ export default {
 }
 @keyframes bounce-in {
   0% {
-    transform: scale(0) translate(0, -50%);
+    scale: 0;
     opacity: 0;
   }
   50% {
-    transform: scale(1.1) translate(0, -50%);
+    scale: 1.1;
     opacity: 1;
   }
   100% {
-    transform: scale(1) translate(0, -50%);
+    scale: 1;
     opacity: 1;
   }
 }
