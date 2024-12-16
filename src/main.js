@@ -79,29 +79,6 @@ VMdEditor.use(githubTheme, {
 Vue.use(VMdEditor);
 
 
-import { isTokenNotExpire } from '@/utils/user.js'
-router.beforeEach((to, from, next) => {
-    if (store.state.user.token) {
-        if (isTokenNotExpire(store.state.user.token.update_time, store.state.user.token.time_limit)) {
-            if (!store.state.user.info) {
-                store.dispatch('user/getUserInfo')
-            }
-            if (to.path === '/login' || to.path === '/') {
-                next("/note")
-            } else {
-                next()
-            }
-            return
-        }
-    }
-    store.commit('user/setInfo', null)
-    store.commit('user/setToken', null)
-    if (to.path === '/login') {
-        next()
-    } else {
-        next('/login')
-    }
-})
 
 Vue.config.productionTip = false;
 

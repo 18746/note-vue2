@@ -1,8 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
 
-const markdown = () => import('@/views/markdown')
-
 Vue.use(Router);
 
 const originalReplace = Router.prototype.replace;
@@ -13,27 +11,34 @@ const VueRouterPush = Router.prototype.push;
 Router.prototype.push = function push (to) {
     return VueRouterPush.call(this, to).catch(err => err);
 }
-
-export default new Router({
+const routers = new Router({
     mode: 'history',
     routes: [
         {
             path: "/",
             redirect: '/login'
         }, {
-            path: "/login",
-            name: "login",
-            component: () => import('@/views/login'),
-        }, {
-            path: "/home",
-            name: "home",
-            component: () => import('@/views/home'),
+            path: "/ceshi",
+            name: "ceshi",
+            component: () => import('@/views/ceshi'),
+            meta: {
+                title: "测试页",
+            }
         }, {
             path: "/markdown",
             name: "markdown",
-            component: markdown,
-        },
-        {
+            component: () => import('@/views/markdown'),
+            meta: {
+                title: "markdown示例",
+            }
+        }, {
+            path: "/login",
+            name: "login",
+            component: () => import('@/views/login'),
+            meta: {
+                title: "注册登录",
+            }
+        }, {
             path: "/note",
             name: "note",
             component: () => import('@/components/null.vue'),
@@ -42,14 +47,23 @@ export default new Router({
                 path: "/",
                 name: "note",
                 component: () => import('@/views/note/note.vue'),
+                meta: {
+                    title: "我的",
+                }
             }, {
                 path: ":course_no",
                 name: "detail",
                 component: () => import('@/views/note/course_detail.vue'),
+                meta: {
+                    title: "课程",
+                }
             }, {
                 path: ":course_no/:unit_no",
                 name: "unit-detail",
                 component: () => import('@/views/note/unit_detail.vue'),
+                meta: {
+                    title: "章节",
+                }
             }]
         },
         // {
@@ -59,4 +73,34 @@ export default new Router({
         // },
     ],
 });
+
+import store from "@/store/index.js";
+import { isTokenNotExpire } from '@/utils/user.js'
+routers.beforeEach((to, from, next) => {
+    if (store.state.user.token) {
+        if (isTokenNotExpire(store.state.user.token.update_time, store.state.user.token.time_limit)) {
+            if (!store.state.user.info) {
+                store.dispatch('user/getUserInfo')
+            }
+            if (to.path === '/login' || to.path === '/') {
+                next("/note")
+            } else {
+                next()
+            }
+            return
+        }
+    }
+    store.commit('user/setInfo', null)
+    store.commit('user/setToken', null)
+    if (to.path === '/login') {
+        next()
+    } else {
+        next('/login')
+    }
+})
+routers.afterEach((to, from) => {
+    const title = to.meta.title || '';
+    document.title = title ? title + "-笔记" : '笔记'
+});
+export default routers
 
