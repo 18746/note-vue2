@@ -37,11 +37,11 @@ export default new Router({
             path: "/note",
             name: "note",
             component: () => import('@/components/null.vue'),
-            redirect: '/note/home',
+            redirect: '/note/note',
             children: [{
-                path: "home",
-                name: "home",
-                component: () => import('@/views/note'),
+                path: "note",
+                name: "note",
+                component: () => import('@/views/note/note.vue'),
             }, {
                 path: ":course_no",
                 name: "detail",

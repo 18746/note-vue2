@@ -88,7 +88,7 @@ export default {
         // 点击tab触发路由跳转
         beforeLeave(new_name, old_name) {
             this.$router.push({
-                path: '/note/home',
+                path: '/note',
                 query: {
                     type_no: new_name
                 }
