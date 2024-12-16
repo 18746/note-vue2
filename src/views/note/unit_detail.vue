@@ -8,25 +8,7 @@
         </template>
         <!-- 左侧菜单 -->
         <template #left-menu>
-            <el-tree
-                ref="tree"
-                :data="unit_list"
-                :props="defaultProps"
-                default-expand-all
-                :filter-node-method="filterNode"
-            >
-                <span class="custom-tree-node" slot-scope="{ node, data }">
-                    <span class="info">
-                        <i v-if="data.is_menu" :class="node.expanded ? 'el-icon el-icon-folder-opened' : 'el-icon el-icon-folder'"></i>
-                        <i v-else class="el-icon el-icon-tickets"></i>
-                        <span
-                            :class="'unit-name ' + (unit_no == data.unit_no ? 'active' : '')"
-                            @click.stop="handleNodeClick(data)"
-                        >{{ data.name }}</span>
-                    </span>
-                    <span class="action"></span>
-                </span>
-            </el-tree>
+            <unitMenu ref="menu" :phone="phone" :unit_no="unit_no" :course="course" @toUnit="toUnit" />
         </template>
         <!-- 标题 -->
         <template #title>
@@ -43,24 +25,22 @@
             </div>
         </template>
         <!-- 内容 -->
-        <unitBody
-            :phone="phone"
-            :course="course"
-            :unit="unit"
-        />
+        <unitBody :phone="phone" :course="course" :unit="unit" />
     </layout>
 </template>
 
 <script>
 import layout from '@/components/layout/layout.vue';
+import unitMenu from '@/components/note/unit/unit_menu.vue';
 import unitBody from '@/components/note/unit/unit_body.vue';
 
-import { getType, getCourse, getUnitList, getUnit } from '@/api/note';
+import { getType, getCourse, getUnit } from '@/api/note';
 export default {
     name: 'course-detail',
     components: {
         layout,
         unitBody,
+        unitMenu,
     },
     data() {
         return {
@@ -74,6 +54,7 @@ export default {
                 update_time: ""
             },
             type_list: [],
+            unit_no: '',  // 单元编号
             unit: {
                 "course_no": "",
                 "unit_no": "",
@@ -86,19 +67,11 @@ export default {
             },
 
             search: '', // 搜索
-            defaultProps: {  // 树形控件默认属性
-                children: 'child',
-                label: 'name',
-                "node-key": "unit_no",
-                "expand-on-click-node": false
-            },
-            unit_no: '',  // 单元编号
-            unit_list: [],  // 单元列表
         };
     },
     watch: {
         search(val) {
-            this.$refs.tree.filter(val);
+            this.$refs.menu.filter(val);
         },
         $route(val) {
             const course_no = val.params.course_no
@@ -112,9 +85,6 @@ export default {
         },
     },
     computed: {
-        // img_url() {
-        //     return getCourseImg(this.course);
-        // },
         type_name() {
             if (this.course.type_no) {
                 const type_no = this.course.type_no;
@@ -129,12 +99,7 @@ export default {
             return info ? info.phone : ''
         }
     },
-    filters: {
-        // description(des) {
-        //     return des ? des : '不知道写点啥了';
-        // }
-    },
-    created() {
+    mounted() {
         this.course_no = this.$route.params.course_no;
         this.unit_no = this.$route.params.unit_no;
         this.init();
@@ -151,9 +116,9 @@ export default {
                 });
             })
             if (this.course.course_no) {
-                this.initType()
-                await this.initUnitList()
+                await this.initType()
                 await this.initUnit()
+                this.$refs.menu.init()
             }
         },
         async initType() {
@@ -164,17 +129,6 @@ export default {
                 this.$message({
                     type: 'error',
                     message: err.data.detail
-                });
-            })
-        },
-        async initUnitList() {
-            await getUnitList(this.phone, this.course_no).then(res => {
-                this.unit_list = res.data;
-            }).catch(err => {
-                console.error(err);
-                this.$message({
-                    type: 'error',
-                    message: err.data.detail || '获取目录信息失败'
                 });
             })
         },
@@ -189,15 +143,9 @@ export default {
                 });
             })
         },
-        // 筛选章节
-        filterNode(search, data, node) {
-            if (!search) return true;
-            return data.name.indexOf(search) !== -1;
-        },
-        // 点击跳转
-        handleNodeClick(data) {
+        toUnit(unit) {
             this.$router.push({
-                path: '/note/' + data.course_no + '/' + data.unit_no,
+                path: '/note/' + unit.course_no + '/' + unit.unit_no,
             })
         },
     }
@@ -205,44 +153,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.custom-tree-node {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-left: 8px;
-
-    .info {
-        font-size: 15px;
-        line-height: 24px;
-        .unit-name {
-            &.active {
-                color: #409EFF;
-            }
-            &:hover {
-                color: #409EFF;
-                text-decoration: underline;
-            }
-        }
-        .el-icon {
-            font-size: 18px;
-        }
-    }
-    .action {}
-}
-/deep/ .el-tree-node__content {
-    height: 35px;
-}
-/deep/ .el-tree-node__expand-icon.is-leaf {
-    display: none;
-}
-/deep/ .el-tree-node__expand-icon.expanded {
-    display: none;
-}
-/deep/ .el-tree-node__content>.el-tree-node__expand-icon {
-    display: none;
-}
 .title {
     width: 100%;
     height: 100%;

@@ -28,7 +28,7 @@ import { updateType } from '@/api/note';
 import { FormValidate, FormResetValidate } from '@/utils/validate';
 
 export default {
-    name: 'update-type',
+    name: 'type-update',
     props: {
         visible: {
             type: Boolean,

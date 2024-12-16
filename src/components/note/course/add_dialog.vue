@@ -72,7 +72,7 @@ import { getType, addCourse } from '@/api/note';
 import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
 import { CourseNameRules, DescriptionRules } from '../validate.js';
 export default {
-    name: 'add-course',
+    name: 'course-add',
     props: {
         visible: {
             type: Boolean,

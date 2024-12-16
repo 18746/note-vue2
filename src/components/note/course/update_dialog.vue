@@ -74,7 +74,7 @@ import { getType, updateCourse } from '@/api/note';
 import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
 import { getCourseImg } from '@/utils/index.js';
 export default {
-    name: 'update-course',
+    name: 'course-update',
     props: {
         visible: {
             type: Boolean,

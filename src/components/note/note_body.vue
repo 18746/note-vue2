@@ -49,13 +49,13 @@
 </template>
 
 <script>
-import addDialog from './add_dialog.vue';
-import updateDialog from './update_dialog.vue';
+import addDialog from './course/add_dialog.vue';
+import updateDialog from './course/update_dialog.vue';
 
 import { getTypeCourse, delCourse } from '@/api/note';
 import { getCourseImg } from '@/utils/index.js';
 export default {
-    name: 'note-list',
+    name: 'note',
     props: {
         type_no: {
             type: String,

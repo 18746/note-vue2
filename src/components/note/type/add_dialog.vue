@@ -26,7 +26,7 @@ import { addType } from '@/api/note';
 import { FormValidate, FormResetValidate } from '@/utils/validate';
 import { TypeNameRules } from '@/components/note/validate.js';
 export default {
-    name: 'add-type',
+    name: 'type-add',
     props: {
         visible: {
             type: Boolean,

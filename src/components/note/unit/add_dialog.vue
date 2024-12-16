@@ -43,7 +43,7 @@ import { UnitNameRules } from '../validate.js';
 import { addUnit } from '@/api/note';
 import { FormValidate, FormResetValidate } from '@/utils/validate';
 export default {
-    name: 'add-unit',
+    name: 'unit-add',
     props: {
         visible: {
             type: Boolean,

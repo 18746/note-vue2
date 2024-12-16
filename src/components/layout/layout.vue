@@ -2,7 +2,7 @@
     <section class="container">
         <transition name="fade">
             <aside class="aside" v-if="showMenu" @click.stop="showMenu = false">
-                <div class="Page_Left">
+                <div class="Page_Left" @click.stop>
                     <div class="Search" :style="'height: ' + TitleHeight + ';'">
                         <slot name="left-search"></slot>
                     </div>
