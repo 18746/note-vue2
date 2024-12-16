@@ -25,7 +25,7 @@
             </div> -->
         </template>
         <!-- 内容 -->
-        <noteBody :type_no="type_no" :phone="phone" />
+        <noteBody :type_no="type_no" :phone="phone" @toCourse="toCourse" />
     </layout>
 </template>
 
@@ -72,6 +72,12 @@ export default {
                     type_no: type_no
                 }
             })
+        },
+        toCourse(course) {
+            const routeData = this.$router.resolve({
+                path: '/note/' + course.course_no,
+            });
+            window.open(routeData.href, course.course_no);
         },
     }
 }

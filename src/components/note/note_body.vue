@@ -127,10 +127,7 @@ export default {
         },
         // 点击课程跳转
         select(course) {
-            this.$router.push({
-                path: '/note/' + course.course_no,
-            })
-
+            this.$emit('toCourse', course)
         },
         // 增加课程
         add() {

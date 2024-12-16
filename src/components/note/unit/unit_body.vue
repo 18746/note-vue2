@@ -199,24 +199,23 @@ export default {
             console.log(event)
             console.log(insertImage)
             console.log(files)
-            await uploadUnitPicture(this.phone, this.course, this.unit, files[0]).then(res => {
-                console.log(res.data.path)
-                insertImage({
-                    url: res.data.path,
-                    desc: '图片描述',
-                    // width: '80%',
-                    // height: '80%',
-                });
-            }).catch(err => {
-                this.$message({
-                    type: 'error',
-                    message: err.data.detail || '接口报错，请稍后重试'
-                });
-            })
+            // for (let i = 0; i < files.length; i++) {
+                await uploadUnitPicture(this.phone, this.course, this.unit, files[0]).then(res => {
+                    insertImage({
+                        url: res.data.picture_url,
+                        desc: '图片描述',
+                        // width: '80%',
+                        // height: '80%',
+                    });
+                }).catch(err => {
+                    this.$message({
+                        type: 'error',
+                        message: err.data.detail || '接口报错，请稍后重试'
+                    });
+                })
+            // }
         },
         imageClick(images, currentIndex) {
-            console.log(images)
-            console.log(currentIndex)
             this.imgVisible = true
             this.imgList = images
             this.img_index = currentIndex

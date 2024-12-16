@@ -162,9 +162,7 @@ export function getUnitContent(phone, course, unit) {
         request({
             method: "get",
             url: `/unit/${phone}/${course.course_no}/${unit.unit_no}/content`,
-            // data: params
         }).then(res => {
-            res.data.content = (res.data.content || '').replaceAll(`./picture.${unit.name}`, `${getURL()}/unit/picture/${phone}/${course.course_no}/${unit.unit_no}/picture.${unit.name}`)
             resolve(res)
         }).catch(err => {
             reject(err)
@@ -172,7 +170,6 @@ export function getUnitContent(phone, course, unit) {
     })
 }
 export function updateUnitContent(phone, course, unit, content) {
-    content = (content || '').replaceAll(`${getURL()}/unit/picture/${phone}/${course.course_no}/${unit.unit_no}/picture.${unit.name}`, `./picture.${unit.name}`)
     return new Promise((resolve, reject) => {
         request({
             method: "put",
@@ -182,7 +179,6 @@ export function updateUnitContent(phone, course, unit, content) {
                 'content-type': 'application/json'
             }
         }).then(res => {
-            res.data = (res.data || '').replaceAll(`./picture.${unit.name}`, `${getURL()}/unit/picture/${phone}/${course.course_no}/${unit.unit_no}/picture.${unit.name}`)
             resolve(res)
         }).catch(err => {
             reject(err)
@@ -199,7 +195,6 @@ export function uploadUnitPicture(phone, course, unit, picture) {
             url: `/note/unit/picture/${phone}/${course.course_no}/${unit.unit_no}`,
             data: formData
         }).then(res => {
-            res.data.path = `${getURL()}/unit/picture/${phone}/${course.course_no}/${unit.unit_no}/${res.data.path}`
             resolve(res)
         }).catch(err => {
             reject(err)
