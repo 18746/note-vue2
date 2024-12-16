@@ -8,7 +8,7 @@
         </template>
         <!-- 左侧菜单 -->
         <template #left-menu>
-            <unitMenu ref="menu" :phone="phone" :unit_no="unit_no" :course="course" @toUnit="toUnit" />
+            <unitMenu ref="menu" :phone="phone" :unit_no="unit_no" :course_no="course_no" @toUnit="toUnit" />
         </template>
         <!-- 标题 -->
         <template #title>
@@ -44,6 +44,7 @@ export default {
     },
     data() {
         return {
+            course_no: "",
             course: {
                 course_no: "",
                 name: "",
@@ -99,7 +100,7 @@ export default {
             return info ? info.phone : ''
         }
     },
-    mounted() {
+    created() {
         this.course_no = this.$route.params.course_no;
         this.unit_no = this.$route.params.unit_no;
         this.init();
@@ -118,7 +119,7 @@ export default {
             if (this.course.course_no) {
                 await this.initType()
                 await this.initUnit()
-                this.$refs.menu.init()
+                // this.$refs.menu.init()
             }
         },
         async initType() {

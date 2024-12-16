@@ -37,8 +37,8 @@ export default {
             type: String,
             required: true
         },
-        course: {
-            type: Object,
+        course_no: {
+            type: String,
             required: true
         },
     },
@@ -53,9 +53,12 @@ export default {
             },
         }
     },
+    created() {
+        this.init();
+    },
     methods: {
         async init() {
-            await getUnitList(this.phone, this.course.course_no).then(res => {
+            await getUnitList(this.phone, this.course_no).then(res => {
                 this.unit_list = res.data;
             }).catch(err => {
                 console.error(err);
