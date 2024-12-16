@@ -51,37 +51,39 @@
                 @node-drop="handleDrop"
                 @node-click="nodeClick"
             >
-                <span class="custom-tree-node" slot-scope="{ node, data }">
-                    <span class="info">
-                        <i v-if="data.is_menu" :class="node.expanded ? 'el-icon el-icon-folder-opened' : 'el-icon el-icon-folder'"></i>
-                        <i v-else class="el-icon el-icon-tickets"></i>
-                        <span class="name" @click.stop="handleNodeClick(data)">{{ data.name }}</span>
+                <template #default="{ node, data }">
+                    <span class="my-custom-tree-node">
+                        <span class="info">
+                            <i v-if="data.is_menu" :class="node.expanded ? 'el-icon el-icon-folder-opened' : 'el-icon el-icon-folder'"></i>
+                            <i v-else class="el-icon el-icon-tickets"></i>
+                            <span class="name" @click.stop="handleNodeClick(data)">{{ data.name }}</span>
+                        </span>
+                        <span class="action">
+                            <el-button
+                                v-if="data.is_menu"
+                                class="button button-add"
+                                type="text"
+                                size="mini"
+                                icon="el-icon-folder-add"
+                                @click.stop="() => append(node, data)">
+                            </el-button>
+                            <el-button
+                                class="button button-edit"
+                                type="text"
+                                size="mini"
+                                icon="el-icon-edit"
+                                @click.stop="() => update(node, data)"
+                            ></el-button>
+                            <el-button
+                                class="button button-delete"
+                                type="text"
+                                size="mini"
+                                icon="el-icon-delete"
+                                @click.stop="() => remove(node, data)"
+                            ></el-button>
+                        </span>
                     </span>
-                    <span class="action">
-                        <el-button
-                            v-if="data.is_menu"
-                            class="button button-add"
-                            type="text"
-                            size="mini"
-                            icon="el-icon-folder-add"
-                            @click.stop="() => append(node, data)">
-                        </el-button>
-                        <el-button
-                            class="button button-edit"
-                            type="text"
-                            size="mini"
-                            icon="el-icon-edit"
-                            @click.stop="() => update(node, data)"
-                        ></el-button>
-                        <el-button
-                            class="button button-delete"
-                            type="text"
-                            size="mini"
-                            icon="el-icon-delete"
-                            @click.stop="() => remove(node, data)"
-                        ></el-button>
-                    </span>
-                </span>
+                </template>
             </el-tree>
         </el-card>
         <addDialog
@@ -446,7 +448,7 @@ export default {
                 font-size: 20px;
             }
         }
-        .custom-tree-node {
+        .my-custom-tree-node {
             .info {
                 font-size: 16px;
                 .el-icon {

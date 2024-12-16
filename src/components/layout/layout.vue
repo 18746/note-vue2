@@ -1,20 +1,20 @@
 <template>
     <section class="container">
         <transition name="fade">
-            <aside class="aside" v-if="showMenu" @click.stop="showMenu = false">
-                <div class="Page_Left" @click.stop>
-                    <div class="Search" :style="'height: ' + TitleHeight + ';'">
+            <aside class="container-aside" v-if="showMenu" @click.stop="showMenu = false">
+                <div class="aside-page-left" @click.stop>
+                    <div class="page-left-search" :style="'height: ' + TitleHeight + ';'">
                         <slot name="left-search"></slot>
                     </div>
-                    <div class="Menu" :style="'height: ' + BodyHeight + ';'">
+                    <div class="aside-page-menu" :style="'height: ' + BodyHeight + ';'">
                         <slot name="left-menu"></slot>
                     </div>
                 </div>
             </aside>
         </transition>
-        <main class="main">
-            <div class="Page_Right">
-                <div class="Title" :style="'height: ' + TitleHeight + ';'">
+        <main class="container-main">
+            <div class="main-page-right">
+                <div class="page-right-title" :style="'height: ' + TitleHeight + ';'">
                     <el-button
                         v-if="showFoldButton"
                         class="btn"
@@ -24,7 +24,7 @@
                     ></el-button>
                     <slot name="title"></slot>
                 </div>
-                <div class="Body scrollbar-y" :style="'height: ' + BodyHeight + ';'">
+                <div class="page-right-body" :style="'height: ' + BodyHeight + ';'">
                     <slot></slot>
                 </div>
             </div>
@@ -113,23 +113,23 @@ export default {
 
     height: 100vh;
 }
-.aside {
+.container-aside {
     overflow: auto;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     -ms-flex-negative: 0;
     flex-shrink: 0;
     width: 300px;
-    .Page_Left {
+    .aside-page-left {
         height: 100%;
         overflow: hidden;
         border-right: 1px solid #dddddd;
-        .Search {
+        .page-left-search {
             padding: 10px;
             border-bottom: 1px solid #dddddd;
             box-sizing: border-box;
         }
-        .Menu {
+        .aside-page-menu {
             width: 100%;
         }
     }
@@ -140,7 +140,7 @@ export default {
         z-index: 3000;
         background-color: #00000011;
         
-        .Page_Left {
+        .aside-page-left {
             width: 80%;
             max-width: 350px;
             background: #fff;
@@ -148,7 +148,7 @@ export default {
         }
     }
 }
-.main{
+.container-main{
     display: block;
     -webkit-box-flex: 1;
     -ms-flex: 1;
@@ -160,21 +160,21 @@ export default {
     box-sizing: border-box;
 
     padding: 0;
-    .Page_Right {
+    .main-page-right {
         height: 100%;
         overflow: hidden;
         .el-button.btn {
             font-size: 25px;
             padding: 5px 11px 10px 0px;
         }
-        .Title {
+        .page-right-title {
             padding: 10px 20px;
             border-bottom: 1px solid #dddddd;
             box-sizing: border-box;
 
             display: flex;
         }
-        .Body {
+        .page-right-body {
             width: 100%;
             overflow: hidden auto;
             box-sizing: border-box;

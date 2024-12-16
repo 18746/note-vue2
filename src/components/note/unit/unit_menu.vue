@@ -7,17 +7,19 @@
             default-expand-all
             :filter-node-method="filterNode"
         >
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-                <span class="info">
-                    <i v-if="data.is_menu" :class="node.expanded ? 'el-icon el-icon-folder-opened' : 'el-icon el-icon-folder'"></i>
-                    <i v-else class="el-icon el-icon-tickets"></i>
-                    <span
-                        :class="'name ' + (unit_no == data.unit_no ? 'active' : '')"
-                        @click.stop="toUnit(data)"
-                    >{{ data.name }}</span>
+            <template #default="{ node, data }">
+                <span class="my-custom-tree-node">
+                    <span class="info">
+                        <i v-if="data.is_menu" :class="node.expanded ? 'el-icon el-icon-folder-opened' : 'el-icon el-icon-folder'"></i>
+                        <i v-else class="el-icon el-icon-tickets"></i>
+                        <span
+                            :class="'name ' + (unit_no == data.unit_no ? 'active' : '')"
+                            @click.stop="toUnit(data)"
+                        >{{ data.name }}</span>
+                    </span>
+                    <span class="action"></span>
                 </span>
-                <span class="action"></span>
-            </span>
+            </template>
         </el-tree>
     </div>
 </template>

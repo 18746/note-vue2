@@ -1,5 +1,5 @@
 <template>
-    <div ref="Menu_Main" id="Menu_Main" class="scrollbar-y">
+    <div ref="Menu_Main" id="Menu_Main" class="my-scrollbar-y">
         <!-- 遍历List数组，渲染MenuItem组件 -->
         <menu-item
             v-for="menuItem in List" :key="menuItem.id"

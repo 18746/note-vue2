@@ -7,34 +7,36 @@
             default-expand-all
             :filter-node-method="filterNode"
         >
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-                <span class="info">
-                    <i class="el-icon el-icon-menu"></i>
-                    <span
-                        :class="'name ' + (curr_type_no == data.type_no ? 'active' : '')"
-                        @click.stop="toType(data.type_no)"
-                    >{{ data.name }}</span>
+            <template #default="{ node, data }">
+                <span class="my-custom-tree-node">
+                    <span class="info">
+                        <!-- <i class="el-icon el-icon-menu"></i> -->
+                        <span
+                            :class="'name ' + (curr_type_no == data.type_no ? 'active' : '')"
+                            @click.stop="toType(data.type_no)"
+                        >{{ data.name }}</span>
+                    </span>
+                    <span class="action">
+                        <el-button
+                            v-if="data.type_no !== '0'"
+                            class="button button-edit"
+                            type="text"
+                            size="mini"
+                            icon="el-icon-edit"
+                            @click.stop="() => updateTypeFun(data)"
+                        ></el-button>
+                        
+                        <el-button
+                            v-if="data.type_no !== '0'"
+                            class="button button-delete"
+                            type="text"
+                            size="mini"
+                            icon="el-icon-delete"
+                            @click.stop="() => deleteType(data.type_no)"
+                        ></el-button>
+                    </span>
                 </span>
-                <span class="action">
-                    <el-button
-                        v-if="data.type_no !== '0'"
-                        class="button button-edit"
-                        type="text"
-                        size="mini"
-                        icon="el-icon-edit"
-                        @click.stop="() => updateTypeFun(data)"
-                    ></el-button>
-                    
-                    <el-button
-                        v-if="data.type_no !== '0'"
-                        class="button button-delete"
-                        type="text"
-                        size="mini"
-                        icon="el-icon-delete"
-                        @click.stop="() => deleteType(data.type_no)"
-                    ></el-button>
-                </span>
-            </span>
+            </template>
         </el-tree>
         <div class="menu-button">
             <el-button
@@ -230,7 +232,9 @@ export default {
         padding: 0 10px 10px;
     }
 }
-.custom-tree-node {
+.my-custom-tree-node {
+    padding-left: 20px;
+
     .info {
 
     }

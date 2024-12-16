@@ -22,7 +22,8 @@ For a detailed explanation on how things work, check out the [guide](http://vuej
 
 npm install axios@1.5.0 --save
 
-npm install less less-loader@5 --save-dev
+npm install less@3.0.4 --save
+npm install less-loader@5.0.0 --save
 
 npm install --save element-ui
 

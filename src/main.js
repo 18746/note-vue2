@@ -7,13 +7,6 @@ import store from "./store/index.js";
 
 import router from "./router";
 
-// Vue.forceUpdate()
-// 全局样式
-import "./style/index.less";
-
-// 引入 less
-// npm install less@3.0.4 --save
-// npm install less-loader@5.0.0 --save
 import "less";
 
 
@@ -24,6 +17,8 @@ import "element-ui/lib/theme-chalk/index.css";
 
 Vue.use(ElementUI);
 
+// 全局样式
+import "./style/index.less";
 
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import '@kangc/v-md-editor/lib/style/preview.css';
@@ -46,7 +41,8 @@ import '@kangc/v-md-editor/lib/style/codemirror-editor.css';
 // // 引入主题
 // import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 // import '@kangc/v-md-editor/lib/theme/style/github.css';
-// // highlightjs
+
+// 引入highlightjs
 // import hljs from 'highlight.js';
 
 // codemirror 编辑器的相关资源
