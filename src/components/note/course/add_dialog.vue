@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import uploadFile from '../upload_img.vue';
+import uploadFile from '@/components/note/upload_img.vue';
 
 import { getTypePhoneList, addCourse } from '@/api/note';
 import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
@@ -128,9 +128,10 @@ export default {
                 this.form.type_no = this.type_no
             }).catch(err => {
                 console.error(err)
-                this.$message.error(err.data.detail | "未获取到类型列表")
+                this.$message.error(err.data.detail || "未获取到类型列表")
             })
             this.form.phone = this.$store.state.user.info.phone
+            this.file_list = []
         },
         async add() {
             this.buttonLoading = true

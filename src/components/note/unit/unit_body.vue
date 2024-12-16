@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import imgPreview from '../img_preview.vue';
+import imgPreview from '@/components/img_preview.vue';
 import { getUnitContent, updateUnitContent, uploadUnitPicture } from '@/api/note';
 export default {
     name: 'unit',

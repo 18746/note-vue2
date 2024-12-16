@@ -5,13 +5,13 @@
             <div class="icon">
                 <div class="body">
                     <i class="el-icon el-icon-zoom-in" @click="onPreview(url)"></i>
-                    <i class="el-icon el-icon-delete" @click="deleteImg(index)"></i>
+                    <i v-if="!is_init_url" class="el-icon el-icon-delete" @click="deleteImg(index)"></i>
                 </div>
             </div>
         </div>
         <div
             class="select-body"
-            :style="!only_img || (only_img && file_list.length == 0) ? 'display: inline-block' : 'display: none'"
+            :style="file_list.length == 0 ? 'display: inline-block' : 'display: none'"
             @click="clickFile"
         >
             <i class="el-icon el-icon-upload"></i>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import imgPreview from './img_preview.vue';
+import imgPreview from '@/components/img_preview.vue';
 export default {
     name: 'upload-img',
     components: {
@@ -45,10 +45,6 @@ export default {
         file_list: {
             type: Array,
             default: () => [],
-        },
-        only_img: {
-            type: Boolean,
-            default: true,
         },
         init_url: {
             type: String,
@@ -71,6 +67,12 @@ export default {
                 return [this.init_url]
             }
             return []
+        },
+        is_init_url() {
+            if (this.ImgList.length > 0 && this.file_list.length == 0) {
+                return true
+            }
+            return false
         }
     },
     created() { },

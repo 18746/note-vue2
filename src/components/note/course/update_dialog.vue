@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import uploadFile from '../upload_img.vue';
+import uploadFile from '@/components/note/upload_img.vue';
 
 import { CourseNameRules, DescriptionRules } from '../validate.js';
 
@@ -129,9 +129,10 @@ export default {
                 this.type_list = res.data
             }).catch(err => {
                 console.error(err)
-                this.$message.error(err.data.detail | "未获取到类型列表")
+                this.$message.error(err.data.detail || "未获取到类型列表")
             })
             this.form = this.course
+            this.file_list = []
         },
         async update() {
             this.buttonLoading = true
