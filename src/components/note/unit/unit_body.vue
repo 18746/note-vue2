@@ -27,7 +27,7 @@
                 @click="handleNodeClick(item)"
             >{{ item.name }}</el-button>
         </div> -->
-        <div class="button-bottom">
+        <div class="my-button-bottom">
             <el-button
                 v-if="isEdit"
                 key="editSee"
@@ -248,45 +248,6 @@ export default {
         padding-right: 20px;
     }
 
-    .button-bottom {
-        position: fixed;
-        z-index: 2000;
-        right: 50px;
-        bottom: 50px;
-        display: flex;
-        flex-direction: column;
-        .el-button {
-            margin-bottom: 12px;
-            font-size: 18px;
-        }
-        .el-button:last-child {
-            margin-bottom: 0px;
-        }
-        .quarantine {
-            margin-top: 20px;
-        }
-        .el-button+.el-button {
-            margin-left: unset;
-        }
-    }
-    .button-center {
-        position: fixed;
-        z-index: 2000;
-        top: 50%;
-        transform: translateY(-50%);
-        right: 50px;
-        display: flex;
-        flex-direction: column;
-        .el-button {
-            margin-bottom: 12px;
-        }
-        .el-button:last-child {
-            margin-bottom: 0px;
-        }
-        .el-button+.el-button {
-            margin-left: unset;
-        }
-    }
     .empty {
         position: absolute;
         top: 50%;

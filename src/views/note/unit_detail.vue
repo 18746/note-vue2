@@ -34,7 +34,7 @@ import layout from '@/components/layout/layout.vue';
 import unitMenu from '@/components/note/unit/unit_menu.vue';
 import unitBody from '@/components/note/unit/unit_body.vue';
 
-import { getType, getCourse, getUnit } from '@/api/note';
+import { getTypePhoneList, getCourse, getUnit } from '@/api/note';
 export default {
     name: 'course-detail',
     components: {
@@ -122,7 +122,7 @@ export default {
             }
         },
         async initType() {
-            await getType(this.phone).then(res => {
+            await getTypePhoneList(this.phone).then(res => {
                 this.type_list = res.data
             }).catch(err => {
                 console.error(err);

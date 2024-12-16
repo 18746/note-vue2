@@ -37,9 +37,9 @@ export default new Router({
             path: "/note",
             name: "note",
             component: () => import('@/components/null.vue'),
-            redirect: '/note/note',
+            redirect: '/note/',
             children: [{
-                path: "note",
+                path: "/",
                 name: "note",
                 component: () => import('@/views/note/note.vue'),
             }, {

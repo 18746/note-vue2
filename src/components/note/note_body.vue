@@ -1,15 +1,5 @@
 <template>
     <div class="course-body">
-        <div style="text-align: right;margin: 0 10px 5px;" :key="course_list.length">
-            <el-button-group>
-                <el-button type="primary" icon="el-icon-document-add" @click="add"></el-button>
-                <el-button
-                    :type="card_type ? 'primary' : ''"
-                    :icon="!card_type ? 'el-icon-s-grid' : 'el-icon-document'"
-                    @click="changCardOrLine"
-                ></el-button>
-            </el-button-group>
-        </div>
         <div :class="Class" v-for="course in course_list" :key="course.course_no">
             <div class="course">
                 <div class="course-img">
@@ -33,7 +23,17 @@
             </div>
         </div>
         <el-empty v-if="course_list.length == 0" :image-size="150"></el-empty>
-        
+
+        <div class="my-button-bottom" :key="course_list.length">
+            <el-button type="success" icon="el-icon-document-add" circle @click="add"></el-button>
+            <el-button
+                :type="card_type ? 'primary' : ''"
+                :icon="!card_type ? 'el-icon-s-grid' : 'el-icon-document'"
+                circle
+                @click="changCardOrLine"
+            ></el-button>
+        </div>
+
         <addDialog
             :visible.sync="addVisible"
             :type_no="type_no"
@@ -52,7 +52,7 @@
 import addDialog from './course/add_dialog.vue';
 import updateDialog from './course/update_dialog.vue';
 
-import { getTypeCourse, delCourse } from '@/api/note';
+import { getCourseByTypeList, delCourse } from '@/api/note';
 import { getCourseImg } from '@/utils/index.js';
 export default {
     name: 'note',
@@ -112,7 +112,7 @@ export default {
     methods: {
         async init() {
             const type_no = this.type_no
-            await getTypeCourse(this.phone, type_no).then(res => {
+            await getCourseByTypeList(this.phone, type_no).then(res => {
                 this.course_list = res.data
             }).catch(err => {
                 console.error(err);
@@ -191,10 +191,10 @@ export default {
     display: inline-block;
     padding: 10px;
     box-sizing: border-box;
-    @media (max-width: 900px) {
+    @media (max-width: 740px) {
         width: 100%;
     }
-    @media (min-width: 900px) {
+    @media (min-width: 740px) {
         width: 50%;
     }
     @media (min-width: 1350px) {
@@ -398,16 +398,16 @@ export default {
         }
     }
 
-    @media (max-width: 750px) {
+    @media (max-width: 640px) {
         width: 100%;
     }
-    @media (min-width: 750px) {
+    @media (min-width: 640px) {
         width: 50%;
     }
-    @media (min-width: 1050px) {
+    @media (min-width: 1250px) {
         width: 33.33%;
     }
-    @media (min-width: 1500px) {
+    @media (min-width: 1550px) {
         width: 25%;
     }
 }

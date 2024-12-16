@@ -55,7 +55,7 @@
                     <span class="info">
                         <i v-if="data.is_menu" :class="node.expanded ? 'el-icon el-icon-folder-opened' : 'el-icon el-icon-folder'"></i>
                         <i v-else class="el-icon el-icon-tickets"></i>
-                        <span class="unit-name" @click.stop="handleNodeClick(data)">{{ data.name }}</span>
+                        <span class="name" @click.stop="handleNodeClick(data)">{{ data.name }}</span>
                     </span>
                     <span class="action">
                         <el-button
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { getType, getCourse, getUnitList, updateUnit, delUnit } from '@/api/note';
+import { getTypePhoneList, getCourse, getUnitList, updateUnit, delUnit } from '@/api/note';
 
 import { getCourseImg } from '@/utils/index.js';
 
@@ -199,7 +199,7 @@ export default {
             })
         },
         async initType() {
-            await getType(this.phone).then(res => {
+            await getTypePhoneList(this.phone).then(res => {
                 this.type_list = res.data
             }).catch(err => {
                 console.error(err);
@@ -447,59 +447,13 @@ export default {
             }
         }
         .custom-tree-node {
-            display: flex;
-            flex: 1;
-            align-items: center;
-            justify-content: space-between;
-            font-size: 14px;
-
             .info {
                 font-size: 16px;
-                line-height: 24px;
-                .unit-name:hover {
-                    color: #409EFF;
-                    text-decoration: underline;
-                }
                 .el-icon {
                     font-size: 20px;
                 }
             }
-            .action {
-                .button {
-                    font-size: 22px;
-                    &.button-add {
-                        color: #67C23A;
-                    }
-                    &.button-add:hover {
-                        text-shadow: 2px 2px 2px #67C23A;
-                    }
-                    &.button-edit {
-                        color: #409EFF;
-                    }
-                    &.button-edit:hover {
-                        text-shadow: 2px 2px 2px #409EFF;
-                    }
-                    &.button-delete {
-                        color: #F56C6C;
-                    }
-                    &.button-delete:hover {
-                        text-shadow: 2px 2px 2px #F56C6C;
-                    }
-                }
-            }
-        }
-        /deep/ .el-tree-node__content {
-            height: 35px;
         }
     }
-}
-/deep/ .el-tree-node__expand-icon.is-leaf {
-    display: none;
-}
-/deep/ .el-tree-node__expand-icon.expanded {
-    display: none;
-}
-/deep/ .el-tree-node__content>.el-tree-node__expand-icon {
-    display: none;
 }
 </style>

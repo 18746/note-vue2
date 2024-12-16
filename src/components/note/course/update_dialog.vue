@@ -70,7 +70,7 @@ import uploadFile from '../upload_img.vue';
 
 import { CourseNameRules, DescriptionRules } from '../validate.js';
 
-import { getType, updateCourse } from '@/api/note';
+import { getTypePhoneList, updateCourse } from '@/api/note';
 import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
 import { getCourseImg } from '@/utils/index.js';
 export default {
@@ -125,7 +125,7 @@ export default {
             this.img_url = getCourseImg(this.course)
             await this.$nextTick()
             await FormResetValidate(this.$refs.Form)
-            await getType(this.phone).then(res => {
+            await getTypePhoneList(this.phone).then(res => {
                 this.type_list = res.data
             }).catch(err => {
                 console.error(err)

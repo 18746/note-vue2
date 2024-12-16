@@ -12,8 +12,8 @@
                     <i v-if="data.is_menu" :class="node.expanded ? 'el-icon el-icon-folder-opened' : 'el-icon el-icon-folder'"></i>
                     <i v-else class="el-icon el-icon-tickets"></i>
                     <span
-                        :class="'unit-name ' + (unit_no == data.unit_no ? 'active' : '')"
-                        @click.stop="handleNodeClick(data)"
+                        :class="'name ' + (unit_no == data.unit_no ? 'active' : '')"
+                        @click.stop="toUnit(data)"
                     >{{ data.name }}</span>
                 </span>
                 <span class="action"></span>
@@ -69,7 +69,7 @@ export default {
             return data.name.indexOf(search) !== -1;
         },
         // 点击跳转
-        handleNodeClick(unit) {
+        toUnit(unit) {
             this.$emit('toUnit', unit);
         },
         filter(val) {
@@ -80,43 +80,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="less" scoped>
-.custom-tree-node {
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    padding-left: 8px;
-
-    .info {
-        font-size: 15px;
-        line-height: 24px;
-        .unit-name {
-            &.active {
-                color: #409EFF;
-            }
-            &:hover {
-                color: #409EFF;
-                text-decoration: underline;
-            }
-        }
-        .el-icon {
-            font-size: 18px;
-        }
-    }
-    .action {}
-}
-/deep/ .el-tree-node__content {
-    height: 35px;
-}
-/deep/ .el-tree-node__expand-icon.is-leaf {
-    display: none;
-}
-/deep/ .el-tree-node__expand-icon.expanded {
-    display: none;
-}
-/deep/ .el-tree-node__content>.el-tree-node__expand-icon {
-    display: none;
-}
-</style>
+<style lang="less" scoped></style>

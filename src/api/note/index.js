@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 import { getURL } from '@/utils';
 // -----------------------------------------------------------type
-export function getType(phone) {
+export function getTypePhoneList(phone) {
     return new Promise((resolve, reject) => {
         request({
             method: "get",
@@ -41,7 +41,7 @@ export function delType(phone, type_no) {
     })
 }
 // -------------------------------------------------------------course
-export function getTypeCourse(phone, type_no) {
+export function getCourseByTypeList(phone, type_no) {
     type_no = type_no === "0" ? "" : type_no
     return new Promise((resolve, reject) => {
         request({

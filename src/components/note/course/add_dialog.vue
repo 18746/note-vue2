@@ -68,7 +68,7 @@
 <script>
 import uploadFile from '../upload_img.vue';
 
-import { getType, addCourse } from '@/api/note';
+import { getTypePhoneList, addCourse } from '@/api/note';
 import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
 import { CourseNameRules, DescriptionRules } from '../validate.js';
 export default {
@@ -123,7 +123,7 @@ export default {
         async init() {
             await this.$nextTick()
             await FormResetValidate(this.$refs.Form)
-            await getType(this.phone).then(res => {
+            await getTypePhoneList(this.phone).then(res => {
                 this.type_list = res.data
                 this.form.type_no = this.type_no
             }).catch(err => {

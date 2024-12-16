@@ -1,18 +1,50 @@
 <template>
-    <div class="type_body">
-        <el-tabs v-model="checked" type="card" editable @edit="tabsEdit" :before-leave="beforeLeave">
-            <el-tab-pane
-                v-for="item in type_list" :key="item.type_no"
-                :label="item.name"
-                :name="item.type_no"
-            >
-                <span
-                    slot="label" 
-                    style="display: inline-block;height: 100%;"
-                    @contextmenu.prevent.stop="updateTypeFun(item)"
-                > {{ item.name }} </span>
-            </el-tab-pane>
-        </el-tabs>
+    <div class="type_menu">
+        <el-tree
+            ref="tree"
+            :data="type_list"
+            :props="defaultProps"
+            default-expand-all
+            :filter-node-method="filterNode"
+        >
+            <span class="custom-tree-node" slot-scope="{ node, data }">
+                <span class="info">
+                    <i class="el-icon el-icon-menu"></i>
+                    <span
+                        :class="'name ' + (curr_type_no == data.type_no ? 'active' : '')"
+                        @click.stop="toType(data.type_no)"
+                    >{{ data.name }}</span>
+                </span>
+                <span class="action">
+                    <el-button
+                        v-if="data.type_no !== '0'"
+                        class="button button-edit"
+                        type="text"
+                        size="mini"
+                        icon="el-icon-edit"
+                        @click.stop="() => updateTypeFun(data)"
+                    ></el-button>
+                    
+                    <el-button
+                        v-if="data.type_no !== '0'"
+                        class="button button-delete"
+                        type="text"
+                        size="mini"
+                        icon="el-icon-delete"
+                        @click.stop="() => deleteType(data.type_no)"
+                    ></el-button>
+                </span>
+            </span>
+        </el-tree>
+        <div class="menu-button">
+            <el-button
+                class="button button-delete"
+                type="success"
+                size="mini"
+                icon="el-icon-plus"
+                @click="() => addVisible = true"
+            ></el-button>
+        </div>
         
         <typeAddDialog
             :visible.sync="addVisible"
@@ -33,9 +65,9 @@
 import typeAddDialog from './add_dialog.vue';
 import typeUpdateDialog from './update_dialog.vue';
 
-import { getType, delType } from '@/api/note';
+import { getTypePhoneList, delType } from '@/api/note';
 export default {
-    name: 'type',
+    name: 'type-menu',
     components: {
         typeAddDialog,
         typeUpdateDialog,
@@ -54,6 +86,14 @@ export default {
         return {
             type_list: [],
 
+            type_list: [],  // 类型列表
+            defaultProps: {  // 树形控件默认属性
+                children: 'child',
+                label: 'name',
+                "node-key": "unit_no",
+                "expand-on-click-node": false
+            },
+
             addVisible: false,
     
             updateVisible: false,
@@ -61,7 +101,7 @@ export default {
         }
     },
     computed: {
-        checked: {
+        curr_type_no: {
             get() {
                 return this.type_no;
             },
@@ -75,8 +115,9 @@ export default {
     },
     methods: {
         async init() {
-            await getType(this.phone).then(res => {
+            await getTypePhoneList(this.phone).then(res => {
                 this.type_list = res.data
+                console.log(this.type_list)
             }).catch(err => {
                 console.error(err);
                 this.$message({
@@ -86,30 +127,16 @@ export default {
             })
         },
         // 点击tab触发路由跳转
-        beforeLeave(new_name, old_name) {
-            this.$router.push({
-                path: '/note',
-                query: {
-                    type_no: new_name
-                }
-            })
-            // return false
+        toType(type_no) {
+            this.$emit("toType", type_no);
         },
-
-        async tabsEdit(targetName, action) {
-            if (action === 'add') {
-                this.addVisible = true;
-            }
-            if (action === 'remove') {
-                if (targetName === "0") {
-                    this.$message({
-                        type: 'info',
-                        message: '默认标签不能删除'
-                    });
-                    return false;
-                }
-                await this.deleteType(targetName);
-            }
+        // 筛选类型
+        filterNode(search, data, node) {
+            if (!search) return true;
+            return data.name.indexOf(search) !== -1;
+        },
+        filter(val) {
+            this.$refs.tree.filter(val);
         },
 
         // 增加类型，成功后更新列表
@@ -139,6 +166,13 @@ export default {
 
         // 删除类型
         async deleteType(type_no) {
+            if (type_no === "0") {
+                this.$message({
+                    type: 'info',
+                    message: '默认标签不能删除'
+                });
+                return false;
+            }
             await this.$confirm('类型删除后，该类型下的课程会被放到默认类型下，是否继续？', '确认信息', {
                 type: 'warning',
                 distinguishCancelAndClose: true,
@@ -147,18 +181,18 @@ export default {
             }).then(async () => {
                 await delType(this.phone, type_no).then(res => {
                     let tabs = this.type_list;
-                    let activeName = this.checked;
-                    if (activeName === type_no) {
+                    let curr_type_no = this.curr_type_no;
+                    if (curr_type_no === type_no) {
                         tabs.forEach((tab, index) => {
                             if (tab.type_no === type_no) {
                                 let nextTab = tabs[index + 1] || tabs[index - 1];
                                 if (nextTab) {
-                                    activeName = nextTab.type_no;
+                                    curr_type_no = nextTab.type_no;
                                 }
                             }
                         });
                     }
-                    this.checked = activeName;
+                    this.curr_type_no = curr_type_no;
                     this.type_list = tabs.filter(tab => tab.type_no !== type_no);
 
                     this.$message({
@@ -178,10 +212,32 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.home {
-    min-width: 520px;
-    width: 80%;
-    margin: 0 auto;
-    padding-top: 70px;
+.type_menu {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .menu-button {
+        text-align: center;
+        .button {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .button:last-child {
+            margin-bottom: 0px;
+            font-size: 16px;
+        }
+        padding: 0 10px 10px;
+    }
+}
+.custom-tree-node {
+    .info {
+
+    }
+    .action {
+        .button {
+            font-size: 20px;
+        }
+    }
 }
 </style>
