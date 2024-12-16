@@ -25,13 +25,6 @@ const routers = new Router({
                 title: "测试页",
             }
         }, {
-            path: "/markdown",
-            name: "markdown",
-            component: () => import('@/views/markdown'),
-            meta: {
-                title: "markdown示例",
-            }
-        }, {
             path: "/login",
             name: "login",
             component: () => import('@/views/login'),
