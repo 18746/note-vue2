@@ -1,5 +1,4 @@
 import request from '@/utils/request'
-import { getURL } from '@/utils';
 // -----------------------------------------------------------type
 export function getTypePhoneList(phone) {
     return new Promise((resolve, reject) => {

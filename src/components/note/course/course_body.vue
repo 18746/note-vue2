@@ -2,7 +2,7 @@
     <div class="detail-body">
         <div class="detail-header">
             <div class="header-left">
-                <img v-if="course && course.name" class="course-img" :src="img_url" :alt="course.name">
+                <img v-if="course && course.name" class="course-img" :src="course.picture" :alt="course.name">
             </div>
             <div class="header-right">
                 <div class="course-info">
@@ -104,8 +104,6 @@
 <script>
 import { getTypePhoneList, getCourse, getUnitList, updateUnit, delUnit } from '@/api/note';
 
-import { getCourseImg } from '@/utils/index.js';
-
 import addDialog from '../unit/add_dialog.vue';
 import updateDialog from '../unit/update_dialog.vue';
 export default {
@@ -151,9 +149,6 @@ export default {
         };
     },
     computed: {
-        img_url() {
-            return getCourseImg(this.course);
-        },
         type_name() {
             if (this.course.type_no) {
                 const type_no = this.course.type_no;

@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { getCourseImg } from '@/utils/index.js';
 import courseBody from '@/components/note/course/course_body.vue';
 export default {
     name: 'course-detail',

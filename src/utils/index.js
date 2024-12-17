@@ -28,14 +28,6 @@ export const syncDelayFuns = (time, callbacks) => {
     })
 }
 
-export const getURL = () => {
-    return Object.values(config.dev.proxyTable)[0].target
-}
-
-export const getCourseImg = (course) => {
-    return getURL() + "/course/picture/" + course.phone + '/' + course.name + '/' + course.picture
-}
-
 // 防抖，一定时间内只允许执行一次（只执行第一次）
 export const debounce = (fn, delay) => {
     var timer = undefined;

@@ -4,7 +4,7 @@
             <div class="course">
                 <div class="course-img">
                     <img
-                        :src="course | imgUrl"
+                        :src="course.picture"
                         :alt="course.name"
                     />
                     <div class="icon">
@@ -53,7 +53,6 @@ import addDialog from './course/add_dialog.vue';
 import updateDialog from './course/update_dialog.vue';
 
 import { getCourseByTypeList, delCourse } from '@/api/note';
-import { getCourseImg } from '@/utils/index.js';
 export default {
     name: 'note',
     props: {
@@ -94,9 +93,6 @@ export default {
     filters: {
         descriptionFilter(val) {
             return val ? val : "暂无简介"
-        },
-        imgUrl(course) {
-            return getCourseImg(course)
         },
     },
     computed: {

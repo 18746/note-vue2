@@ -72,7 +72,6 @@ import { CourseNameRules, DescriptionRules } from '../validate.js';
 
 import { getTypePhoneList, updateCourse } from '@/api/note';
 import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
-import { getCourseImg } from '@/utils/index.js';
 export default {
     name: 'course-update',
     props: {
@@ -122,7 +121,7 @@ export default {
     },
     methods: {
         async init() {
-            this.img_url = getCourseImg(this.course)
+            this.img_url = this.course.picture
             await this.$nextTick()
             await FormResetValidate(this.$refs.Form)
             await getTypePhoneList(this.phone).then(res => {
