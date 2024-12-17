@@ -46,9 +46,7 @@
 import account from './account.vue';
 import { FormValidate } from '@/utils/validate';
 import { PwdRules, PhoneRules } from '../validate';
-import {
-    login,
-} from '@/api/user';
+import { login, } from '@/api/user';
 export default {
     name: 'loginCom',
     components: {

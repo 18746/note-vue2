@@ -39,9 +39,7 @@
 import account from './account.vue';
 import { FormValidate } from '@/utils/validate';
 import { PwdRules, PhoneRules } from '../validate';
-import {
-    register,
-} from '@/api/user';
+import { register, } from '@/api/user';
 export default {
     name: 'register',
     components: {

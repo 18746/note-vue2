@@ -12,8 +12,8 @@
         </template>
         <!-- 标题 -->
         <template #title>
-            <div class="title">
-                <div class="title-left">
+            <div class="my-layout-title">
+                <div class="my-layout-title-left">
                     <span class="course-name">
                         {{ course.name }} - {{ unit.name }}
                     </span>
@@ -21,7 +21,9 @@
                         {{ type_name }}
                     </span>
                 </div>
-                <div class="title-right"></div>
+                <div class="my-layout-title-right">
+                    <userPicture />
+                </div>
             </div>
         </template>
         <!-- 内容 -->
@@ -34,6 +36,8 @@ import layout from '@/components/layout/layout.vue';
 import unitMenu from '@/components/note/unit/unit_menu.vue';
 import unitBody from '@/components/note/unit/unit_body.vue';
 
+import userPicture from '@/components/user/user_picture.vue';
+
 import { getTypePhoneList, getCourse, getUnit } from '@/api/note';
 export default {
     name: 'course-detail',
@@ -41,6 +45,7 @@ export default {
         layout,
         unitBody,
         unitMenu,
+        userPicture,
     },
     data() {
         return {
@@ -96,7 +101,7 @@ export default {
             return "默认";
         },
         phone() {
-            const info = this.$store.state.user.info
+            const info = this.$store.getters["user/getUser"]
             return info ? info.phone : ''
         }
     },
@@ -154,33 +159,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.title {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    .title-left {
-        .course-name {
-            font-size: 20px;
-            font-weight: bold;
-        }
-        .course-type {
-            display: inline-block;
-            font-size: 12px;
-            vertical-align: super;
-            border-radius: 40px;
-            padding: 0px 8px;
-            background-color: #9db3ff;
-            color: #fff;
-            line-height: 20px;
-            font-weight: normal;
-            margin-left: 6px;
-        }
-    }
-    .title-right {
-        height: 100%;
-    }
 
-}
 </style>

@@ -10,6 +10,7 @@
             </div>
         </div>
         <div
+            v-if="!view"
             class="select-body"
             :style="file_list.length == 0 ? 'display: inline-block' : 'display: none'"
             @click="clickFile"
@@ -37,6 +38,10 @@ export default {
         type_list: {
             type: Array,
             default: () => ['image/jpeg', 'image/png', 'image/jpg'],
+        },
+        view: {
+            type: Boolean,
+            default: false,
         },
         file_size: {
             type: Number,

@@ -12,17 +12,19 @@
         </template>
         <!-- 标题 -->
         <template #title>
-            <!-- <div class="title">
-                <div class="title-left">
-                    <span class="course-name">
+            <div class="my-layout-title">
+                <div class="my-layout-title-left">
+                    <!-- <span class="course-name">
                         {{ course.name }} - {{ unit.name }}
                     </span>
                     <span class="course-type">
                         {{ type_name }}
-                    </span>
+                    </span> -->
                 </div>
-                <div class="title-right"></div>
-            </div> -->
+                <div class="my-layout-title-right">
+                    <userPicture />
+                </div>
+            </div>
         </template>
         <!-- 内容 -->
         <noteBody :type_no="type_no" :phone="phone" @toCourse="toCourse" />
@@ -34,12 +36,15 @@ import layout from '@/components/layout/layout.vue';
 import typeMenu from '@/components/note/type/type_menu.vue';
 import noteBody from '@/components/note/note_body.vue';
 
+import userPicture from '@/components/user/user_picture.vue';
+
 export default {
     name: 'note',
     components: {
         layout,
         typeMenu,
         noteBody,
+        userPicture,
     },
     data() {
         return {
@@ -60,7 +65,7 @@ export default {
     },
     computed: {
         phone() {
-            const info = this.$store.state.user.info
+            const info = this.$store.getters["user/getUser"]
             return info ? info.phone : ''
         }
     },

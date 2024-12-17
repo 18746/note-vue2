@@ -130,7 +130,7 @@ export default {
                 console.error(err)
                 this.$message.error(err.data.detail || "未获取到类型列表")
             })
-            this.form.phone = this.$store.state.user.info.phone
+            this.form.phone = this.phone
             this.file_list = []
         },
         async add() {
@@ -143,7 +143,7 @@ export default {
                 }).then(async res => {
                     this.$message.success('添加成功')
                     this.$emit('success', res.data)
-                    this.$emit('update:visible', false)
+                    this.dialogFormVisible = false
                 }).catch(err => {
                     this.$message.error(err.data.detail)
                 })

@@ -1,17 +1,33 @@
 <template>
     <el-dialog
-        title="更新类型"
+        title="更改密码"
         :visible.sync="dialogFormVisible"
         append-to-body
         @open="init()"
     >
         <el-form ref="Form" :model="form" label-width="80px">
             <el-form-item
-                label="类型名"
-                prop="name"
-                :rules="TypeNameRules"
+                label="手机号"
+                prop="phone"
             >
-                <el-input v-model="form.name" placeholder="请输入类型名"></el-input>
+                <el-input v-model="form.phone" disabled></el-input>
+            </el-form-item>
+            <el-form-item
+                label="新密码"
+                prop="pwd"
+                :rules="PwdRules"
+            >
+                <el-input v-model="form.pwd" show-password placeholder="请输入新密码"></el-input>
+            </el-form-item>
+            <el-form-item
+                label="确认密码"
+                prop="confirmPwd"
+                :rules="[
+                    ...CannotEmpty,
+                    { validator: confirmPwdValidate, trigger: 'change' },
+                ]"
+            >
+                <el-input v-model="form.confirmPwd" show-password placeholder="请输入确认密码"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -22,13 +38,11 @@
 </template>
 
 <script>
-import { TypeNameRules, } from '../validate.js';
-
-import { updateType } from '@/api/note';
-import { FormValidate, FormResetValidate } from '@/utils/validate';
-
+import { PwdRules,  } from './validate';
+import { FormValidate, FormResetValidate, CannotEmpty, } from '@/utils/validate';
+import { updateUserInfoPwd, } from '@/api/user';
 export default {
-    name: 'type-update',
+    name: 'userinfo-update-pwd',
     props: {
         visible: {
             type: Boolean,
@@ -38,19 +52,19 @@ export default {
             type: String,
             required: true
         },
-        type: {
-            type: Object,
-            required: true
-        },
     },
     data() {
         return {
             form: {
-                name: '',
+                phone: '',
+                pwd: '',
+                confirmPwd: '',
             },
             buttonLoading: false,
+            file_list: [],
 
-            TypeNameRules,
+            PwdRules,
+            CannotEmpty,
         }
     },
     computed: {
@@ -62,32 +76,43 @@ export default {
                 this.$emit('update:visible', val)
             }
         },
-        type_no() {
-            return this.type.type_no
-        }
     },
     methods: {
         async init() {
             await this.$nextTick()
             await FormResetValidate(this.$refs.Form)
-            this.form = this.type
+            this.form.phone = this.phone
         },
         async update() {
             this.buttonLoading = true
             let flag = await FormValidate(this.$refs.Form);
             if (flag) {
-                await updateType(this.phone, this.type_no, this.form).then(res => {
+                await updateUserInfoPwd(this.phone, this.form).then(async res => {
                     this.$message.success('更新成功')
                     this.$emit('success', res.data)
                     this.dialogFormVisible = false
                 }).catch(err => {
+                    console.error(err)
                     this.$message.error(err.data.detail)
                 })
             }
             this.buttonLoading = false
         },
-    }
+        confirmPwdValidate(rule, value, callback) {
+            if (value == this.form.pwd) {
+                callback();
+            } else {
+                callback(new Error('两次输入的密码不一致！'));
+            }
+        },
+    },
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.el-form-item.device_num {
+    /deep/ .el-form-item__label {
+        line-height: 20px;
+    }
+}
+</style>

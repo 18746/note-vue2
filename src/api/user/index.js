@@ -29,3 +29,39 @@ export function refresh(params) {
         url: "/login/refresh",
     })
 }
+
+export function updateUserInfo(phone, params) {
+    const formData = new FormData();
+    formData.append('username', params.username);
+    formData.append('device_num', params.device_num);
+    formData.append('email', params.email);
+    formData.append('picture', params.picture);
+
+    return new Promise((resolve, reject) => {
+        request({
+            method: "put",
+            url: `/login/info`,
+            data: formData
+        }).then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
+export function updateUserInfoPwd(phone, params) {
+    return new Promise((resolve, reject) => {
+        request({
+            method: "put",
+            url: `/login/pwd`,
+            data: {
+                pwd: params.pwd,
+            }
+        }).then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}

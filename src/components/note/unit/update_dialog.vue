@@ -103,7 +103,7 @@ export default {
                 await updateUnit(this.phone, this.form.course_no, this.form.unit_no, this.form).then(res => {
                     this.$message.success('更新成功')
                     this.$emit('success', res.data)
-                    this.$emit('update:visible', false)
+                    this.dialogFormVisible = false
                 }).catch(err => {
                     this.$message.error(err.data.detail)
                 })

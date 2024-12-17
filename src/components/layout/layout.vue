@@ -164,20 +164,20 @@ export default {
         overflow: hidden;
         .el-button.btn {
             font-size: 25px;
-            padding: 5px 11px 10px 0px;
+            padding: 0 10px 0 0;
         }
         .page-right-title {
-            padding: 10px 20px;
+            padding: 5px 20px;
             border-bottom: 1px solid #dddddd;
             box-sizing: border-box;
 
             display: flex;
+            align-items: center;
         }
         .page-right-body {
             width: 100%;
             overflow: hidden auto;
             box-sizing: border-box;
-            // padding: 10px 10px;
         }
     }
 }

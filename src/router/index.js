@@ -70,9 +70,9 @@ const routers = new Router({
 import store from "@/store/index.js";
 import { isTokenNotExpire } from '@/utils/user.js'
 routers.beforeEach((to, from, next) => {
-    if (store.state.user.token) {
-        if (isTokenNotExpire(store.state.user.token.update_time, store.state.user.token.time_limit)) {
-            if (!store.state.user.info) {
+    if (store.getters["user/getToken"]) {
+        if (isTokenNotExpire(store.getters["user/getToken"].update_time, store.getters["user/getToken"].time_limit)) {
+            if (!store.getters["user/getUser"]) {
                 store.dispatch('user/getUserInfo')
             }
             if (to.path === '/login' || to.path === '/') {

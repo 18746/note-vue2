@@ -18,7 +18,7 @@ export default {
     },
     computed: {
         phone() {
-            const info = this.$store.state.user.info
+            const info = this.$store.getters["user/getUser"]
             return info ? info.phone : ''
         }
     },

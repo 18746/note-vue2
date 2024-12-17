@@ -1,10 +1,9 @@
 <template>
     <el-dialog
-        title="更新课程"
+        title="更新用户信息"
         :visible.sync="dialogFormVisible"
-        :close-on-click-modal="false"
         append-to-body
-        @open="init"
+        @open="init()"
     >
         <el-form ref="Form" :model="form" label-width="80px">
             <el-form-item
@@ -20,42 +19,32 @@
                     v-if="dialogFormVisible"
                     :file_list="file_list"
                     :file_size="6"
-                    :init_url="img_url"
+                    :init_url="form.picture"
                 />
             </el-form-item>
             <el-form-item
-                label="课程名"
-                prop="name"
-                :rules="CourseNameRules"
-            >
-                <el-input v-model="form.name" placeholder="请输入课程名"></el-input>
-            </el-form-item>
-            <el-form-item
-                label="所属类型"
-                prop="type_no"
+                label="用户名"
+                prop="username"
                 :rules="CannotEmpty"
             >
-                <el-select v-model="form.type_no" filterable style="width: 100%;" placeholder="请选择">
-                    <el-option
-                        v-for="item in type_list" :key="item.value"
-                        :label="item.name"
-                        :value="item.type_no"
-                    ></el-option>
-                </el-select>
+                <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
             <el-form-item
-                label="简介"
-                prop="description"
-                :rules="DescriptionRules"
+                label="邮箱"
+                prop="email"
+                :rules="EmailRules"
             >
-                <el-input
-                    v-model="form.description"
-                    type="textarea"
-                    placeholder="暂无"
-                    maxlength="150"
-                    rows="3"
-                    show-word-limit
-                />
+                <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
+            </el-form-item>
+            <el-form-item
+                label="同时登录设备数"
+                prop="device_num"
+                :rules="DeviceNumRules"
+                class="device_num"
+            >
+                <el-input v-model.number="form.device_num" placeholder="允许同时登录的设备数">
+                    <template slot="append">台设备</template>
+                </el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -67,43 +56,39 @@
 
 <script>
 import uploadFile from '@/components/note/upload_img.vue';
-
-import { CourseNameRules, DescriptionRules } from '../validate.js';
-
-import { getTypePhoneList, updateCourse } from '@/api/note';
-import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
+import { EmailRules, DeviceNumRules } from './validate';
+import { FormValidate, FormResetValidate, CannotEmpty } from '@/utils/validate';
+import { updateUserInfo, } from '@/api/user';
 export default {
-    name: 'course-update',
+    name: 'userinfo-update',
+    components: {
+        uploadFile, // 上传图片组件
+    },
     props: {
         visible: {
             type: Boolean,
             default: false
         },
-        course: {
+        phone: {
+            type: String,
+            required: true
+        },
+        userinfo: {
             type: Object,
             required: true
-        }
-    },
-    components: {
-        uploadFile,
+        },
     },
     data() {
         return {
             form: {
-                phone: '',
-                name: '',
-                type_no: '',
-                description: '',
+                username: '',
             },
-            img_url: '',
             buttonLoading: false,
-
-            type_list: [],
-
-            CannotEmpty,
-            CourseNameRules,
-            DescriptionRules,
             file_list: [],
+
+            EmailRules,
+            DeviceNumRules,
+            CannotEmpty,
         }
     },
     computed: {
@@ -115,29 +100,19 @@ export default {
                 this.$emit('update:visible', val)
             }
         },
-        phone() {
-            return this.course.phone
-        }
     },
     methods: {
         async init() {
-            this.img_url = this.course.picture
             await this.$nextTick()
             await FormResetValidate(this.$refs.Form)
-            await getTypePhoneList(this.phone).then(res => {
-                this.type_list = res.data
-            }).catch(err => {
-                console.error(err)
-                this.$message.error(err.data.detail || "未获取到类型列表")
-            })
-            this.form = this.course
+            this.form = this.userinfo
             this.file_list = []
         },
         async update() {
             this.buttonLoading = true
             let flag = await FormValidate(this.$refs.Form);
             if (flag) {
-                await updateCourse(this.phone, {
+                await updateUserInfo(this.phone, {
                     ...this.form,
                     picture: this.file_list[0] ? this.file_list[0] : this.form.picture
                 }).then(async res => {
@@ -151,8 +126,14 @@ export default {
             }
             this.buttonLoading = false
         },
-    }
+    },
 }
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.el-form-item.device_num {
+    /deep/ .el-form-item__label {
+        line-height: 20px;
+    }
+}
+</style>
