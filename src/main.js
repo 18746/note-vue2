@@ -1,11 +1,9 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from "vue";
-import App from "./App";
-
-import store from "./store/index.js";
-
-import router from "./router";
+import App from "@/App";
+import store from "@/store";
+import router from "@/router";
 
 import "less";
 
@@ -17,8 +15,10 @@ import "element-ui/lib/theme-chalk/index.css";
 
 Vue.use(ElementUI);
 
+
 // 全局样式
 import "./style/index.less";
+
 
 import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import '@kangc/v-md-editor/lib/style/preview.css';
@@ -75,15 +75,7 @@ VMdEditor.use(githubTheme, {
 Vue.use(VMdEditor);
 
 
-
 Vue.config.productionTip = false;
-
-const config = require('../config')
-
-console.log('process.env', process.env)
-
-console.log('config.dev', config.dev)
-
 
 /* eslint-disable no-new */
 new Vue({

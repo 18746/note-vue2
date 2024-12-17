@@ -12,7 +12,7 @@ const service = axios.create({
 
 // 2.请求拦截器
 service.interceptors.request.use(async config => {
-    console.log(store.state.user.token, process.env.BASE_API)
+    // console.log(store.state.user.token, process.env.BASE_API)
     const token = localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null; // 获取token
     if (token) {
         if(!isTokenNotExpire(token.update_time, token.time_limit)) {

@@ -119,7 +119,6 @@ export default {
         async init() {
             await getTypePhoneList(this.phone).then(res => {
                 this.type_list = res.data
-                console.log(this.type_list)
             }).catch(err => {
                 console.error(err);
                 this.$message({
