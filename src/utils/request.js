@@ -1,8 +1,9 @@
 import axios from 'axios'
 import store from '../store'
-import { Message} from 'element-ui';
+import router from "@/router";
+import { Message } from 'element-ui';
 
-import { needUpdateToken, } from '@/utils/user.js'
+import { needUpdateToken, isTokenNotExpire } from '@/utils/user.js'
 //1. 创建新的axios实例，
 const service = axios.create({
     baseURL: process.env.BASE_API,
@@ -14,8 +15,15 @@ service.interceptors.request.use(async config => {
     console.log(store.state.user.token, process.env.BASE_API)
     const token = localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null; // 获取token
     if (token) {
-        if (!config.url.includes("/login/refresh") && needUpdateToken(token.update_time, token.time_limit)) {
-            await store.dispatch('user/refreshToken')
+        if(!isTokenNotExpire(token.update_time, token.time_limit)) {
+            Message.error("登录信息已过期，请重新登录")
+            store.commit('user/setInfo', null)
+            store.commit('user/setToken', null)
+            router.push('/login')
+        } else if (needUpdateToken(token.update_time, token.time_limit)) {
+            if (!config.url.includes("/login/refresh")) {
+                await store.dispatch('user/refreshToken')
+            }
         }
         config.headers['phone'] = token.phone
         config.headers['token'] = token.token
