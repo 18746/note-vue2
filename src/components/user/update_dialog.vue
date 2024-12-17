@@ -42,7 +42,7 @@
                 :rules="DeviceNumRules"
                 class="device_num"
             >
-                <el-input v-model.number="form.device_num" placeholder="允许同时登录的设备数">
+                <el-input v-model.number="form.device_num" placeholder="不建议多设备登录，可能存在多端修改数据出现问题的情况">
                     <template slot="append">台设备</template>
                 </el-input>
             </el-form-item>
