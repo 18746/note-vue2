@@ -3,6 +3,7 @@
         title="更新用户信息"
         :visible.sync="dialogFormVisible"
         append-to-body
+        :close-on-click-modal="false"
         @open="init()"
     >
         <el-form ref="Form" :model="form" label-width="80px">
@@ -25,7 +26,7 @@
             <el-form-item
                 label="用户名"
                 prop="username"
-                :rules="CannotEmpty"
+                :rules="UserNameRules"
             >
                 <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
             </el-form-item>
@@ -56,8 +57,8 @@
 
 <script>
 import uploadFile from '@/components/note/upload_img.vue';
-import { EmailRules, DeviceNumRules } from '../validate';
-import { FormValidate, FormResetValidate, CannotEmpty } from '@/utils/validate';
+import { EmailRules, DeviceNumRules, UserNameRules } from '../validate';
+import { FormValidate, FormResetValidate } from '@/utils/validate';
 import { updateUserInfo, } from '@/api/user';
 export default {
     name: 'userinfo-update',
@@ -88,7 +89,7 @@ export default {
 
             EmailRules,
             DeviceNumRules,
-            CannotEmpty,
+            UserNameRules,
         }
     },
     computed: {

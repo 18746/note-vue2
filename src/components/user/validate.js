@@ -4,6 +4,11 @@ export const PhoneRules = [
     { pattern: /^1[3456789]\d{9}$/, message: '请输入正确的手机号', trigger: 'change' }
 ]
 
+export const UserNameRules = [
+    { required: true, message: '用户名不能为空', trigger: 'change' },
+    { min: 1, max: 15, message: '1 到 15 个字符', trigger: 'change' },
+]
+
 export const PwdRules = [
     { required: true, message: '请输入密码', trigger: 'change' },
     { min: 8, max: 30, message: '长度在 8 到 30 个字符', trigger: 'change' },

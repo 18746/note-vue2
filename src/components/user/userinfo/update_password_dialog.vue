@@ -3,6 +3,7 @@
         title="更改密码"
         :visible.sync="dialogFormVisible"
         append-to-body
+        :close-on-click-modal="false"
         @open="init()"
     >
         <el-form ref="Form" :model="form" label-width="80px">
