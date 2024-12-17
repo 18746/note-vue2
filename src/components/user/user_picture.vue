@@ -37,9 +37,9 @@
 </template>
 
 <script>
-import userinfoUpdateDialog from "@/components/user/update_dialog.vue"
-import userinfoViewDialog from "@/components/user/view_dialog.vue"
-import userinfoUpdatePasswordDialog from "@/components/user/update_password_dialog.vue"
+import userinfoUpdateDialog from "@/components/user/userinfo/update_dialog.vue"
+import userinfoViewDialog from "@/components/user/userinfo/view_dialog.vue"
+import userinfoUpdatePasswordDialog from "@/components/user/userinfo/update_password_dialog.vue"
 
 export default {
     name: "user-picture",

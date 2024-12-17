@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        title="更新用户信息"
+        title="更改密码"
         :visible.sync="dialogFormVisible"
         append-to-body
         @open="init()"
@@ -13,38 +13,21 @@
                 <el-input v-model="form.phone" disabled></el-input>
             </el-form-item>
             <el-form-item
-                label="头像"
+                label="新密码"
+                prop="pwd"
+                :rules="PwdRules"
             >
-                <uploadFile
-                    v-if="dialogFormVisible"
-                    :file_list="file_list"
-                    :file_size="6"
-                    :init_url="form.picture"
-                />
+                <el-input v-model="form.pwd" show-password placeholder="请输入新密码"></el-input>
             </el-form-item>
             <el-form-item
-                label="用户名"
-                prop="username"
-                :rules="CannotEmpty"
+                label="确认密码"
+                prop="confirmPwd"
+                :rules="[
+                    ...CannotEmpty,
+                    { validator: confirmPwdValidate, trigger: 'change' },
+                ]"
             >
-                <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
-            </el-form-item>
-            <el-form-item
-                label="邮箱"
-                prop="email"
-                :rules="EmailRules"
-            >
-                <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
-            </el-form-item>
-            <el-form-item
-                label="同时登录设备数"
-                prop="device_num"
-                :rules="DeviceNumRules"
-                class="device_num"
-            >
-                <el-input v-model.number="form.device_num" placeholder="不建议多设备登录，可能存在多端修改数据出现问题的情况">
-                    <template slot="append">台设备</template>
-                </el-input>
+                <el-input v-model="form.confirmPwd" show-password placeholder="请输入确认密码"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -55,15 +38,11 @@
 </template>
 
 <script>
-import uploadFile from '@/components/note/upload_img.vue';
-import { EmailRules, DeviceNumRules } from './validate';
-import { FormValidate, FormResetValidate, CannotEmpty } from '@/utils/validate';
-import { updateUserInfo, } from '@/api/user';
+import { PwdRules,  } from '../validate';
+import { FormValidate, FormResetValidate, CannotEmpty, } from '@/utils/validate';
+import { updateUserInfoPwd, } from '@/api/user';
 export default {
-    name: 'userinfo-update',
-    components: {
-        uploadFile, // 上传图片组件
-    },
+    name: 'userinfo-update-pwd',
     props: {
         visible: {
             type: Boolean,
@@ -73,21 +52,18 @@ export default {
             type: String,
             required: true
         },
-        userinfo: {
-            type: Object,
-            required: true
-        },
     },
     data() {
         return {
             form: {
-                username: '',
+                phone: '',
+                pwd: '',
+                confirmPwd: '',
             },
             buttonLoading: false,
             file_list: [],
 
-            EmailRules,
-            DeviceNumRules,
+            PwdRules,
             CannotEmpty,
         }
     },
@@ -105,17 +81,13 @@ export default {
         async init() {
             await this.$nextTick()
             await FormResetValidate(this.$refs.Form)
-            this.form = this.userinfo
-            this.file_list = []
+            this.form.phone = this.phone
         },
         async update() {
             this.buttonLoading = true
             let flag = await FormValidate(this.$refs.Form);
             if (flag) {
-                await updateUserInfo(this.phone, {
-                    ...this.form,
-                    picture: this.file_list[0] ? this.file_list[0] : this.form.picture
-                }).then(async res => {
+                await updateUserInfoPwd(this.phone, this.form).then(async res => {
                     this.$message.success('更新成功')
                     this.$emit('success', res.data)
                     this.dialogFormVisible = false
@@ -125,6 +97,13 @@ export default {
                 })
             }
             this.buttonLoading = false
+        },
+        confirmPwdValidate(rule, value, callback) {
+            if (value == this.form.pwd) {
+                callback();
+            } else {
+                callback(new Error('两次输入的密码不一致！'));
+            }
         },
     },
 }
