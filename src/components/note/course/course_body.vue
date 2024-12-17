@@ -277,20 +277,20 @@ export default {
         },
         // 拖拽成功后
         async handleDrop(draggingNode, dropNode, dropType, ev) {
-            console.log('tree drop: ', draggingNode, dropNode, dropType, ev);
+            // console.log('tree drop: ', draggingNode, dropNode, dropType, ev);
             draggingNode.data.name = draggingNode.data.name.split('.').slice(1).join('.')
             if (dropType == 'before') {
-                console.log('放置在目标节点前')
+                // console.log('放置在目标节点前')
                 draggingNode.data.parent_no = dropNode.data.parent_no
                 draggingNode.data.next_no = dropNode.data.unit_no
                 await this.updateUnit(draggingNode.data)
             } else if (dropType == 'inner') {
-                console.log('插入至目标节点')
+                // console.log('插入至目标节点')
                 draggingNode.data.parent_no = dropNode.data.unit_no
                 draggingNode.data.next_no = null
                 await this.updateUnit(draggingNode.data)
             } else if (dropType == 'after') {
-                console.log('放置在目标节点后')
+                // console.log('放置在目标节点后')
                 draggingNode.data.parent_no = dropNode.data.parent_no
                 draggingNode.data.next_no = dropNode.data.next_no
                 await this.updateUnit(draggingNode.data)

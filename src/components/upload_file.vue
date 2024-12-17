@@ -119,7 +119,6 @@ export default {
         },
 
         onPreview(file) {
-            console.log(file)
             this.dialogImageUrl = file;
             this.dialogVisible = true;
         },

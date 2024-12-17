@@ -196,11 +196,18 @@ export default {
             })
         },
         async uploadImage(event, insertImage, files) {
-            console.log(event)
-            console.log(insertImage)
-            console.log(files)
-            // for (let i = 0; i < files.length; i++) {
-                await uploadUnitPicture(this.phone, this.course, this.unit, files[0]).then(res => {
+            for (let i = 0; i < files.length; i++) {
+                let file = files[i];
+                let filesize = file.size / 1024 / 1024;
+                if (filesize > 10) {
+                    this.$message.error('图片大小不能超过10MB');
+                    return;
+                }
+            }
+
+            for (let i = 0; i < files.length; i++) {
+                let file = files[i];
+                await uploadUnitPicture(this.phone, this.course, this.unit, file).then(res => {
                     insertImage({
                         url: res.data.picture_url,
                         desc: '图片描述',
@@ -213,7 +220,7 @@ export default {
                         message: err.data.detail || '接口报错，请稍后重试'
                     });
                 })
-            // }
+            }
         },
         imageClick(images, currentIndex) {
             this.imgVisible = true

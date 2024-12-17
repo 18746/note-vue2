@@ -79,7 +79,6 @@ export default {
     methods: {
         resize() {
             const offsetWidth = window.document.body.offsetWidth;
-            // console.log(offsetWidth)
             if (offsetWidth <= 1000) {
                 this.isSmallScreen = true;
                 this.showMenu = false;

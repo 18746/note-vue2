@@ -138,7 +138,6 @@ export default {
         // 编辑
         edit(course) {
             this.updateVisible = true;
-            console.log(course);
             this.updateCourse = {
                 ...course,
             };

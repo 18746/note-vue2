@@ -1,4 +1,4 @@
-# note0
+# note
 
 > A Vue.js project
 

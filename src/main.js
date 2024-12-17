@@ -20,30 +20,15 @@ Vue.use(ElementUI);
 import "./style/index.less";
 
 
-import VMdPreview from '@kangc/v-md-editor/lib/preview';
-import '@kangc/v-md-editor/lib/style/preview.css';
+// 引入 v-md-editor
+import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
+import '@kangc/v-md-editor/lib/style/codemirror-editor.css';
 // 引入主题
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/theme/style/github.css';
 
 // 引入highlightjs
 import hljs from 'highlight.js';
-
-VMdPreview.use(githubTheme, {
-  Hljs: hljs,
-});
-
-Vue.use(VMdPreview);
-
-
-import VMdEditor from '@kangc/v-md-editor/lib/codemirror-editor';
-import '@kangc/v-md-editor/lib/style/codemirror-editor.css';
-// // 引入主题
-// import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
-// import '@kangc/v-md-editor/lib/theme/style/github.css';
-
-// 引入highlightjs
-// import hljs from 'highlight.js';
 
 // codemirror 编辑器的相关资源
 import Codemirror from 'codemirror';
@@ -72,6 +57,7 @@ VMdEditor.Codemirror = Codemirror;
 VMdEditor.use(githubTheme, {
   Hljs: hljs,
 });
+
 Vue.use(VMdEditor);
 
 
