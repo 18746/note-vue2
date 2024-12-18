@@ -1,18 +1,32 @@
 import request from '@/utils/request'
 
+const encode = (pwd) => {
+    return window.btoa(pwd + "root").slice(0, 30)
+}
+const decode = (code) => {
+    return window.atob(code).slice(0, -4)
+}
+
 export function login(params) {
+    params.pwd = encode(params.pwd)
     return request({
         method: "post",
         url: "/user/login/" + params.phone,
-        data: params
+        data: {
+            pwd: params.pwd,
+            time_limit: params.time_limit,
+        }
     })
 }
 
 export function register(params) {
+    params.pwd = encode(params.pwd)
     return request({
         method: "post",
         url: "/user/register/" + params.phone,
-        data: params
+        data: {
+            pwd: params.pwd,
+        }
     })
 }
 
@@ -51,6 +65,7 @@ export function updateUserInfo(phone, params) {
 }
 
 export function updateUserInfoPwd(phone, params) {
+    params.pwd = encode(params.pwd)
     return new Promise((resolve, reject) => {
         request({
             method: "put",

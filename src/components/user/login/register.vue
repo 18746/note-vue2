@@ -78,7 +78,10 @@ export default {
             this.submitButLoading = true
             let flag = await FormValidate(this.$refs.RegisterForm);
             if (flag) {
-                await register(this.form).then(res => {
+                await register({
+                    phone: this.form.phone,
+                    pwd: this.form.pwd,
+                }).then(res => {
                     this.$message.success('注册成功')
                     this.$emit("phoneToLogin", this.form.phone)
                 }).catch(err => {

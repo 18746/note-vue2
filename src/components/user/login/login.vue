@@ -100,7 +100,11 @@ export default {
             this.submitButLoading = true
             let flag = await FormValidate(this.$refs.LoginForm);
             if (flag) {
-                await login(this.formLogin).then(async res => {
+                await login({
+                    phone: this.formLogin.phone,
+                    pwd: this.formLogin.pwd,
+                    time_limit: this.formLogin.time_limit,
+                }).then(async res => {
                     this.$message.success('登录成功')
                     this.$store.commit('user/setToken', res.data)
                     await this.$store.dispatch('user/getUserInfo')
