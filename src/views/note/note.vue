@@ -35,7 +35,6 @@
 import layout from '@/components/layout/layout.vue';
 import typeMenu from '@/components/note/type/type_menu.vue';
 import noteBody from '@/components/note/note_body.vue';
-
 import userPicture from '@/components/user/user_picture.vue';
 
 export default {

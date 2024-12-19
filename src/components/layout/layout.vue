@@ -1,7 +1,7 @@
 <template>
     <section class="container">
         <transition name="fade">
-            <aside class="container-aside" v-show="showMenu" @click.stop="showMenu = false">
+            <aside v-if="showLeft" class="container-aside" v-show="showMenu" @click.stop="showMenu = false">
                 <div class="aside-page-left" @click.stop>
                     <div class="page-left-search" :style="'height: ' + TitleHeight + ';'">
                         <slot name="left-search"></slot>
@@ -46,7 +46,11 @@ export default {
         AlwaysDisplayFold: {
             type: Boolean,
             default: false,
-        }
+        },
+        showLeft: {
+            type: Boolean,
+            default: true,
+        },
     },
     data() {
         return {
@@ -72,9 +76,11 @@ export default {
         },
     },
     created() {
-        const resize = throttle(this.resize, 10);
-        window.addEventListener('resize', resize)
-        this.resize()
+        if (this.showLeft) {
+            const resize = throttle(this.resize, 10);
+            window.addEventListener('resize', resize)
+            this.resize()
+        }
     },
     methods: {
         resize() {

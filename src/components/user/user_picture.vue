@@ -5,16 +5,19 @@
                 <img class="picture" :src="userinfo.picture" :alt="username">
             </el-tooltip>
             <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item icon="el-icon-view" command="view">
+                <el-dropdown-item icon="el-icon-view" command="mycourse">
+                    我的课程
+                </el-dropdown-item>
+                <el-dropdown-item icon="el-icon-view" command="view" divided>
                     查看信息
                 </el-dropdown-item>
-                <el-dropdown-item icon="el-icon-setting" divided command="set">
+                <el-dropdown-item icon="el-icon-setting" command="set" divided>
                     设置信息
                 </el-dropdown-item>
                 <el-dropdown-item icon="el-icon-setting" command="setpassword">
                     更改密码
                 </el-dropdown-item>
-                <el-dropdown-item icon="el-icon-switch-button" divided command="logout">
+                <el-dropdown-item icon="el-icon-switch-button" command="logout" divided>
                     退出账号
                 </el-dropdown-item>
             </el-dropdown-menu>
@@ -75,7 +78,9 @@ export default {
     },
     methods: {
         handleCommand(command) {
-            if (command == "view") {
+            if (command == "mycourse") {
+                this.myCourse()
+            } else if (command == "view") {
                 this.view()
             } else if (command == "set") {
                 this.setUserInfo()
@@ -84,6 +89,11 @@ export default {
             } else if (command == "logout") {
                 this.logout()
             }
+        },
+        myCourse() {
+            this.$router.push({
+                path: '/note',
+            })
         },
         view() {
             this.viewVisible = true;

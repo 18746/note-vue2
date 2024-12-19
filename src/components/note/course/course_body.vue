@@ -58,14 +58,14 @@ import unitMenu from '../unit/unit_menu.vue';
 import { getTypePhoneList, getCourse } from '@/api/note';
 export default {
     name: 'course',
+    components: {
+        unitMenu,
+    },
     props: {
         phone: {
             type: String,
             required: true
         }
-    },
-    components: {
-        unitMenu,
     },
     data() {
         return {
