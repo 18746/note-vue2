@@ -9,7 +9,7 @@
                     />
                     <div class="icon">
                         <div class="body">
-                            <i class="el-icon el-icon-edit-outline" @click="edit(course)"></i>
+                            <i class="el-icon el-icon-edit" @click="edit(course)"></i>
                             <i class="el-icon el-icon-delete" @click="del(course.course_no)"></i>
                         </div>
                     </div>

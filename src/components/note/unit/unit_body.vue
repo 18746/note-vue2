@@ -41,7 +41,7 @@
                 v-if="isEdit"
                 key="tocVisible"
                 type="primary"
-                icon="el-icon-notebook-1"
+                icon="v-md-icon-toc"
                 circle
                 :plain="!tocVisible"
                 @click="tocVisible = !tocVisible"
