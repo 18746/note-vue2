@@ -70,8 +70,9 @@ const routers = new Router({
 import store from "@/store/index.js";
 import { isTokenNotExpire } from '@/utils/user.js'
 routers.beforeEach((to, from, next) => {
-    if (store.getters["user/getToken"]) {
-        if (isTokenNotExpire(store.getters["user/getToken"].update_time, store.getters["user/getToken"].time_limit)) {
+    const token = localStorage.getItem('token') ? JSON.parse(localStorage.getItem('token')) : null; // 获取token
+    if (token) {
+        if (isTokenNotExpire(token.update_time, token.time_limit)) {
             if (!store.getters["user/getUser"]) {
                 store.dispatch('user/getUserInfo')
             }
