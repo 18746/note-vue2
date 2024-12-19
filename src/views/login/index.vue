@@ -1,5 +1,5 @@
 <template>
-    <div class="login">
+    <div class="login" :style="style">
         <transition name="bounce" mode="out-in">
             <loginCom
                 v-if="loginOrRegister === 'login'"
@@ -39,6 +39,9 @@ export default {
         return {
             // 切换
             loginOrRegister: "login",
+            style: {
+                "background-image": "url('http://127.0.0.1:8070/course/picture/background')"
+            }
         }
     },
     watch: {
@@ -83,8 +86,8 @@ export default {
 
 <style lang="less" scoped>
 .login {
-    background-image: url('~@/assets/img/school-supplie.jpg');
-    // background-image: url('~@/assets/img/notepad.jpg');
+    // background-image: url('~@/assets/img/school-supplie.jpg');
+    // background-image: url('http://127.0.0.1:8070/course/picture/background');
     height: 100%;
     background-size: cover;        // 原始大小
     background-position: center;   // 水平垂直居中
@@ -92,24 +95,24 @@ export default {
 }
 
 .bounce-enter-active {
-  animation: bounce-in .5s;
+    animation: bounce-in .5s;
 }
 .bounce-leave-active {
-  animation: bounce-in .5s reverse;
+    animation: bounce-in .5s reverse;
 }
 @keyframes bounce-in {
-  0% {
-    scale: 0;
-    opacity: 0;
-  }
-  50% {
-    scale: 1.1;
-    opacity: 1;
-  }
-  100% {
-    scale: 1;
-    opacity: 1;
-  }
+    0% {
+        scale: 0;
+        opacity: 0;
+    }
+    50% {
+        scale: 1.1;
+        opacity: 1;
+    }
+    100% {
+        scale: 1;
+        opacity: 1;
+    }
 }
 
 </style>
