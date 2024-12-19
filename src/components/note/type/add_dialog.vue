@@ -5,7 +5,7 @@
         append-to-body
         @open="init"
     >
-        <el-form ref="Form" :model="form" label-width="80px">
+        <el-form ref="Form" :model="form" label-width="80px" @submit.native.prevent="add">
             <el-form-item
                 label="类型名"
                 prop="name"
