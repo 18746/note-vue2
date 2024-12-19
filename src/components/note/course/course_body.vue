@@ -30,54 +30,25 @@
                 </div>
             </div>
         </div>
-        <el-card class="detail-content box-card">
-            <div slot="header" class="clearfix">
-                <span>目录</span>
-                <el-button
-                    type="text"
-                    class="add-unit-button"
-                    icon="el-icon el-icon-folder-add"
-                    style="float: right;"
-                    @click="addUnit()"
-                >章节</el-button>
-            </div>
-            <unitMenu
-                ref="menu"
-                :phone="phone"
-                :course="course"
-                draggable
-                @toUnit="toUnit"
-            />
-        </el-card>
     </div>
 </template>
 
 <script>
-import unitMenu from '../unit/unit_menu.vue';
-
-import { getTypePhoneList, getCourse } from '@/api/note';
+import { getTypePhoneList, } from '@/api/note';
 export default {
     name: 'course',
-    components: {
-        unitMenu,
-    },
     props: {
         phone: {
             type: String,
             required: true
-        }
+        },
+        course: {
+            type: Object,
+            required: true
+        },
     },
     data() {
         return {
-            course: {
-                course_no: "",
-                name: "",
-                type_no: "",
-                phone: "",
-                description: "",
-                create_time: "",
-                update_time: ""
-            },
             type_list: [],
         };
     },
@@ -94,29 +65,14 @@ export default {
     },
     filters: {
         description(des) {
-            return des ? des : '不知道写点啥了';
+            return des ? des : '暂无简介';
         }
     },
     created() {
-        this.course.course_no = this.$route.params.course_no || "";
         this.init();
     },
     methods: {
         async init() {
-            await getCourse(this.phone, this.course.course_no).then(res => {
-                this.course = res.data;
-            }).catch(err => {
-                console.error(err);
-                this.$message({
-                    type: 'error',
-                    message: err.data.detail || '获取课程信息失败'
-                });
-            })
-            if (this.course.course_no) {
-                this.initType()
-            }
-        },
-        async initType() {
             await getTypePhoneList(this.phone).then(res => {
                 this.type_list = res.data
             }).catch(err => {
@@ -125,18 +81,6 @@ export default {
                     type: 'error',
                     message: err.data.detail
                 });
-            })
-        },
-
-        // 添加目录
-        addUnit() {
-            this.$refs.menu.addUnit();
-        },
-
-        // 点击章节节点
-        toUnit(data) {
-            this.$router.push({
-                path: '/note/' + data.course_no + '/' + data.unit_no,
             })
         },
     }
