@@ -11,7 +11,7 @@
                 prop="name"
                 :rules="TypeNameRules"
             >
-                <el-input v-model="form.name" placeholder="请输入类型名"></el-input>
+                <el-input v-model="form.name" maxlength="15" show-word-limit placeholder="请输入类型名"></el-input>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
