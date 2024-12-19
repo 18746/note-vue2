@@ -27,8 +27,8 @@
         <div class="my-button-bottom" :key="course_list.length">
             <el-button type="success" icon="el-icon-document-add" circle @click="add"></el-button>
             <el-button
-                :type="card_type ? 'primary' : ''"
-                :icon="!card_type ? 'el-icon-s-grid' : 'el-icon-document'"
+                :type="my_note_card ? 'primary' : ''"
+                :icon="!my_note_card ? 'el-icon-s-grid' : 'el-icon-document'"
                 circle
                 @click="changCardOrLine"
             ></el-button>
@@ -79,7 +79,6 @@ export default {
             updateCourse: {},
 
             line_type: true,
-            card_type: false,
         }
     },
     watch: {
@@ -97,13 +96,23 @@ export default {
     },
     computed: {
         Class() {
-            if (this.card_type) {
+            if (this.my_note_card) {
                 return 'course-card'
             } else if (this.line_type) {
                 return 'course-line'
             }
             return 'course-line'
         },
+        my_note_card: {
+            get() {
+                return this.$store.getters["habit/getHabit"].my_note_card
+            },
+            set(val) {
+                this.$store.commit('habit/setHabit', {
+                    my_note_card: val
+                })
+            }
+        }
     },
     methods: {
         async init() {
@@ -119,7 +128,7 @@ export default {
             })
         },
         changCardOrLine() {
-            this.card_type = !this.card_type
+            this.my_note_card = !this.my_note_card
         },
         // 点击课程跳转
         select(course) {
