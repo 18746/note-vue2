@@ -8,7 +8,15 @@
         </template>
         <!-- 左侧菜单 -->
         <template #left-menu>
-            <unitMenu ref="menu" :phone="phone" :unit_no="unit_no" :course_no="course_no" @toUnit="toUnit" />
+            <unitMenu
+                ref="menu"
+                :phone="phone"
+                :unit_no="unit_no"
+                :course="course"
+                draggable
+                :showDelete="false"
+                @toUnit="toUnit"
+            />
         </template>
         <!-- 标题 -->
         <template #title>
@@ -49,7 +57,6 @@ export default {
     },
     data() {
         return {
-            course_no: "",
             course: {
                 course_no: "",
                 name: "",
@@ -106,13 +113,13 @@ export default {
         }
     },
     created() {
-        this.course_no = this.$route.params.course_no;
+        this.course.course_no = this.$route.params.course_no;
         this.unit_no = this.$route.params.unit_no;
         this.init();
     },
     methods: {
         async init() {
-            await getCourse(this.phone, this.course_no).then(res => {
+            await getCourse(this.phone, this.course.course_no).then(res => {
                 this.course = res.data;
             }).catch(err => {
                 console.error(err);
@@ -139,7 +146,7 @@ export default {
             })
         },
         async initUnit() {
-            await getUnit(this.phone, this.course_no, this.unit_no).then(res => {
+            await getUnit(this.phone, this.course.course_no, this.unit_no).then(res => {
                 this.unit = res.data;
             }).catch(err => {
                 console.error(err);
