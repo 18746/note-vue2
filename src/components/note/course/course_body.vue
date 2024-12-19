@@ -206,23 +206,5 @@ export default {
             }
         }
     }
-
-    .detail-content {
-        .add-unit-button {
-            padding: 3px 0;
-            font-size: 16px;
-            /deep/ .el-icon {
-                font-size: 20px;
-            }
-        }
-        /deep/ .my-custom-tree-node {
-            .info {
-                font-size: 16px;
-                .el-icon {
-                    font-size: 22px;
-                }
-            }
-        }
-    }
 }
 </style>
