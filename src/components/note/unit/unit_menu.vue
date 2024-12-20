@@ -175,6 +175,9 @@ export default {
         },
         updateSuccess(data) {
             this.init()
+            if (this.unit_no == data.unit_no) {
+                this.$emit('updateUnit', data);
+            }
         },
 
         // 删除目录

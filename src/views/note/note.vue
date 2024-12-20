@@ -81,7 +81,7 @@ export default {
             const routeData = this.$router.resolve({
                 path: '/note/' + course.course_no,
             });
-            window.open(routeData.href, course.course_no);
+            window.open(routeData.href, "_blank");
         },
     }
 }

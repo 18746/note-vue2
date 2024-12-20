@@ -16,6 +16,7 @@
                 draggable
                 :showDelete="false"
                 @toUnit="toUnit"
+                @updateUnit="updateUnit"
             />
         </template>
         <!-- 标题 -->
@@ -161,6 +162,9 @@ export default {
                 path: '/note/' + unit.course_no + '/' + unit.unit_no,
             })
         },
+        updateUnit(unit) {
+            this.unit = unit;
+        }
     }
 };
 </script>
