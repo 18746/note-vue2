@@ -1,4 +1,3 @@
-const config = require('../../config')
 
 export const sleep = (time) => new Promise((resolve) => {
     const timer = setTimeout(() => {
@@ -26,6 +25,10 @@ export const syncDelayFuns = (time, callbacks) => {
             }
         }).catch((err) => reject(err))
     })
+}
+
+export const getURL = (url) => {
+    return process.env.BASE_API + url
 }
 
 // 防抖，一定时间内只允许执行一次（只执行第一次）

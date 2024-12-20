@@ -7,7 +7,6 @@ export default {
     },
     mutations: {
         setHabit(state, habit) {
-            console.log(habit)
             if (habit) {
                 localStorage.setItem('habit', JSON.stringify({
                     ...state.habit,
