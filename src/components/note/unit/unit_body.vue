@@ -227,6 +227,30 @@ export default {
             this.imgList = images
             this.img_index = currentIndex
         },
+
+        keyupEvent(event) {
+            if (event.ctrlKey && event.keyCode == 83) {
+                if (this.isEdit) {
+                    this.toSave()
+                }
+            }
+            event.preventDefault(); //阻止默认事件
+            event.stopPropagation(); //阻止冒泡
+        },
+        keydownEvent(event) {
+            if (event.ctrlKey && event.keyCode == 83) {
+                event.preventDefault(); //阻止默认事件
+                event.stopPropagation(); //阻止冒泡
+            }
+        },
+    },
+    mounted() {
+        document.addEventListener('keyup', this.keyupEvent, false)
+        document.addEventListener('keydown', this.keydownEvent, false)
+    },
+    beforeDestroy() {
+        document.removeEventListener('keyup', this.keyupEvent, false)
+        document.removeEventListener('keydown', this.keydownEvent, false)
     }
 };
 </script>
