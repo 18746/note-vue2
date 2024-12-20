@@ -8,25 +8,25 @@
             left-toolbar="undo redo | h bold italic strikethrough quote | ul ol table hr | link image code"
             right-toolbar=""
             :include-level="[1, 2, 3, 4]"
-            height="calc(100vh - 97px)"
+            :height="editorHeight"
             @save="save"
             :disabled-menus="[]"
             @image-click="imageClick"
             @upload-image="uploadImage"
         ></v-md-editor>
         <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
-        <div class="time">
-            <div>更新时间：{{ unit.update_time }}</div>
-            <div>创建时间：{{ unit.create_time }}</div>
-        </div>
-        <!-- <div class="children">
+        <div v-if="!isEdit" class="children">
             <el-button
                 type="text"
                 v-for="item in unit_content.child"
                 :key="item.unit_no"
-                @click="handleNodeClick(item)"
+                @click="toUnit(item)"
             >{{ item.name }}</el-button>
-        </div> -->
+        </div>
+        <div class="time">
+            <div>更新时间：{{ unit.update_time }}</div>
+            <div>创建时间：{{ unit.create_time }}</div>
+        </div>
         <div class="my-button-bottom">
             <el-button
                 v-if="isEdit"
@@ -134,6 +134,17 @@ export default {
                 return "edit"
             }
         },
+        editorHeight() {
+            if (this.isEdit) {
+                return "calc(100vh - 97px)"
+            } else {
+                if (this.unit_content.child && this.unit_content.child.length > 0) {
+                    return "calc(100vh - 130px)"
+                } else {
+                    return "calc(100vh - 97px)"
+                }
+            }
+        },
     },
     watch: {
         fullscreen(val) {
@@ -228,6 +239,10 @@ export default {
             this.img_index = currentIndex
         },
 
+        toUnit(unit) {
+            this.$emit('toUnit', unit)
+        },
+
         keyupEvent(event) {
             if (event.ctrlKey && event.keyCode == 83) {
                 if (this.isEdit) {
@@ -288,6 +303,7 @@ export default {
 .children {
     display: flex;
     flex-wrap: wrap;
+    padding: 0 20px;
     .el-button {
         padding: 8px 0px;
         font-size: 15px;

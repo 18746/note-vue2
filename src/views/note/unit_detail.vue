@@ -36,7 +36,7 @@
             </div>
         </template>
         <!-- 内容 -->
-        <unitBody :phone="phone" :course="course" :unit="unit" />
+        <unitBody :phone="phone" :course="course" :unit="unit" @toUnit="toUnit" />
     </layout>
 </template>
 
