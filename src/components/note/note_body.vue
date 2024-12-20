@@ -1,6 +1,6 @@
 <template>
     <div class="course-body">
-        <div :class="Class" v-for="course in course_list" :key="course.course_no">
+        <div class="course-item" :class="Class" v-for="course in course_list" :key="course.course_no">
             <div class="course">
                 <div class="course-img">
                     <img
@@ -9,8 +9,8 @@
                     />
                     <div class="icon">
                         <div class="body">
-                            <i class="el-icon el-icon-edit" @click="edit(course)"></i>
-                            <i class="el-icon el-icon-delete" @click="del(course.course_no)"></i>
+                            <i class="el-icon el-edit el-icon-edit" @click="edit(course)"></i>
+                            <i class="el-icon el-delete el-icon-delete" @click="del(course.course_no)"></i>
                         </div>
                     </div>
                 </div>
@@ -188,40 +188,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.course-line {
+.course-body .course-item {
     display: inline-block;
-    padding: 10px;
     box-sizing: border-box;
-    @media (max-width: 740px) {
-        width: 100%;
-    }
-    @media (min-width: 740px) {
-        width: 50%;
-    }
-    @media (min-width: 1350px) {
-        width: 33.33%;
-    }
-    @media (min-width: 1750px) {
-        width: 25%;
-    }
+    padding: 10px;
     
     .course {
-        display: flex;
-        height: 130px;
-        width: 100%;
-        border: 1px solid #cdcdcd;
-        border-radius: 6px;
-
         .course-img {
-            width: 130px;
-            height: 100%;
-            overflow: hidden;
             position: relative;
-            flex-shrink: 0;
             img {
                 width: 100%;
                 height: 100%;
-                object-fit: cover;
                 top: 0;
                 left: 0;
                 position: absolute;
@@ -241,10 +218,14 @@ export default {
                     left: 50%;
                     transform: translate(-50%, -50%);
                     .el-icon {
-                        font-size: 24px;
-                        color: #fff;
                         cursor: pointer;
-                        margin-right: 5px;
+                        &.el-edit {
+                            color: #409EFF;
+                        }
+                        &.el-delete {
+                            color: #F56C6C;
+                        }
+
                         &:last-child {
                             margin-right: 0px;
                         }
@@ -259,9 +240,7 @@ export default {
         }
         .course-info {
             height: 100%;
-            padding: 5px 9px;
             box-sizing: border-box;
-            flex-grow: 1;
             cursor: pointer;
             .course-title {
                 font-size: 20px;
@@ -289,7 +268,6 @@ export default {
                 color: #767676;
             }
         }
-
         &:hover {
             box-shadow: 0 0 10px #cdcdcd;
             .course-info {
@@ -300,10 +278,61 @@ export default {
         }
     }
 }
-.course-card {
-    display: inline-block;
+.course-body .course-item.course-line {
+    
+    .course {
+        display: flex;
+        height: 130px;
+        width: 100%;
+        border: 1px solid #cdcdcd;
+        border-radius: 6px;
+
+        .course-img {
+            width: 130px;
+            height: 100%;
+            overflow: hidden;
+            flex-shrink: 0;
+            img {
+                object-fit: cover;
+            }
+            
+            .icon {
+                .body {
+                    .el-icon {
+                        font-size: 24px;
+                        margin-right: 5px;
+                        text-shadow: 0 0px 10px #fff;
+                    }
+                }
+            }
+            &:hover .icon {
+                z-index: 2;
+                opacity: 1;
+                transition: opacity 0.3s;
+            }
+        }
+        .course-info {
+            padding: 5px 9px;
+            flex-grow: 1;
+        }
+
+    }
+
+    @media (max-width: 740px) {
+        width: 100%;
+    }
+    @media (min-width: 740px) {
+        width: 50%;
+    }
+    @media (min-width: 1350px) {
+        width: 33.33%;
+    }
+    @media (min-width: 1750px) {
+        width: 25%;
+    }
+}
+.course-body .course-item.course-card {
     padding: 12px;
-    box-sizing: border-box;
     
     .course {
         display: flex;
@@ -315,37 +344,15 @@ export default {
         .course-img {
             width: 100%;
             height: 210px;
-            position: relative;
 
             img {
-                width: 100%;
-                height: 100%;
                 object-fit: contain;
-                top: 0;
-                left: 0;
-                position: absolute;
-                z-index: 1;
             }
             .icon {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                z-index: 0;
-                opacity: 0;
-                background-color: #00000059;
                 .body {
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
                     .el-icon {
                         font-size: 30px;
-                        color: #fff;
-                        cursor: pointer;
                         margin-right: 24px;
-                        &:last-child {
-                            margin-right: 0px;
-                        }
                     }
                 }
             }
@@ -357,44 +364,14 @@ export default {
         }
         .course-info {
             width: 100%;
-            height: 100%;
             padding: 10px 25px;
             box-sizing: border-box;
             cursor: pointer;
             .course-title {
-                font-size: 20px;
-                font-weight: bold;
-                margin-bottom: 10px;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                word-break: break-all;
-                white-space: nowrap;
                 text-align: center;
-            }
-            .course-desc {
-                height: 55px;
-                font-size: 15px;
-                color: #666;
-                margin-bottom: 5px;
-
-                display: -webkit-box;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
-                line-clamp: 3;
-                -webkit-line-clamp: 3;
             }
             .course-date {
                 font-size: 14px;
-                color: #767676;
-            }
-        }
-
-        &:hover {
-            box-shadow: 0 0 10px #cdcdcd;
-            .course-info {
-                .course-title {
-                    color: #00a1d6;
-                }
             }
         }
     }
