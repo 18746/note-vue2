@@ -1,5 +1,5 @@
 <template>
-    <div class="unit-menu">
+    <div class="unit-menu my-scrollbar-y">
         <el-tree
             ref="tree"
             :data="unit_list"

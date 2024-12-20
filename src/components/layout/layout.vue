@@ -24,7 +24,7 @@
                     ></el-button>
                     <slot name="title"></slot>
                 </div>
-                <div class="page-right-body" :style="'height: ' + BodyHeight + ';'">
+                <div class="page-right-body my-scrollbar-y" :style="'height: ' + BodyHeight + ';'">
                     <slot></slot>
                 </div>
             </div>

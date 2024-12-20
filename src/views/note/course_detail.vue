@@ -110,6 +110,7 @@ export default {
 }
 
 .detail-content {
+    margin-bottom: 35px;
     .add-unit-button {
         padding: 3px 0;
         font-size: 16px;
@@ -125,5 +126,9 @@ export default {
             }
         }
     }
+}
+
+.unit-menu {
+    max-height: 80vh;
 }
 </style>
