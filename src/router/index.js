@@ -13,9 +13,9 @@ Router.prototype.push = function push (to) {
 }
 const routers = new Router({
     mode: 'history',
-    // base: process.env.BASE_URL,
+    base: process.env.BASE_APP,
     // base: "app",
-    base: "/",
+    // base: "/",
     routes: [
         {
             path: "/",

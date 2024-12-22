@@ -47,7 +47,9 @@ exports.cssLoaders = function (options) {
     if (options.extract) {
       return ExtractTextPlugin.extract({
         use: loaders,
-        fallback: 'vue-style-loader'
+        fallback: 'vue-style-loader',
+        // vue+ elementUI 打包发布到服务器后，element-icons.woff文件404
+        publicPath: '../../'
       })
     } else {
       return ['vue-style-loader'].concat(loaders)
