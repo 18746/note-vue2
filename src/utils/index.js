@@ -27,8 +27,12 @@ export const syncDelayFuns = (time, callbacks) => {
     })
 }
 
-export const getURL = (url) => {
+export const doURL = (url) => {
     return process.env.BASE_API + url
+}
+
+export const unURL = (url) => {
+    return url.replace(process.env.BASE_API, "");
 }
 
 // 防抖，一定时间内只允许执行一次（只执行第一次）

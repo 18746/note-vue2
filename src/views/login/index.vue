@@ -27,7 +27,7 @@
 import loginCom from '@/components/user/login/login';
 import registerCom from '@/components/user/login/register';
 import forgetPwdCom from '@/components/user/login/forgetPwd';
-import { sleep, getURL } from '@/utils/index.js';
+import { sleep, doURL } from '@/utils/index.js';
 export default {
     name: 'login',
     components: {
@@ -40,7 +40,7 @@ export default {
             // 切换
             loginOrRegister: "login",
             style: {
-                "background-image": `url(${ getURL('/course/picture/background') })`
+                "background-image": `url(${ doURL('/course/picture/background') })`
             }
         }
     },

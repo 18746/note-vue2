@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { doURL, unURL } from '@/utils/index.js';
 // -----------------------------------------------------------type
 export function getTypePhoneList(phone) {
     return new Promise((resolve, reject) => {
@@ -50,6 +51,7 @@ export function getCourseByTypeList(phone, type_no) {
         }).then(res => {
             res.data.forEach(item => {
                 item.type_no = item.type_no ? item.type_no : "0"
+                item.picture = doURL(item.picture)
             })
             resolve(res)
         }).catch(err => {
@@ -66,6 +68,7 @@ export function getCourse(phone, course_no) {
             // data: params
         }).then(res => {
             res.data.type_no = res.data.type_no ? res.data.type_no : "0"
+            res.data.picture = doURL(res.data.picture)
             resolve(res)
         }).catch(err => {
             reject(err)
@@ -156,12 +159,21 @@ export function delUnit(phone, course_no, unit_no) {
     })
 }
 
+const contentDoURL = (phone, content) => {
+    return content.replaceAll(`/unit/picture/${phone}/`, `${process.env.BASE_API}/unit/picture/${phone}/`);
+}
+
+const contentUnURL = (phone, content) => {
+    return content.replaceAll(`${process.env.BASE_API}/unit/picture/${phone}/`, `/unit/picture/${phone}/`);
+}
+
 export function getUnitContent(phone, course, unit) {
     return new Promise((resolve, reject) => {
         request({
             method: "get",
-            url: `/unit/${phone}/${course.course_no}/${unit.unit_no}/content`,
+            url: `/unit/content/${phone}/${course.course_no}/${unit.unit_no}`,
         }).then(res => {
+            res.data.content = contentDoURL(phone, res.data.content)
             resolve(res)
         }).catch(err => {
             reject(err)
@@ -169,6 +181,7 @@ export function getUnitContent(phone, course, unit) {
     })
 }
 export function updateUnitContent(phone, course, unit, content) {
+    content = contentUnURL(phone, content)
     return new Promise((resolve, reject) => {
         request({
             method: "put",
@@ -178,6 +191,7 @@ export function updateUnitContent(phone, course, unit, content) {
                 'content-type': 'application/json'
             }
         }).then(res => {
+            res.data = contentDoURL(phone, res.data)
             resolve(res)
         }).catch(err => {
             reject(err)
@@ -194,6 +208,7 @@ export function uploadUnitPicture(phone, course, unit, picture) {
             url: `/note/unit/picture/${phone}/${course.course_no}/${unit.unit_no}`,
             data: formData
         }).then(res => {
+            res.data.picture_url = contentDoURL(phone, res.data.picture_url)
             resolve(res)
         }).catch(err => {
             reject(err)

@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { doURL, unURL } from '@/utils/index.js';
 
 const encode = (pwd) => {
     return window.btoa(pwd + "root").slice(0, 30)
@@ -31,9 +32,16 @@ export function register(params) {
 }
 
 export function getUserInfo(params) {
-    return request({
-        method: "get",
-        url: "/login/info",
+    return new Promise((resolve, reject) => {
+        request({
+            method: "get",
+            url: "/login/info",
+        }).then(res => {
+            res.data.picture = doURL(res.data.picture)
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
     })
 }
 
@@ -49,7 +57,7 @@ export function updateUserInfo(phone, params) {
     formData.append('username', params.username);
     formData.append('device_num', params.device_num);
     formData.append('email', params.email);
-    formData.append('picture', params.picture);
+    formData.append('picture', params.picture == "string" ? unURL(params.picture) : params.picture);
 
     return new Promise((resolve, reject) => {
         request({
@@ -57,6 +65,7 @@ export function updateUserInfo(phone, params) {
             url: `/login/info`,
             data: formData
         }).then(res => {
+            res.data.picture = doURL(res.data.picture)
             resolve(res)
         }).catch(err => {
             reject(err)
