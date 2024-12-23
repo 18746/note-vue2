@@ -75,6 +75,20 @@ export function getCourse(phone, course_no) {
         })
     })
 }
+
+export function exportCourse(phone, course_no) { 
+    return new Promise((resolve, reject) => {
+        request({
+            method: "get",
+            url: `/note/course/${phone}/${course_no}`,
+        }).then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
 export function addCourse(phone, params) {
     const formData = new FormData();
     formData.append('name', params.name);

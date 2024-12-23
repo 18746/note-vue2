@@ -9,6 +9,7 @@
                     />
                     <div class="icon">
                         <div class="body">
+                            <i class="el-icon el-download el-icon-download" @click="download(course)"></i>
                             <i class="el-icon el-edit el-icon-edit" @click="edit(course)"></i>
                             <i class="el-icon el-delete el-icon-delete" @click="del(course.course_no)"></i>
                         </div>
@@ -52,7 +53,7 @@
 import addDialog from './course/add_dialog.vue';
 import updateDialog from './course/update_dialog.vue';
 
-import { getCourseByTypeList, delCourse } from '@/api/note';
+import { getCourseByTypeList, exportCourse, delCourse } from '@/api/note';
 export default {
     name: 'note',
     props: {
@@ -183,6 +184,9 @@ export default {
                 })
             }).catch(action => {});
         },
+        download(course) {
+            exportCourse(this.phone, course.course_no)
+        }
     }
 }
 </script>
@@ -219,6 +223,9 @@ export default {
                     transform: translate(-50%, -50%);
                     .el-icon {
                         cursor: pointer;
+                        &.el-download {
+                            color: #67C23A;
+                        }
                         &.el-edit {
                             color: #409EFF;
                         }
@@ -353,6 +360,9 @@ export default {
                     .el-icon {
                         font-size: 30px;
                         margin-right: 24px;
+                        &:last-child {
+                            margin-right: 0px;
+                        }
                     }
                 }
             }
