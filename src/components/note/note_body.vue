@@ -26,7 +26,8 @@
         <el-empty v-if="course_list.length == 0" :image-size="150"></el-empty>
 
         <div class="my-button-bottom" :key="course_list.length">
-            <el-button type="success" icon="el-icon-document-add" circle @click="add"></el-button>
+            <el-button type="success" icon="el-icon-upload2" circle @click="import_course" />
+            <el-button type="success" icon="el-icon-document-add" circle @click="add" />
             <el-button
                 :type="my_note_card ? 'primary' : ''"
                 :icon="!my_note_card ? 'el-icon-s-grid' : 'el-icon-document'"
@@ -53,7 +54,7 @@
 import addDialog from './course/add_dialog.vue';
 import updateDialog from './course/update_dialog.vue';
 
-import { getCourseByTypeList, exportCourse, delCourse } from '@/api/note';
+import { getCourseByTypeList, exportCourse, importCourse, delCourse } from '@/api/note';
 export default {
     name: 'note',
     props: {
@@ -186,7 +187,20 @@ export default {
         },
         download(course) {
             exportCourse(this.phone, course.course_no)
-        }
+        },
+        import_course() {
+            let input = document.createElement("input")
+            input.type = "file"
+            input.accept = ".zip"
+            input.onchange = (e) => {
+                console.log(e.target.files)
+
+                importCourse(this.phone, e.target.files[0])
+
+                input = null
+            }
+            input.click()
+        },
     }
 }
 </script>

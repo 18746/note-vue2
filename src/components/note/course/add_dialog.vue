@@ -14,7 +14,7 @@
                 <el-input :value="form.phone" disabled></el-input>
             </el-form-item>
             <el-form-item
-                label="头像"
+                label="封面"
             >
                 <uploadFile
                     v-if="dialogFormVisible"

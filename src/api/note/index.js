@@ -80,7 +80,27 @@ export function exportCourse(phone, course_no) {
     return new Promise((resolve, reject) => {
         request({
             method: "get",
-            url: `/note/course/${phone}/${course_no}`,
+            url: `/note/course/export/${phone}/${course_no}`,
+        }).then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
+export function importCourse(phone, file) { 
+    return new Promise((resolve, reject) => {
+        request({
+            method: "post",
+            url: `/note/course/import/${phone}`,
+            data: {
+                file
+            },
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'multipart/form-data'
+            }
         }).then(res => {
             resolve(res)
         }).catch(err => {
