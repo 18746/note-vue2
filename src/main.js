@@ -55,7 +55,11 @@ import 'codemirror/lib/codemirror.css';
 VMdEditor.Codemirror = Codemirror;
 
 VMdEditor.use(githubTheme, {
-  Hljs: hljs,
+    Hljs: hljs,
+    extend(md) {
+        // md为 markdown-it 实例，可以在此处进行修改配置,并使用 plugin 进行语法扩展
+        // md.set(option).use(plugin);
+    },
 });
 
 Vue.use(VMdEditor);
