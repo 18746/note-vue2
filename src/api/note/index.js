@@ -206,16 +206,6 @@ const contentUnURL = (phone, content) => {
     return content.replaceAll(`${process.env.BASE_API}/unit/picture/${phone}/`, `/unit/picture/${phone}/`);
 }
 
-// 定义一个函数来替换小括号中的空格
-const replaceSpacesInLinks = (str) => {
-    let regex = /!\[.*?\]\((.*?)\)/g;
-    return str.replace(regex, function (match, p1) {
-        // 将小括号中的内容的空格替换为%20
-        let replaced = p1.replace(/ /g, '%20');
-        return match.replace(p1, replaced);
-    });
-}
-
 export function getUnitContent(phone, course, unit) {
     return new Promise((resolve, reject) => {
         request({
@@ -223,7 +213,6 @@ export function getUnitContent(phone, course, unit) {
             url: `/unit/content/${phone}/${course.course_no}/${unit.unit_no}`,
         }).then(res => {
             res.data.content = contentDoURL(phone, res.data.content)
-            res.data.content = replaceSpacesInLinks(res.data.content)
             resolve(res)
         }).catch(err => {
             reject(err)
@@ -231,7 +220,6 @@ export function getUnitContent(phone, course, unit) {
     })
 }
 export function updateUnitContent(phone, course, unit, content) {
-    content = replaceSpacesInLinks(content)
     content = contentUnURL(phone, content)
     return new Promise((resolve, reject) => {
         request({
@@ -243,7 +231,6 @@ export function updateUnitContent(phone, course, unit, content) {
             }
         }).then(res => {
             res.data = contentDoURL(phone, res.data)
-            res.data = replaceSpacesInLinks(res.data)
             resolve(res)
         }).catch(err => {
             reject(err)
@@ -261,7 +248,6 @@ export function uploadUnitPicture(phone, course, unit, picture) {
             data: formData
         }).then(res => {
             res.data.picture_url = contentDoURL(phone, res.data.picture_url)
-            res.data.picture_url = res.data.picture_url.replaceAll(" ", "%20")
             resolve(res)
         }).catch(err => {
             reject(err)
