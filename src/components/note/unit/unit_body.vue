@@ -276,10 +276,10 @@ export default {
     box-sizing: border-box;
     position: relative;
     /deep/ .v-md-editor img {
-        max-width: 800px;
-        display: block;
-        margin: auto;
-        width: 80%;
+        max-width: 500px;
+        // display: block;
+        // margin: auto;
+        width: auto;
         cursor: pointer;
     }
     .time {
