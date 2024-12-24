@@ -8,24 +8,43 @@ body {
 }
 .my-scrollbar-y {
     overflow: hidden auto;
-}
-.my-scrollbar-y::-webkit-scrollbar {
-    width: 6px;
-}
-// 滚动条轨道
-.my-scrollbar-y::-webkit-scrollbar-track {
-    background: rgb(239, 239, 239);
-    border-radius: 2px;
-}
-// 小滑块
-.my-scrollbar-y::-webkit-scrollbar-thumb {
-    background: #40a0ff49;
-    border-radius: 10px;
-}
-.my-scrollbar-y::-webkit-scrollbar-thumb:hover {
-    background: #40a0ff;
+    &::-webkit-scrollbar {
+        width: 6px;
+    }
+    // 滚动条轨道
+    &::-webkit-scrollbar-track {
+        background: rgb(239, 239, 239);
+        border-radius: 2px;
+    }
+    // 小滑块
+    &::-webkit-scrollbar-thumb {
+        background: #40a0ff49;
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: #40a0ff;
+    }
 }
 
+.my-scrollbar-x {
+    overflow: auto hidden;
+    &::-webkit-scrollbar {
+        height: 4px;
+    }
+    // 滚动条轨道
+    &::-webkit-scrollbar-track {
+        background: rgb(239, 239, 239);
+        border-radius: 2px;
+    }
+    // 小滑块
+    &::-webkit-scrollbar-thumb {
+        background: #40a0ff49;
+        border-radius: 10px;
+    }
+    &::-webkit-scrollbar-thumb:hover {
+        background: #40a0ff;
+    }
+}
 
 .el-dialog {
     margin: 0 !important;

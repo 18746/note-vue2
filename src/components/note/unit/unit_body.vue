@@ -15,7 +15,7 @@
             @upload-image="uploadImage"
         ></v-md-editor>
         <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
-        <div v-if="!isEdit" class="children">
+        <div v-if="!isEdit" class="children my-scrollbar-x">
             <el-button
                 type="text"
                 v-for="item in unit_content.child"
@@ -139,7 +139,7 @@ export default {
                 return "calc(100vh - 97px)"
             } else {
                 if (this.unit_content.child && this.unit_content.child.length > 0) {
-                    return "calc(100vh - 130px)"
+                    return "calc(100vh - 133px)"
                 } else {
                     return "calc(100vh - 97px)"
                 }
@@ -302,8 +302,8 @@ export default {
 }
 .children {
     display: flex;
-    flex-wrap: wrap;
-    padding: 0 20px;
+    // flex-wrap: wrap;
+    margin: 0 115px 0 20px;
     .el-button {
         padding: 8px 0px;
         font-size: 15px;
