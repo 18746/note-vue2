@@ -194,7 +194,6 @@ export default {
             input.accept = ".zip"
             input.onchange = (e) => {
                 let file = e.target.files[0]
-                console.log(file)
                 if (file.size > 1024 * 1024 * 100) {
                     this.$message({
                         type: 'error',
