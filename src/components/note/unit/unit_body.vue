@@ -161,7 +161,7 @@ export default {
             if (this.unit && this.unit.unit_no) {
                 this.init()
             }
-            this.isEdit = false;
+            // this.isEdit = false;
         }
     },
     methods: {
@@ -248,12 +248,19 @@ export default {
                 if (this.isEdit) {
                     this.toSave()
                 }
+            } else if (event.keyCode == 27) {
+                if (this.isEdit) {
+                    this.isEdit = false;
+                }
             }
             event.preventDefault(); //阻止默认事件
             event.stopPropagation(); //阻止冒泡
         },
         keydownEvent(event) {
             if (event.ctrlKey && event.keyCode == 83) {
+                event.preventDefault(); //阻止默认事件
+                event.stopPropagation(); //阻止冒泡
+            } else if (event.keyCode == 27) {
                 event.preventDefault(); //阻止默认事件
                 event.stopPropagation(); //阻止冒泡
             }
