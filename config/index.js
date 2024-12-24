@@ -11,7 +11,9 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api': {
-        target: 'http://localhost:8070',
+        // target: 'http://127.0.0.1:8070',        // 直连后台接口
+        // target: 'http://127.0.0.1:80/v1',       // 通过nginx访问后台接口
+        target: 'http://dhy.note.local:80/v1',  // 通过域名访问127.0.0.1，然后走nginx访问后台接口
         changeOrigin: true,
         pathRewrite: {
           '^/api': ''
