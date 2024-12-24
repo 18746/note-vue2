@@ -193,10 +193,36 @@ export default {
             input.type = "file"
             input.accept = ".zip"
             input.onchange = (e) => {
-                console.log(e.target.files)
+                let file = e.target.files[0]
+                console.log(file)
+                if (file.size > 1024 * 1024 * 100) {
+                    this.$message({
+                        type: 'error',
+                        message: '文件大小不能超过100MB'
+                    });
+                    return
+                }
+                if (file.name.split('.').pop() != 'zip') {
+                    this.$message({
+                        type: 'error',
+                        message: '文件格式不正确，必须为zip文件'
+                    });
+                    return
+                }
+                importCourse(this.phone, this.type_no, e.target.files[0]).then(res => {
+                    this.$message({
+                        type: 'success',
+                        message: '导入成功'
+                    });
+                    this.course_list.unshift(res.data)
+                }).catch(err => {
+                    this.$message({
+                        type: 'error',
+                        message: err.data.detail || '导入失败，请重试'
+                    });
+                })
 
-                importCourse(this.phone, e.target.files[0])
-
+                input.value = ''
                 input = null
             }
             input.click()

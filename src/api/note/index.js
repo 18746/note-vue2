@@ -89,19 +89,22 @@ export function exportCourse(phone, course_no) {
     })
 }
 
-export function importCourse(phone, file) { 
+export function importCourse(phone, type_no, file) { 
+    type_no = type_no !== "0" ? type_no : ""
     return new Promise((resolve, reject) => {
         request({
             method: "post",
             url: `/note/course/import/${phone}`,
             data: {
-                file
+                type_no: type_no,
+                file,
             },
             headers: {
                 'accept': 'application/json',
                 'Content-Type': 'multipart/form-data'
             }
         }).then(res => {
+            res.data.picture = doURL(res.data.picture)
             resolve(res)
         }).catch(err => {
             reject(err)
