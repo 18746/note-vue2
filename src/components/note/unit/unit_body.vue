@@ -17,7 +17,7 @@
                 @upload-image="uploadImage"
             ></v-md-editor>
             <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
-            <div v-if="tocVisible" class="menu_list">
+            <div v-if="!isSmallScreen && tocVisible" class="menu_list">
                 <div
                     class="menu_item"
                     v-for="anchor in title_list"
@@ -50,6 +50,7 @@
                 @click="fullscreen = !fullscreen"
             ></el-button>
             <el-button
+                v-if="!isSmallScreen"
                 key="tocVisible"
                 type="primary"
                 icon="v-md-icon-toc"
@@ -167,6 +168,11 @@ export default {
                     unit_body_menu_visible: val
                 })
             }
+        },
+        isSmallScreen: {
+            get() {
+                return this.$store.getters["habit/getHabit"].ScreenSize <= 700
+            },
         }
     },
     watch: {
