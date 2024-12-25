@@ -7,14 +7,40 @@
 </template>
 
 <script>
+import { throttle } from '@/utils/index.js';
 
 export default {
     name: 'App',
     data() {
         return {}
     },
-    created() {
+    computed: {
+        screenSize: {
+            get() {
+                return this.$store.getters["habit/getHabit"].ScreenSize
+            },
+            set(val) {
+                this.$store.commit('habit/setHabit', {
+                    ScreenSize: val
+                })
+            }
+        }
     },
+    created() { },
+    methods: {
+        ScreenSize() {
+            this.screenSize = window.document.body.offsetWidth;
+        },
+        screenSizeThrottle() {},
+    },
+    mounted() {
+        this.screenSizeThrottle = throttle(this.ScreenSize, 20)
+        
+        window.addEventListener('resize', this.screenSizeThrottle, false)
+    },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.screenSizeThrottle, false)
+    }
 }
 </script>
 
