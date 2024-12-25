@@ -2,7 +2,8 @@ export default {
     namespaced: true, // 命名空间
     state: {
         habit: localStorage.getItem('habit') ? JSON.parse(localStorage.getItem('habit')) : {
-            my_note_card: false,
+            note_card_style: false,
+            unit_body_menu_visible: false,
         },
     },
     mutations: {
@@ -17,7 +18,8 @@ export default {
                 // 清空时，初始化本地
                 localStorage.removeItem('habit')
                 state.habit = {
-                    my_note_card: false
+                    note_card_style: false,
+                    unit_body_menu_visible: false,
                 }
             }
         },

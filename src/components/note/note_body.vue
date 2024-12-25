@@ -29,8 +29,8 @@
             <el-button type="success" icon="el-icon-upload2" circle @click="import_course" />
             <el-button type="success" icon="el-icon-document-add" circle @click="add" />
             <el-button
-                :type="my_note_card ? 'primary' : ''"
-                :icon="!my_note_card ? 'el-icon-s-grid' : 'el-icon-document'"
+                :type="note_card_style ? 'primary' : ''"
+                :icon="!note_card_style ? 'el-icon-s-grid' : 'el-icon-document'"
                 circle
                 @click="changCardOrLine"
             ></el-button>
@@ -98,20 +98,20 @@ export default {
     },
     computed: {
         Class() {
-            if (this.my_note_card) {
+            if (this.note_card_style) {
                 return 'course-card'
             } else if (this.line_type) {
                 return 'course-line'
             }
             return 'course-line'
         },
-        my_note_card: {
+        note_card_style: {
             get() {
-                return this.$store.getters["habit/getHabit"].my_note_card
+                return this.$store.getters["habit/getHabit"].note_card_style
             },
             set(val) {
                 this.$store.commit('habit/setHabit', {
-                    my_note_card: val
+                    note_card_style: val
                 })
             }
         }
@@ -130,7 +130,7 @@ export default {
             })
         },
         changCardOrLine() {
-            this.my_note_card = !this.my_note_card
+            this.note_card_style = !this.note_card_style
         },
         // 点击课程跳转
         select(course) {

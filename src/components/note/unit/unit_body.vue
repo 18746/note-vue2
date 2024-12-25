@@ -1,20 +1,33 @@
 <template>
     <div class="body">
-        <v-md-editor
-            ref="mdEditor"
-            :mode="mode"
-            v-model="content"
-            placeholder="在此输入内容"
-            left-toolbar="undo redo | h bold italic strikethrough quote | ul ol table hr | link image code"
-            right-toolbar=""
-            :include-level="[1, 2, 3, 4]"
-            :height="editorHeight"
-            @save="save"
-            :disabled-menus="[]"
-            @image-click="imageClick"
-            @upload-image="uploadImage"
-        ></v-md-editor>
-        <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
+        <div class="edit_and_menu">
+            <v-md-editor
+                ref="mdEditor"
+                :mode="mode"
+                v-model="content"
+                placeholder="在此输入内容"
+                left-toolbar="undo redo | h bold italic strikethrough quote | ul ol table hr | link image code"
+                right-toolbar=""
+                :include-level="[1, 2, 3, 4]"
+                :height="editorHeight"
+                @change="changeEditor"
+                @save="save"
+                :disabled-menus="[]"
+                @image-click="imageClick"
+                @upload-image="uploadImage"
+            ></v-md-editor>
+            <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
+            <div v-if="tocVisible" class="menu_list">
+                <div
+                    class="menu_item"
+                    v-for="anchor in title_list"
+                    :style="{ 'padding-left': `${anchor.indent * 20}px` }"
+                    @click="handleAnchorClick(anchor)"
+                >
+                    <a style="cursor: pointer">{{ anchor.title }}</a>
+                </div>
+            </div>
+        </div>
         <div v-if="!isEdit" class="children my-scrollbar-x">
             <el-button
                 type="text"
@@ -29,16 +42,14 @@
         </div>
         <div class="my-button-bottom">
             <el-button
-                v-if="isEdit"
-                key="editSee"
+                key="fullscreen"
                 type="primary"
-                icon="el-icon-view"
+                :icon="!fullscreen ? 'el-icon-full-screen' : 'el-icon-crop'"
                 circle
-                :plain="!editSee"
-                @click="editSee = !editSee"
+                :plain="!fullscreen"
+                @click="fullscreen = !fullscreen"
             ></el-button>
             <el-button
-                v-if="isEdit"
                 key="tocVisible"
                 type="primary"
                 icon="v-md-icon-toc"
@@ -47,12 +58,13 @@
                 @click="tocVisible = !tocVisible"
             ></el-button>
             <el-button
-                key="fullscreen"
+                v-if="isEdit"
+                key="editSee"
                 type="primary"
-                :icon="!fullscreen ? 'el-icon-full-screen' : 'el-icon-crop'"
+                icon="el-icon-view"
                 circle
-                :plain="!fullscreen"
-                @click="fullscreen = !fullscreen"
+                :plain="!editSee"
+                @click="editSee = !editSee"
             ></el-button>
             <div class="quarantine"></div>
             <el-button
@@ -92,6 +104,9 @@
 <script>
 import imgPreview from '@/components/img_preview.vue';
 import { getUnitContent, updateUnitContent, uploadUnitPicture } from '@/api/note';
+
+import { autoScrollFun } from '@/utils/scroll.js';
+import { throttle } from '@/utils/index.js';
 export default {
     name: 'unit',
     components: {
@@ -115,13 +130,14 @@ export default {
             content: '',        // 展示的内容
 
             fullscreen: false,  // 是否全屏
-            tocVisible: false,  // 是否显示目录
             isEdit: false,      // 是否为编辑模式
             editSee: true,      // 编辑模式是否展示预览
 
             imgVisible: false,  // 是否显示图片预览
             imgList: [],        // 图片列表
             img_index: 0,       // 当前显示的图片索引
+
+            title_list: [],      // 目录列表
         };
     },
     computed: {
@@ -145,16 +161,21 @@ export default {
                 }
             }
         },
+        tocVisible: {
+            get() {
+                return this.$store.getters["habit/getHabit"].unit_body_menu_visible
+            },
+            set(val) {
+                this.$store.commit('habit/setHabit', {
+                    unit_body_menu_visible: val
+                })
+            }
+        }
     },
     watch: {
         fullscreen(val) {
             if (this.$refs.mdEditor) {
                 this.$refs.mdEditor.fullscreen = val;
-            }
-        },
-        tocVisible(val) {
-            if (this.$refs.mdEditor) {
-                this.$refs.mdEditor.tocVisible = val;
             }
         },
         unit() {
@@ -169,6 +190,7 @@ export default {
             await getUnitContent(this.phone, this.course, this.unit).then(res => {
                 this.unit_content = res.data;
                 this.content = res.data.content;
+                this.GenerateMenuList();
             }).catch(err => {
                 console.error(err);
                 this.$message({
@@ -190,10 +212,14 @@ export default {
             }).then(() => {
                 this.isEdit = false;
                 this.content = this.unit_content.content;
+                this.GenerateMenuList();
             }).catch(action => {});
         },
         toSave() {
             this.$refs.mdEditor.save();
+        },
+        changeEditor(text, html) {
+            this.GenerateMenuList();
         },
         async save(text, html) {
             await updateUnitContent(this.phone, this.course, this.unit, text).then(res => {
@@ -243,6 +269,46 @@ export default {
             this.$emit('toUnit', unit)
         },
 
+        getMenuList() {
+            const anchors = this.$refs.mdEditor.$el.querySelectorAll('h1,h2,h3,h4,h5,h6');
+            const titles = Array.from(anchors).filter((title) => !!title.innerText.trim());
+
+            if (!titles.length) {
+                this.title_list = [];
+                return;
+            }
+
+            const hTags = Array.from(new Set(titles.map((title) => title.tagName))).sort();
+
+            this.title_list = titles.map((el) => ({
+                title: el.innerText,
+                lineIndex: el.getAttribute('data-v-md-line'),
+                indent: hTags.indexOf(el.tagName),
+            }));
+        },
+        handleAnchorClick(anchor) {
+            const { mdEditor } = this.$refs;
+            const { lineIndex } = anchor;
+
+            const heading = mdEditor.$el.querySelector(`[data-v-md-line="${lineIndex}"]`);
+            if (heading) {
+                // 注意：如果你使用的是编辑组件的预览模式,则这里的方法名改为 previewScrollToTarget
+                // mdEditor.scrollToTarget({
+                //     target: heading,
+                //     scrollContainer: window,
+                //     top: 60,
+                // });
+                // mdEditor.previewScrollToTarget({
+                //     target: heading,
+                //     // scrollContainer: window,
+                //     scrollContainer: document.getElementsByClassName('scrollbar__wrap')[1],
+                //     top: 10,
+                // });
+                autoScrollFun(document.getElementsByClassName('scrollbar__wrap')[1], heading)
+            }
+        },
+        GenerateMenuList(){}, // 生成目录
+        
         keyupEvent(event) {
             if (event.ctrlKey && event.keyCode == 83) {
                 if (this.isEdit) {
@@ -251,6 +317,7 @@ export default {
             } else if (event.keyCode == 27) {
                 if (this.isEdit) {
                     this.isEdit = false;
+                    this.GenerateMenuList();
                 }
             }
             event.preventDefault(); //阻止默认事件
@@ -267,6 +334,9 @@ export default {
         },
     },
     mounted() {
+        this.GenerateMenuList = throttle(() => this.$nextTick(() => {
+            this.getMenuList();
+        }), 20)
         document.addEventListener('keyup', this.keyupEvent, false)
         document.addEventListener('keydown', this.keydownEvent, false)
     },
@@ -282,12 +352,29 @@ export default {
     width: 100%;
     box-sizing: border-box;
     position: relative;
-    /deep/ .v-md-editor img {
-        max-width: 500px;
-        // display: block;
-        // margin: auto;
-        width: auto;
-        cursor: pointer;
+    .edit_and_menu {
+        display: flex;
+        border-bottom: 1px solid #ccc;
+        /deep/ .v-md-editor img {
+            max-width: 500px;
+            // display: block;
+            // margin: auto;
+            width: auto;
+            cursor: pointer;
+        }
+        .menu_list {
+            width: 400px;
+            padding: 10px 5px;
+            box-sizing: border-box;
+            border-left: 1px solid #ccc;
+            .menu_item {
+                margin-bottom: 10px;
+                font-size: 14px;
+                &:last-child {
+                    margin-bottom: 0;
+                }
+            }
+        }
     }
     .time {
         display: flex;
