@@ -74,26 +74,28 @@ export default {
                 return false;
             }
         },
-    },
-    created() {
-        if (this.showLeft) {
-            const resize = throttle(this.resize, 10);
-            window.addEventListener('resize', resize)
-            this.resize()
+        screenSize() {
+            return this.$store.getters["habit/getHabit"].ScreenSize
         }
     },
-    methods: {
-        resize() {
-            const offsetWidth = window.document.body.offsetWidth;
-            if (offsetWidth <= 1000) {
-                this.isSmallScreen = true;
-                this.showMenu = false;
-            } else {
-                this.isSmallScreen = false;
-                this.showMenu = true;
-            }
+    watch: {
+        screenSize: {
+            handler(newVal, oldVal) {
+                if (this.showLeft) {
+                    if (newVal <= 1000) {
+                        this.isSmallScreen = true;
+                        this.showMenu = false;
+                    } else {
+                        this.isSmallScreen = false;
+                        this.showMenu = true;
+                    }
+                }
+            },
+            immediate: true
         }
     },
+    created() { },
+    methods: { },
 }
 </script>
 
