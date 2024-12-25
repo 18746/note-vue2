@@ -151,15 +151,12 @@ export default {
             }
         },
         editorHeight() {
-            if (this.isEdit) {
-                return "calc(100vh - 97px)"
-            } else {
-                if (this.unit_content.child && this.unit_content.child.length > 0) {
-                    return "calc(100vh - 133px)"
-                } else {
-                    return "calc(100vh - 97px)"
-                }
+            if (this.fullscreen) {
+                return "100%"
+            } else if (!this.isEdit && this.unit_content.child && this.unit_content.child.length) {
+                return "calc(100vh - 133px)"
             }
+            return "calc(100vh - 97px)"
         },
         tocVisible: {
             get() {
@@ -174,8 +171,13 @@ export default {
     },
     watch: {
         fullscreen(val) {
-            if (this.$refs.mdEditor) {
-                this.$refs.mdEditor.fullscreen = val;
+            // if (this.$refs.mdEditor) {
+            //     this.$refs.mdEditor.fullscreen = val;
+            // }
+            if (val) {
+                document.querySelector(".edit_and_menu").style.position = "fixed"
+            } else {
+                document.querySelector(".edit_and_menu").style.position = "static"
             }
         },
         unit() {
@@ -355,6 +357,12 @@ export default {
     .edit_and_menu {
         display: flex;
         border-bottom: 1px solid #ccc;
+        background-color: #fff;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
         /deep/ .v-md-editor img {
             max-width: 500px;
             // display: block;
