@@ -36,9 +36,9 @@
 </template>
 
 <script>
-import account from './account.vue';
+import account from '@/components/user/login/account.vue';
 import { FormValidate } from '@/utils/validate';
-import { PwdRules, PhoneRules } from '../validate';
+import { PwdRules, PhoneRules } from '@/components/user/validate';
 import { register, } from '@/api/user';
 export default {
     name: 'register',

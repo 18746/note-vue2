@@ -68,8 +68,8 @@
 </template>
 
 <script>
-import addDialog from './add_dialog.vue';
-import updateDialog from './update_dialog.vue';
+import addDialog from '@/components/note/unit/add_dialog.vue';
+import updateDialog from '@/components/note/unit/update_dialog.vue';
 
 import { getUnitList, updateUnit, delUnit } from '@/api/note';
 export default {

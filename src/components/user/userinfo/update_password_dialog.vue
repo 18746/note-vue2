@@ -39,8 +39,9 @@
 </template>
 
 <script>
-import { PwdRules,  } from '../validate';
+import { PwdRules,  } from '@/components/user/validate';
 import { FormValidate, FormResetValidate, CannotEmpty, } from '@/utils/validate';
+
 import { updateUserInfoPwd, } from '@/api/user';
 export default {
     name: 'userinfo-update-pwd',

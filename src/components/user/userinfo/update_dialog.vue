@@ -57,8 +57,9 @@
 
 <script>
 import uploadFile from '@/components/note/upload_img.vue';
-import { EmailRules, DeviceNumRules, UserNameRules } from '../validate';
+import { EmailRules, DeviceNumRules, UserNameRules } from '@/components/user/validate';
 import { FormValidate, FormResetValidate } from '@/utils/validate';
+
 import { updateUserInfo, } from '@/api/user';
 export default {
     name: 'userinfo-update',

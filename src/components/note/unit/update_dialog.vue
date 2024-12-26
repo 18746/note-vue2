@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { UnitNameRules } from '../validate.js';
+import { UnitNameRules } from '@/components/note/validate.js';
 
 import { updateUnit } from '@/api/note';
 import { FormValidate, FormResetValidate } from '@/utils/validate';

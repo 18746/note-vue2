@@ -36,13 +36,10 @@
 </template>
 
 <script>
-import account from './account.vue';
+import account from '@/components/user/login/account.vue';
 import { FormValidate } from '@/utils/validate';
-import { PwdRules, PhoneRules } from '../validate';
-import {
-    // login,
-    // register,
-} from '@/api/user';
+import { PwdRules, PhoneRules } from '@/components/user/validate';
+
 export default {
     name: 'forgetPwd',
     components: {

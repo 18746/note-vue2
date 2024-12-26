@@ -69,6 +69,7 @@
 
 <script>
 import uploadFile from '@/components/note/upload_img.vue';
+
 export default {
     name: 'userinfo-view',
     components: {

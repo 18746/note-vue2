@@ -51,8 +51,8 @@
 </template>
 
 <script>
-import addDialog from './course/add_dialog.vue';
-import updateDialog from './course/update_dialog.vue';
+import addDialog from '@/components/note/course/add_dialog.vue';
+import updateDialog from '@/components/note/course/update_dialog.vue';
 
 import { getCourseByTypeList, exportCourse, importCourse, delCourse } from '@/api/note';
 export default {

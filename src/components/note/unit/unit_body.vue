@@ -93,7 +93,7 @@
 
 <script>
 import imgPreview from '@/components/img_preview.vue';
-import unitMenu from './unit_menu.vue';
+import unitMenu from '@/components/note/unit/unit_menu.vue';
 import { getUnitContent, updateUnitContent, uploadUnitPicture } from '@/api/note';
 
 import { autoScrollFun } from '@/utils/scroll.js';

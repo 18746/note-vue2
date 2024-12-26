@@ -68,7 +68,7 @@
 <script>
 import uploadFile from '@/components/note/upload_img.vue';
 
-import { CourseNameRules, DescriptionRules } from '../validate.js';
+import { CourseNameRules, DescriptionRules } from '@/components/note/validate.js';
 
 import { getTypePhoneList, updateCourse } from '@/api/note';
 import { CannotEmpty, FormValidate, FormResetValidate } from '@/utils/validate';
