@@ -16,13 +16,12 @@
                 @upload-image="uploadImage"
             ></v-md-editor>
             <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
-            <unitMenu v-if="!isSmallScreen && tocVisible" :title_list="title_list" @anchor-click="handleAnchorClick" />
+            <unitMenu v-show="!isSmallScreen && tocVisible" :title_list="title_list" :haschild="!isEdit && unit_content.child.length > 0" @anchor-click="handleAnchorClick" />
         </div>
         <div v-if="!isEdit" class="children my-scrollbar-x">
             <el-button
+                v-for="item in unit_content.child" :key="item.unit_no"
                 type="text"
-                v-for="item in unit_content.child"
-                :key="item.unit_no"
                 @click="toUnit(item)"
             >{{ item.name }}</el-button>
         </div>
@@ -147,7 +146,7 @@ export default {
             if (this.fullscreen) {
                 return "100%"
             } else if (!this.isEdit && this.unit_content.child && this.unit_content.child.length) {
-                return "calc(100vh - 133px)"
+                return "calc(100vh - 130px)"
             }
             return "calc(100vh - 97px)"
         },
@@ -382,7 +381,7 @@ export default {
 .children {
     display: flex;
     // flex-wrap: wrap;
-    margin: 0 115px 0 20px;
+    margin: 5px 115px -10px 20px;
     .el-button {
         padding: 8px 0px;
         font-size: 15px;

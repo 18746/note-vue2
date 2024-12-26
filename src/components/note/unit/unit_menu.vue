@@ -19,16 +19,24 @@
 <script>
 export default {
     name: 'unit-menu',
-    components: {},
     props: {
         title_list: {
             type: Array,
             default: () => []
+        },
+        haschild: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
         return { }
     },
+    // computed: {
+    //     unit_menu_list_height() {
+    //         return this.haschild ? 'height: calc(100vh - 185px);' : 'height: calc(100vh - 152px);'
+    //     }
+    // },
     created() { },
     methods: {
         handleAnchorClick(anchor) {
@@ -41,7 +49,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
 .unit-menu {
-    height: 100%;
+    height: initial;
     border-left: 1px solid #ccc;
     box-sizing: border-box;
 
@@ -58,7 +66,7 @@ export default {
     .unit-menu-list {
         width: 315px;
         padding: 5px 10px;
-        height: calc(100vh - 152px);
+        height: calc(100% - 55px);
 
         .unit-menu-item {
             margin-bottom: 10px;
