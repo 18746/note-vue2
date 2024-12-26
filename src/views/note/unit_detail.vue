@@ -8,7 +8,7 @@
         </template>
         <!-- 左侧菜单 -->
         <template #left-menu>
-            <unitMenu
+            <courseMenu
                 ref="menu"
                 :phone="phone"
                 :unit_no="unit_no"
@@ -42,7 +42,7 @@
 
 <script>
 import layout from '@/components/layout/layout.vue';
-import unitMenu from '@/components/note/unit/unit_menu.vue';
+import courseMenu from '@/components/note/course/course_menu.vue';
 import unitBody from '@/components/note/unit/unit_body.vue';
 
 import userPicture from '@/components/user/user_picture.vue';
@@ -53,7 +53,7 @@ export default {
     components: {
         layout,
         unitBody,
-        unitMenu,
+        courseMenu,
         userPicture,
     },
     data() {

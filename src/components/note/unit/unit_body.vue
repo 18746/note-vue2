@@ -16,16 +16,7 @@
                 @upload-image="uploadImage"
             ></v-md-editor>
             <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
-            <div v-if="!isSmallScreen && tocVisible" class="menu_list">
-                <div
-                    class="menu_item"
-                    v-for="anchor in title_list"
-                    :style="{ 'padding-left': `${anchor.indent * 20}px` }"
-                    @click="handleAnchorClick(anchor)"
-                >
-                    <a style="cursor: pointer">{{ anchor.title }}</a>
-                </div>
-            </div>
+            <unitMenu v-if="!isSmallScreen && tocVisible" :title_list="title_list" @anchor-click="handleAnchorClick" />
         </div>
         <div v-if="!isEdit" class="children my-scrollbar-x">
             <el-button
@@ -103,6 +94,7 @@
 
 <script>
 import imgPreview from '@/components/img_preview.vue';
+import unitMenu from './unit_menu.vue';
 import { getUnitContent, updateUnitContent, uploadUnitPicture } from '@/api/note';
 
 import { autoScrollFun } from '@/utils/scroll.js';
@@ -111,6 +103,7 @@ export default {
     name: 'unit',
     components: {
         imgPreview,
+        unitMenu,
     },
     props: {
         phone: {
@@ -367,20 +360,6 @@ export default {
         bottom: 0;
         left: 0;
         right: 0;
-
-        .menu_list {
-            width: 400px;
-            padding: 10px 5px;
-            box-sizing: border-box;
-            border-left: 1px solid #ccc;
-            .menu_item {
-                margin-bottom: 10px;
-                font-size: 14px;
-                &:last-child {
-                    margin-bottom: 0;
-                }
-            }
-        }
     }
     .time {
         display: flex;

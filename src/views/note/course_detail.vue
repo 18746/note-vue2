@@ -24,7 +24,7 @@
                         @click="addUnit()"
                     >章节</el-button>
                 </div>
-                <unitMenu
+                <courseMenu
                     ref="menu"
                     :phone="phone"
                     :course="course"
@@ -39,7 +39,7 @@
 <script>
 import layout from '@/components/layout/layout.vue';
 import courseBody from '@/components/note/course/course_body.vue';
-import unitMenu from '@/components/note/unit/unit_menu.vue';
+import courseMenu from '@/components/note/course/course_menu.vue';
 import userPicture from '@/components/user/user_picture.vue';
 
 import { getCourse } from '@/api/note';
@@ -49,7 +49,7 @@ export default {
         layout,
         courseBody,
         userPicture,
-        unitMenu,
+        courseMenu,
     },
     data() {
         return {
@@ -128,7 +128,7 @@ export default {
     }
 }
 
-.unit-menu {
+.course-menu {
     max-height: 80vh;
 }
 </style>
