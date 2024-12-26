@@ -153,6 +153,13 @@ body {
     bottom: 50px;
     display: flex;
     flex-direction: column;
+    opacity: 0.6;
+    transition: all 0.3s ease-in-out;
+
+    &:hover {
+        opacity: 1;
+    }
+
     .el-button {
         margin-bottom: 12px;
         font-size: 18px;
@@ -224,5 +231,9 @@ body {
     .CodeMirror-wrap pre.CodeMirror-line {
         font-family: source-code-pro, Menlo, Monaco, Consolas, Courier New, monospace;
         font-size: 15px;
+    }
+
+    .vuepress-markdown-body p {
+        word-wrap: break-word;
     }
 }

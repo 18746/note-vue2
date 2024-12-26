@@ -56,7 +56,7 @@ export default {
     .unit-menu-title {
         font-size: 18px;
         color: #00000078;
-        padding: 10px 10px 10px;
+        padding: 8px 10px;
         border-bottom: 1px solid #ccc;
 
         i {
@@ -66,15 +66,19 @@ export default {
     .unit-menu-list {
         width: 315px;
         padding: 5px 10px;
-        height: calc(100% - 55px);
+        height: calc(100% - 50px);
 
         .unit-menu-item {
             margin-bottom: 10px;
             font-size: 15px;
+            line-height: 20px;
             color: #000000de;
+            transition: all 0.25s ease-in-out;
+
             &:hover {
                 color: #1890ff;
-                text-decoration: underline;
+                // text-decoration: underline;
+                transform: scale(1.02);
             }
             &:last-child {
                 margin-bottom: 0;

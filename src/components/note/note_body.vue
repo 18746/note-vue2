@@ -254,7 +254,7 @@ export default {
                 height: 100%;
                 z-index: 0;
                 opacity: 0;
-                background-color: #00000059;
+                background-color: #00000088;
                 .body {
                     position: absolute;
                     top: 50%;
@@ -315,7 +315,6 @@ export default {
             }
         }
         &:hover {
-            box-shadow: 0 0 10px #cdcdcd;
             .course-info {
                 .course-title {
                     color: #00a1d6;
@@ -347,7 +346,6 @@ export default {
                     .el-icon {
                         font-size: 24px;
                         margin-right: 5px;
-                        text-shadow: 0 0px 10px #fff;
                     }
                 }
             }
