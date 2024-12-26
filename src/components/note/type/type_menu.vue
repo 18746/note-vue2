@@ -2,6 +2,7 @@
     <div class="type_menu">
         <el-tree
             ref="tree"
+            class="my-scrollbar-y"
             :data="type_list"
             :props="defaultProps"
             default-expand-all
@@ -218,6 +219,11 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    .el-tree {
+        height: calc(100vh - 105px);
+    }
+
     .menu-button {
         text-align: center;
         .button {
