@@ -1,5 +1,8 @@
 <template>
-    <div class="type_menu">
+    <div class="type-menu">
+        <div class="type-menu-title">
+            <i class="el-icon-s-help"></i>分类索引
+        </div>
         <el-tree
             ref="tree"
             class="my-scrollbar-y"
@@ -214,14 +217,25 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.type_menu {
+.type-menu {
     height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 
+    .type-menu-title {
+        font-size: 18px;
+        color: #00000078;
+        padding: 10px 15px 10px;
+        border-bottom: 1px solid #ccc;
+
+        i {
+            margin-right: 5px;
+        }
+    }
+
     .el-tree {
-        height: calc(100vh - 105px);
+        height: calc(100vh - 155px);
     }
 
     .menu-button {
@@ -238,7 +252,7 @@ export default {
     }
 }
 .my-custom-tree-node {
-    padding-left: 20px;
+    padding-left: 15px;
 
     .info {
 
