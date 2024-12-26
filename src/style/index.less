@@ -198,15 +198,17 @@ body {
             cursor: pointer;
         }
     }
-
 }
 
 .v-md-editor {
+    &.v-md-editor--editable {
+        box-shadow: unset;
+    }
     .vuepress-markdown-body:not(.custom) img {
-        max-width: 500px;
+        max-width: 100%;
         // display: block;
         // margin: auto;
-        width: auto;
+        width: 500px;
         cursor: pointer;
     }
     .codemirror-wrapper {
