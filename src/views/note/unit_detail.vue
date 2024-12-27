@@ -1,5 +1,5 @@
 <template>
-    <layout AlwaysDisplayFold>
+    <layout>
         <!-- 左侧搜索框 -->
         <template #left-search>
             <el-input v-model="search" size="small" placeholder="Search...">

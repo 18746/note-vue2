@@ -235,6 +235,7 @@ export default {
     display: inline-block;
     box-sizing: border-box;
     padding: 10px;
+    transition: all 0.2s ease-in-out;
     
     .course {
         .course-img {

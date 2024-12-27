@@ -1,22 +1,34 @@
 <template>
-    <section class="container">
-        <transition name="fade">
-            <aside v-if="showLeft" class="container-aside" v-show="showMenu" @click.stop="showMenu = false">
-                <div class="aside-page-left" @click.stop>
-                    <div class="page-left-search" :style="'height: ' + TitleHeight + ';'">
-                        <slot name="left-search"></slot>
-                    </div>
-                    <div class="aside-page-menu" :style="'height: ' + BodyHeight + ';'">
-                        <slot name="left-menu"></slot>
-                    </div>
+    <section class="container" :style="container_style">
+        <aside
+            v-if="showLeft"
+            class="container-aside"
+            :style="aside_style"
+            @click.stop="showMenu = false"
+        >
+            <div class="aside-page-left" :style="aside_page_left_width" @click.stop>
+                <div
+                    class="page-left-search"
+                    :style="title_height"
+                >
+                    <slot name="left-search"></slot>
                 </div>
-            </aside>
-        </transition>
-        <main class="container-main">
+                <div
+                    class="aside-page-menu"
+                    :style="body_height"
+                >
+                    <slot name="left-menu"></slot>
+                </div>
+            </div>
+        </aside>
+        <main class="container-main" :style="container_main_style">
             <div class="main-page-right">
-                <div class="page-right-title" :style="'height: ' + TitleHeight + ';'">
+                <div
+                    class="page-right-title"
+                    :style="title_height"
+                >
                     <el-button
-                        v-if="showFoldButton"
+                        v-if="showLeft"
                         class="btn"
                         type="text"
                         :icon="!showMenu ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
@@ -24,7 +36,10 @@
                     ></el-button>
                     <slot name="title"></slot>
                 </div>
-                <div class="page-right-body my-scrollbar-y" :style="'height: ' + BodyHeight + ';'">
+                <div
+                    class="page-right-body my-scrollbar-y"
+                    :style="body_height"
+                >
                     <slot></slot>
                 </div>
             </div>
@@ -33,19 +48,16 @@
 </template>
 
 <script>
-import { throttle } from '@/utils';
-
 export default {
     name: 'layout',
     props: {
         titleHeight: {
             type: Number,
-            required: false,
             default: 54
         },
-        AlwaysDisplayFold: {
-            type: Boolean,
-            default: false,
+        menuWidth: {
+            type: Number,
+            default: 300
         },
         showLeft: {
             type: Boolean,
@@ -55,38 +67,75 @@ export default {
     data() {
         return {
             showMenu: false,
-            isSmallScreen: false,
         }
     },
     computed: {
-        TitleHeight() {
-            return this.titleHeight + 'px';
-        },
-        BodyHeight() {
-            return 'calc(100% - ' + this.TitleHeight +')'
-        },
-        showFoldButton() {
-            if (this.AlwaysDisplayFold) {
-                return true;
-            } else if (this.isSmallScreen) {
-                return true;
-            } else {
-                return false;
+        title_height() {
+            return {
+                height: `${this.titleHeight}px`
             }
         },
+        body_height() {
+            return {
+                height: `calc(100vh - ${this.titleHeight}px)`
+            }
+        },
+
         screenSize() {
             return this.$store.getters["habit/getHabit"].ScreenSize
-        }
+        },
+        isSmallScreen() {
+            return this.screenSize <= 1000
+        },
+
+        aside_style() {
+            if (this.showMenu) {
+                if (this.isSmallScreen) {
+                    return {
+                        width: '100vw !important',
+                        paddingLeft: `${this.menuWidth}px`,
+                    }
+                } else {
+                    return {
+                        width: `${this.menuWidth}px`,
+                        paddingLeft: `${this.menuWidth}px`,
+                    }
+                }
+            }
+            return {
+                width: `${this.menuWidth}px`
+            }
+        },
+        container_main_style() {
+            if (this.showMenu) {
+                if (!this.isSmallScreen) {
+                    return {
+                        paddingLeft: `${this.menuWidth}px`,
+                    }
+                }
+            }
+            return ""
+        },
+        aside_page_left_width() {
+            return {
+                width: `${this.menuWidth}px`
+            }
+        },
+        container_style() {
+            return {
+                width: `calc(100vw + ${this.menuWidth}px)`,
+                left: `${-this.menuWidth}px`,
+                paddingLeft: `${this.menuWidth}px`,
+            }
+        },
     },
     watch: {
         screenSize: {
             handler(newVal, oldVal) {
                 if (this.showLeft) {
                     if (newVal <= 1000) {
-                        this.isSmallScreen = true;
                         this.showMenu = false;
                     } else {
-                        this.isSmallScreen = false;
                         this.showMenu = true;
                     }
                 }
@@ -102,35 +151,29 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less" scoped>
 .container {
-    display: -webkit-box;
-    display: -ms-flexbox;
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
-    flex: 1;
-    -ms-flex-preferred-size: auto;
-    flex-basis: auto;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    min-width: 0;
-
     height: 100vh;
+    position: relative;
+    transition: all 0.1s ease-in-out;
+    width: 100vw;
+    left: 0px;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 .container-aside {
-    overflow: auto;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    -ms-flex-negative: 0;
-    flex-shrink: 0;
-    width: 300px;
+    position: absolute;
+    left: 0;
+    z-index: 3000;
+    background-color: #00000011;
+    transition: all 0.1s ease-in-out;
+    padding-left: 0px;
     .aside-page-left {
         height: 100%;
         overflow: hidden;
         border-right: 1px solid #dddddd;
+        background-color: #fff;
+        box-sizing: border-box;
+
         .page-left-search {
             padding: 10px;
             border-bottom: 1px solid #dddddd;
@@ -140,33 +183,11 @@ export default {
             width: 100%;
         }
     }
-    @media (max-width: 950px) {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        z-index: 3000;
-        background-color: #00000011;
-        
-        .aside-page-left {
-            width: 80%;
-            max-width: 350px;
-            background: #fff;
-            // box-shadow: 4px 0px 10px #b0b0b0;
-        }
-    }
 }
 .container-main{
-    display: block;
-    -webkit-box-flex: 1;
-    -ms-flex: 1;
     flex: 1;
-    -ms-flex-preferred-size: auto;
-    flex-basis: auto;
-    overflow: auto;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-
     padding: 0;
+    transition: all 0.1s ease-in-out;
     .main-page-right {
         height: 100%;
         overflow: hidden;
@@ -188,12 +209,5 @@ export default {
             box-sizing: border-box;
         }
     }
-}
-
-.fade-enter-active {
-  transition: opacity .3s;
-}
-.fade-enter {
-  opacity: 0;
 }
 </style>

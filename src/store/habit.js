@@ -3,7 +3,7 @@ export default {
     state: {
         habit: localStorage.getItem('habit') ? JSON.parse(localStorage.getItem('habit')) : {
             note_card_style: false,
-            unit_body_menu_visible: false,
+            unit_body_menu_visible: true,
             ScreenSize: window.document.body.offsetWidth, // 屏幕宽度
         },
     },
@@ -21,7 +21,7 @@ export default {
                 localStorage.removeItem('habit')
                 state.habit = {
                     note_card_style: false,
-                    unit_body_menu_visible: false,
+                    unit_body_menu_visible: true,
                     ScreenSize: window.document.body.offsetWidth, // 屏幕宽度
                 }
             }
