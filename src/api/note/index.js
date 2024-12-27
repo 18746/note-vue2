@@ -60,12 +60,15 @@ export function getCourseByTypeList(phone, type_no) {
     })
 }
 
+// 问题：待调整，接口适配分片下载/上传
 export function getCourse(phone, course_no) { 
+    const controller = new AbortController()
     return new Promise((resolve, reject) => {
         request({
             method: "get",
             url: `/course/${phone}/${course_no}`,
             // data: params
+            signal: controller.signal
         }).then(res => {
             res.data.type_no = res.data.type_no ? res.data.type_no : "0"
             res.data.picture = doURL(res.data.picture)

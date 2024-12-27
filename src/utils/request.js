@@ -7,7 +7,7 @@ import { needUpdateToken, isTokenNotExpire } from '@/utils/user.js'
 //1. 创建新的axios实例，
 const service = axios.create({
     baseURL: process.env.BASE_API,
-    timeout: 3 * 1000
+    timeout: 3 * 60 * 1000         // 请求超时时间
 })
 
 // 2.请求拦截器
