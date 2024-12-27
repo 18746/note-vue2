@@ -35,6 +35,9 @@ export default {
     },
     mounted() {
         this.screenSizeThrottle = throttle(this.ScreenSize, 20)
+        this.$nextTick(() => {
+            this.screenSizeThrottle()
+        })
         
         window.addEventListener('resize', this.screenSizeThrottle, false)
     },
