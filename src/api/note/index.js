@@ -60,15 +60,12 @@ export function getCourseByTypeList(phone, type_no) {
     })
 }
 
-// 问题：待调整，接口适配分片下载/上传
 export function getCourse(phone, course_no) { 
-    const controller = new AbortController()
     return new Promise((resolve, reject) => {
         request({
             method: "get",
             url: `/course/${phone}/${course_no}`,
             // data: params
-            signal: controller.signal
         }).then(res => {
             res.data.type_no = res.data.type_no ? res.data.type_no : "0"
             res.data.picture = doURL(res.data.picture)
@@ -79,11 +76,19 @@ export function getCourse(phone, course_no) {
     })
 }
 
+// 问题：待调整，接口适配分片下载/上传
+// 问题：待调整，接口适配分片下载/上传
+// https://www.cnblogs.com/all-smile/p/18096224
 export function exportCourse(phone, course_no) { 
+    const controller = new AbortController()
     return new Promise((resolve, reject) => {
         request({
             method: "get",
             url: `/note/course/export/${phone}/${course_no}`,
+            // signal: controller.signal,
+            // headers: {
+            //     "Range": "bytes=0-10"
+            // }
         }).then(res => {
             resolve(res)
         }).catch(err => {
