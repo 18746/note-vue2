@@ -155,7 +155,7 @@ export default {
     display: flex;
     height: 100vh;
     position: relative;
-    transition: all 0.1s ease-in-out;
+    transition: all 0.15s ease-in-out;
     width: 100vw;
     left: 0px;
     overflow: hidden;
@@ -165,7 +165,7 @@ export default {
     position: absolute;
     left: 0;
     background-color: #00000011;
-    transition: all 0.1s ease-in-out;
+    transition: all 0.15s ease-in-out;
     padding-left: 0px;
     .aside-page-left {
         height: 100%;
@@ -187,7 +187,7 @@ export default {
 .container-main{
     flex: 1;
     padding: 0;
-    transition: all 0.1s ease-in-out;
+    transition: all 0.15s ease-in-out;
     .main-page-right {
         height: 100%;
         overflow: hidden;

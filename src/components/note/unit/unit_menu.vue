@@ -73,7 +73,7 @@ export default {
             font-size: 15px;
             line-height: 20px;
             color: #000000de;
-            transition: all 0.25s ease-in-out;
+            transition: all 0.15s ease-in-out;
 
             &:hover {
                 color: #1890ff;

@@ -203,7 +203,7 @@ export default {
     &:hover .icon {
         z-index: 2;
         opacity: 1;
-        transition: opacity 0.3s;
+        transition: opacity 0.2s;
     }
 }
 .select-body {

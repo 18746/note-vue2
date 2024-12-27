@@ -1,6 +1,6 @@
 <template>
     <div class="body">
-        <div class="edit_and_menu">
+        <div class="edit_and_menu" :style="showUnitBodyMenuStyle">
             <v-md-editor
                 ref="mdEditor"
                 :mode="mode"
@@ -16,7 +16,7 @@
                 @upload-image="uploadImage"
             ></v-md-editor>
             <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
-            <unitMenu v-show="!isSmallScreen && tocVisible" :title_list="title_list" :haschild="!isEdit && unit_content.child.length > 0" @anchor-click="handleAnchorClick" />
+            <unitMenu :title_list="title_list" :haschild="!isEdit && unit_content.child.length > 0" @anchor-click="handleAnchorClick" />
         </div>
         <div v-if="!isEdit" class="children my-scrollbar-x">
             <el-button
@@ -164,6 +164,13 @@ export default {
             get() {
                 return this.$store.getters["habit/getHabit"].ScreenSize <= 700
             },
+        },
+        showUnitBodyMenuStyle() {
+            if (!this.isSmallScreen && this.tocVisible) {
+                return "width: 100%;"
+            } else {
+                return "width: calc(100% + 336px);"
+            }
         }
     },
     watch: {
@@ -359,6 +366,7 @@ export default {
         bottom: 0;
         left: 0;
         right: 0;
+        transition: all 0.15s ease-in-out;
     }
     .time {
         display: flex;
@@ -374,7 +382,7 @@ export default {
     .empty {
         position: absolute;
         top: 50%;
-        left: 50%;
+        left: calc(50% - 165px);;
         transform: translate(-50%, -50%);
     }
 }

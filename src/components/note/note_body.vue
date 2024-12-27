@@ -235,7 +235,7 @@ export default {
     display: inline-block;
     box-sizing: border-box;
     padding: 10px;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.15s ease-in-out;
     
     .course {
         .course-img {
@@ -282,7 +282,7 @@ export default {
             &:hover .icon {
                 z-index: 2;
                 opacity: 1;
-                transition: opacity 0.3s;
+                transition: opacity 0.2s;
             }
         }
         .course-info {
@@ -353,7 +353,7 @@ export default {
             &:hover .icon {
                 z-index: 2;
                 opacity: 1;
-                transition: opacity 0.3s;
+                transition: opacity 0.2s;
             }
         }
         .course-info {
@@ -407,7 +407,7 @@ export default {
             &:hover .icon {
                 z-index: 2;
                 opacity: 1;
-                transition: opacity 0.3s;
+                transition: opacity 0.2s;
             }
         }
         .course-info {
