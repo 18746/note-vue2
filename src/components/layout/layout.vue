@@ -94,6 +94,7 @@ export default {
                     return {
                         width: '100vw !important',
                         paddingLeft: `${this.menuWidth}px`,
+                        zIndex: 9999,
                     }
                 } else {
                     return {
@@ -163,7 +164,6 @@ export default {
 .container-aside {
     position: absolute;
     left: 0;
-    z-index: 3000;
     background-color: #00000011;
     transition: all 0.1s ease-in-out;
     padding-left: 0px;
