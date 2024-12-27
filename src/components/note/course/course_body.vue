@@ -149,6 +149,7 @@ export default {
                     margin-bottom: 10px;
                     display: flex;
                     justify-content: space-between;
+                    flex-wrap: wrap;
                     .update-count {
                         color: #22d500;
                         border: 1px solid #d9ecff;
@@ -169,9 +170,6 @@ export default {
                         display: inline-block;
                         background-color: #ecf5ff;
                     }
-                    & > * {
-                        width: 215px;
-                    }
                 }
                 .course-date {
                     font-size: 15px;
@@ -179,6 +177,7 @@ export default {
                     margin-bottom: 10px;
                     display: flex;
                     justify-content: space-between;
+                    flex-wrap: wrap;
                     & > * {
                         width: 215px;
                     }
