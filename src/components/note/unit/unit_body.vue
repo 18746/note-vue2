@@ -18,7 +18,7 @@
             <el-empty v-if="!isEdit && !content" class="empty" description="点击编辑，开始记录你的笔记" :image-size="150"></el-empty>
             <unitMenu :title_list="title_list" :haschild="!isEdit && unit_content.child.length > 0" @anchor-click="handleAnchorClick" />
         </div>
-        <div v-if="!isEdit" class="children my-scrollbar-x">
+        <div v-if="!isEdit && unit_content.child.length > 0" class="children my-scrollbar-x">
             <el-button
                 v-for="item in unit_content.child" :key="item.unit_no"
                 type="text"
@@ -210,16 +210,9 @@ export default {
             this.isEdit = true;
         },
         exitEdit() {
-            this.$confirm("确定放弃修改？", '确认信息', {
-                type: 'warning',
-                distinguishCancelAndClose: true,
-                confirmButtonText: '确认',
-                cancelButtonText: '取消'
-            }).then(() => {
-                this.isEdit = false;
-                this.content = this.unit_content.content;
-                this.GenerateMenuList();
-            }).catch(action => {});
+            this.isEdit = false;
+            this.content = this.unit_content.content;
+            this.GenerateMenuList();
         },
         toSave() {
             this.$refs.mdEditor.save();
