@@ -1,3 +1,4 @@
+import { Message } from 'element-ui';
 
 export const sleep = (time) => new Promise((resolve) => {
     const timer = setTimeout(() => {
@@ -132,8 +133,6 @@ export class FileDownloader {
     // 合并文件
     async mergeChunks() {
         const blob = new Blob(this.chunks, { type: "application/octet-stream" });
-        
-        console.log("Download complete", this.chunks,);
 
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement("a");
@@ -153,10 +152,116 @@ export class FileDownloader {
     // 重置下载
     reset() {
         this.chunks = [];
+        this.paused = false;
         this.fileName = '';
         this.fileSize = 0;
         this.totalChunks = 0;
         this.currentChunk = 0;
         this.downloadedSize = 0;
+    }
+}
+
+
+export class FileUploader {
+    constructor({request, requestDone, data, file, chunkSize = 2 * 1024 * 1024, cb}) {
+        this.request = request;    // 请求方法
+        this.requestDone = requestDone // 请求完成方法
+        this.data = data;          // 请求参数
+        this.file = file;          // 文件
+        this.hash = '';            // 文件hash
+        this.chunkSize = chunkSize;    // 每块大小
+        this.fileSize = 0;             // 文件大小
+        this.totalChunks = 0;          // 总块数
+        this.currentChunk = 0;         // 当前上传的块
+        this.abortController = new AbortController();  
+        this.paused = false;           // 是否暂停
+        this.cb = cb                   // 成功回调
+    }
+    // 获取文件大小，初始化上传
+    async getFileSize() {
+        this.fileSize = this.file.size;
+        this.totalChunks = Math.ceil(this.fileSize / this.chunkSize);
+        return new Promise((resolve) => {
+            let read = new FileReader();
+            read.readAsArrayBuffer(this.file)
+            read.onload = async () => {
+                let sha1 = await crypto.subtle.digest('SHA-1', read.result).then(arrbuffer => {
+                    return Array.from(new Uint8Array(arrbuffer)).map(a => a.toString(16).padStart(2, '0')).join("")
+                });
+                this.hash = sha1;
+                resolve()
+            }
+        })
+        
+    }
+    // 上传文件块
+    async uploadChunk(chunkIndex) {
+        const start = chunkIndex * this.chunkSize;
+        const end = Math.min(this.fileSize, (chunkIndex + 1) * this.chunkSize);
+    
+        await this.request({
+            ...this.data,
+            filename: this.file.name,
+            file: this.file.slice(start, end),
+            hash: this.hash,
+        }, {
+            signal: this.abortController.signal,
+        });
+    
+        if (!this.paused && this.currentChunk < this.totalChunks - 1) {
+            this.currentChunk++;
+            this.uploadChunk(this.currentChunk);
+        } else if (this.currentChunk === this.totalChunks - 1) {
+            this.mergeChunks();
+        }
+    }
+    // 开始上传
+    async startUpload() {
+        if (this.totalChunks === 0) {
+            await this.getFileSize();
+        }
+        this.uploadChunk(this.currentChunk);
+    }
+    // 暂停上传
+    pauseDownload() {
+        this.paused = true;
+    }
+    // 恢复上传
+    resumeDownload() {
+        this.paused = false;
+        this.uploadChunk(this.currentChunk);
+    }
+    // 取消上传
+    cancelDownload() {
+        this.abortController.abort();
+        this.reset();
+    }
+    // 上传文件完成
+    async mergeChunks() {
+        await this.requestDone({
+            ...this.data,
+            filename: this.file.name,
+            hash: this.hash,
+        }, {
+            signal: this.abortController.signal,
+        }).then(res => {
+            this.cb && this.cb(res)
+            this.reset();
+        }).catch(err => {
+            Message({
+                type: 'error',
+                message: err.data.detail || '导入失败，请重试'
+            });
+        });
+    }
+    // 重置上传
+    reset() {
+        this.file = "";
+        this.hash = '';
+        this.chunkSize = 0;
+        this.fileSize = 0;
+        this.totalChunks = 0;
+        this.currentChunk = 0;
+        this.paused = false;           // 是否暂停
     }
 }

@@ -54,8 +54,8 @@
 import addDialog from '@/components/note/course/add_dialog.vue';
 import updateDialog from '@/components/note/course/update_dialog.vue';
 
-import { getCourseByTypeList, exportCourse, exportCourseChunks, importCourse, delCourse } from '@/api/note';
-import { FileDownloader } from '@/utils/index.js';
+import { getCourseByTypeList, exportCourse, exportCourseChunks, importCourse, importCourseChunks, importCourseChunksDone, delCourse } from '@/api/note';
+import { FileDownloader, FileUploader } from '@/utils/index.js';
 export default {
     name: 'note',
     props: {
@@ -197,17 +197,18 @@ export default {
                     key: Date.now().toString(),
                 },
                 fileName: course.name + ".zip",
+                chunkSize: 1024 * 100,
                 cb: () => {
                     this.$message({
                         type: 'success',
-                        message: '下载成功'
+                        message: '导出完成'
                     });
                 }
             })
             downloader.startDownload();
             this.$message({
                 type: 'info',
-                message: '开始下载，请不要关闭页面...'
+                message: '开始导出，请不要关闭页面...'
             })
         },
         import_course() {
@@ -230,21 +231,48 @@ export default {
                     });
                     return
                 }
-                importCourse(this.phone, this.type_no, e.target.files[0]).then(res => {
-                    this.$message({
-                        type: 'success',
-                        message: '导入成功'
-                    });
-                    this.course_list.unshift(res.data)
-                }).catch(err => {
-                    this.$message({
-                        type: 'error',
-                        message: err.data.detail || '导入失败，请重试'
-                    });
-                })
 
-                input.value = ''
-                input = null
+                const uploader = new FileUploader({
+                    request: importCourseChunks,
+                    requestDone: importCourseChunksDone,
+                    data: {
+                        phone: this.phone,
+                        type_no: this.type_no,
+                    },
+                    file: file,
+                    chunkSize: 1024 * 100,
+                    cb: (res) => {
+                        this.$message({
+                            type: 'success',
+                            message: '导入成功'
+                        });
+                        this.course_list.unshift(res.data)
+
+                        input.value = ''
+                        input = null
+                    }
+                })
+                uploader.startUpload()
+                this.$message({
+                    type: 'info',
+                    message: '开始导入，请稍等...'
+                });
+
+                // importCourse(this.phone, this.type_no, e.target.files[0]).then(res => {
+                //     this.$message({
+                //         type: 'success',
+                //         message: '导入成功'
+                //     });
+                //     this.course_list.unshift(res.data)
+                // }).catch(err => {
+                //     this.$message({
+                //         type: 'error',
+                //         message: err.data.detail || '导入失败，请重试'
+                //     });
+                // })
+
+                // input.value = ''
+                // input = null
             }
             input.click()
         },

@@ -132,6 +132,49 @@ export function importCourse(phone, type_no, file) {
     })
 }
 
+export function importCourseChunks({phone, filename, file, hash}, config = {}) {
+    return new Promise((resolve, reject) => {
+        request({
+            method: "post",
+            url: `/note/course/import/chunks/${phone}`,
+            data: {
+                filename,
+                file,
+                hash,
+            },
+            headers: {
+                'accept': 'application/json',
+                'Content-Type': 'multipart/form-data'
+            },
+            ...config,
+        }).then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+export function importCourseChunksDone({phone, type_no, filename, hash}, config = {}) { 
+    type_no = type_no !== "0" ? type_no : ""
+    return new Promise((resolve, reject) => {
+        request({
+            method: "get",
+            url: `/note/course/import/chunks_done/${phone}`,
+            params: {
+                type_no: type_no,
+                filename,
+                hash,
+            },
+            ...config,
+        }).then(res => {
+            res.data.picture = doURL(res.data.picture)
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
 export function addCourse(phone, params) {
     const formData = new FormData();
     formData.append('name', params.name);
