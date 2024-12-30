@@ -76,8 +76,6 @@ export function getCourse(phone, course_no) {
     })
 }
 
-// 问题：待调整，接口适配分片下载/上传
-// 问题：待调整，接口适配分片下载/上传
 // https://www.cnblogs.com/all-smile/p/18096224
 export function exportCourse(phone, course_no) {
     return new Promise((resolve, reject) => {
