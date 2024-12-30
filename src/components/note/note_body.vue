@@ -217,10 +217,10 @@ export default {
             input.accept = ".zip"
             input.onchange = (e) => {
                 let file = e.target.files[0]
-                if (file.size > 1024 * 1024 * 100) {
+                if (file.size > 1024 * 1024 * 1024) {
                     this.$message({
                         type: 'error',
-                        message: '文件大小不能超过100MB'
+                        message: '文件大小不能超过1GB'
                     });
                     return
                 }
