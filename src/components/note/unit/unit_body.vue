@@ -208,10 +208,12 @@ export default {
 
         toEdit() {
             this.isEdit = true;
+            this.fullscreen = true;
         },
         exitEdit() {
             this.isEdit = false;
             this.content = this.unit_content.content;
+            this.fullscreen = false;
             this.GenerateMenuList();
         },
         toSave() {
@@ -315,8 +317,7 @@ export default {
                 }
             } else if (event.keyCode == 27) {
                 if (this.isEdit) {
-                    this.isEdit = false;
-                    this.GenerateMenuList();
+                    this.exitEdit()
                 }
             }
             event.preventDefault(); //阻止默认事件
