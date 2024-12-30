@@ -197,7 +197,7 @@ export default {
                     key: Date.now().toString(),
                 },
                 fileName: course.name + ".zip",
-                chunkSize: 1024 * 100,
+                // chunkSize: 1024 * 1024 * 5,
                 cb: () => {
                     this.$message({
                         type: 'success',
@@ -240,7 +240,7 @@ export default {
                         type_no: this.type_no,
                     },
                     file: file,
-                    chunkSize: 1024 * 100,
+                    // chunkSize: 1024 * 1024 * 5,
                     cb: (res) => {
                         this.$message({
                             type: 'success',

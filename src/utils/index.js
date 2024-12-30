@@ -60,7 +60,7 @@ export const throttle = (fn, delay) => {
 }
 
 export class FileDownloader {
-    constructor({request, data, fileName, chunkSize = 2 * 1024 * 1024, cb}) {
+    constructor({request, data, fileName, chunkSize = 5 * 1024 * 1024, cb}) {
         this.request = request;    // 请求方法
         this.data = data;          // 请求参数
         this.fileName = fileName;      // 文件名
@@ -163,7 +163,7 @@ export class FileDownloader {
 
 
 export class FileUploader {
-    constructor({request, requestDone, data, file, chunkSize = 2 * 1024 * 1024, cb}) {
+    constructor({request, requestDone, data, file, chunkSize = 5 * 1024 * 1024, cb}) {
         this.request = request;    // 请求方法
         this.requestDone = requestDone // 请求完成方法
         this.data = data;          // 请求参数
