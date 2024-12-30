@@ -206,6 +206,12 @@ export class FileUploader {
             hash: this.hash,
         }, {
             signal: this.abortController.signal,
+        }).catch(err => {
+            Message({
+                type: 'error',
+                message: err.data.detail || '导入失败，请重试'
+            });
+            throw err;
         });
     
         if (!this.paused && this.currentChunk < this.totalChunks - 1) {
