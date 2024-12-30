@@ -1,5 +1,7 @@
 import { Message } from 'element-ui';
 
+import CryptoJS from 'crypto-js'
+
 export const sleep = (time) => new Promise((resolve) => {
     const timer = setTimeout(() => {
         clearTimeout(timer)
@@ -185,10 +187,8 @@ export class FileUploader {
             let read = new FileReader();
             read.readAsArrayBuffer(this.file)
             read.onload = async () => {
-                let sha1 = await crypto.subtle.digest('SHA-1', read.result).then(arrbuffer => {
-                    return Array.from(new Uint8Array(arrbuffer)).map(a => a.toString(16).padStart(2, '0')).join("")
-                });
-                this.hash = sha1;
+                let sha256 = CryptoJS.SHA256(read.result).toString()
+                this.hash = sha256;
                 resolve()
             }
         })
