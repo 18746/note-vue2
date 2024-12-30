@@ -54,7 +54,8 @@
 import addDialog from '@/components/note/course/add_dialog.vue';
 import updateDialog from '@/components/note/course/update_dialog.vue';
 
-import { getCourseByTypeList, exportCourse, importCourse, delCourse } from '@/api/note';
+import { getCourseByTypeList, exportCourse, exportCourseChunks, importCourse, delCourse } from '@/api/note';
+import { FileDownloader } from '@/utils/index.js';
 export default {
     name: 'note',
     props: {
@@ -185,8 +186,29 @@ export default {
                 })
             }).catch(action => {});
         },
-        download(course) {
-            exportCourse(this.phone, course.course_no)
+        async download(course) {
+            // exportCourse(this.phone, course.course_no)
+
+            const downloader = new FileDownloader({
+                request: exportCourseChunks,
+                data: {
+                    phone: this.phone,
+                    course_no: course.course_no,
+                    key: Date.now().toString(),
+                },
+                fileName: course.name + ".zip",
+                cb: () => {
+                    this.$message({
+                        type: 'success',
+                        message: '下载成功'
+                    });
+                }
+            })
+            downloader.startDownload();
+            this.$message({
+                type: 'info',
+                message: '开始下载，请不要关闭页面...'
+            })
         },
         import_course() {
             let input = document.createElement("input")

@@ -79,16 +79,12 @@ export function getCourse(phone, course_no) {
 // 问题：待调整，接口适配分片下载/上传
 // 问题：待调整，接口适配分片下载/上传
 // https://www.cnblogs.com/all-smile/p/18096224
-export function exportCourse(phone, course_no) { 
-    const controller = new AbortController()
+export function exportCourse(phone, course_no) {
     return new Promise((resolve, reject) => {
         request({
             method: "get",
             url: `/note/course/export/${phone}/${course_no}`,
-            // signal: controller.signal,
-            // headers: {
-            //     "Range": "bytes=0-10"
-            // }
+            responseType: 'blob',
         }).then(res => {
             resolve(res)
         }).catch(err => {
@@ -96,6 +92,22 @@ export function exportCourse(phone, course_no) {
         })
     })
 }
+
+export function exportCourseChunks({phone, course_no, key = ""}, config = {}) { 
+    return new Promise((resolve, reject) => {
+        request({
+            method: "get",
+            url: `/note/course/export/chunks/${phone}/${course_no}?key=${key}`,
+            responseType: 'blob',
+            ...config
+        }).then(res => {
+            resolve(res)
+        }).catch(err => {
+            reject(err)
+        })
+    })
+}
+
 
 export function importCourse(phone, type_no, file) { 
     type_no = type_no !== "0" ? type_no : ""

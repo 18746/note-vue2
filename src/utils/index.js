@@ -58,3 +58,105 @@ export const throttle = (fn, delay) => {
     };
 }
 
+export class FileDownloader {
+    constructor({request, data, fileName, chunkSize = 2 * 1024 * 1024, cb}) {
+        this.request = request;    // 请求方法
+        this.data = data;          // 请求参数
+        this.fileName = fileName;      // 文件名
+        this.chunkSize = chunkSize;    // 每块大小
+        this.fileSize = 0;             // 文件大小
+        this.totalChunks = 0;          // 总块数
+        this.currentChunk = 0;         // 当前下载的块
+        this.downloadedSize = 0;       // 已经下载的文件大小
+        this.chunks = [];              // 下载的块
+        this.abortController = new AbortController();  
+        this.paused = false;           // 是否暂停
+        this.cb = cb                   // 成功回调
+    }
+    // 获取文件大小，初始化下载
+    async getFileSize() {
+        let response = await this.request(this.data, {
+            signal: this.abortController.signal,
+            headers: { Range: "bytes=0-1" },
+        });
+        response = await this.request(this.data, {
+            signal: this.abortController.signal,
+            headers: { Range: "bytes=0-1" },
+        });
+        const contentLength = response.headers.get("content-range").split("/")[1];
+        this.fileSize = parseInt(contentLength);
+        this.totalChunks = Math.ceil(this.fileSize / this.chunkSize);
+    }
+    // 下载文件块
+    async downloadChunk(chunkIndex) {
+        const start = chunkIndex * this.chunkSize;
+        const end = Math.min(this.fileSize, (chunkIndex + 1) * this.chunkSize - 1);
+    
+        const response = await this.request(this.data, {
+            signal: this.abortController.signal,
+            headers: { Range: `bytes=${start}-${end}` },
+        });
+
+        const blob = response.data;
+        this.chunks[chunkIndex] = blob;
+        this.downloadedSize += blob.size;
+    
+        if (!this.paused && this.currentChunk < this.totalChunks - 1) {
+            this.currentChunk++;
+            this.downloadChunk(this.currentChunk);
+        } else if (this.currentChunk === this.totalChunks - 1) {
+            this.mergeChunks();
+        }
+    }
+    // 开始下载
+    async startDownload() {
+        if (this.chunks.length === 0) {
+            await this.getFileSize();
+        }
+        this.downloadChunk(this.currentChunk);
+    }
+    // 暂停下载
+    pauseDownload() {
+        this.paused = true;
+    }
+    // 恢复下载
+    resumeDownload() {
+        this.paused = false;
+        this.downloadChunk(this.currentChunk);
+    }
+    // 取消下载
+    cancelDownload() {
+        this.abortController.abort();
+        this.reset();
+    }
+    // 合并文件
+    async mergeChunks() {
+        const blob = new Blob(this.chunks, { type: "application/octet-stream" });
+        
+        console.log("Download complete", this.chunks,);
+
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = this.fileName;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            this.cb && this.cb({
+                downState: 1
+            })
+            this.reset();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }, 0);
+    }
+    // 重置下载
+    reset() {
+        this.chunks = [];
+        this.fileName = '';
+        this.fileSize = 0;
+        this.totalChunks = 0;
+        this.currentChunk = 0;
+        this.downloadedSize = 0;
+    }
+}
