@@ -141,7 +141,7 @@ export default {
                 type: 'success',
                 message: '开始导入'
             })
-            await sleep(200)
+            await sleep(400)
             this.uploader.startUpload();
         },
         player() {
@@ -170,7 +170,7 @@ export default {
                 message: '导入成功'
             });
             this.$emit('success', res.data);
-            await sleep(600)
+            await sleep(800)
             this.cancal();
         },
     }

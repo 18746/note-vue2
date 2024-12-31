@@ -130,7 +130,7 @@ export function importCourse(phone, type_no, file) {
     })
 }
 
-export function importCourseChunks({phone, filename, file, hash}, config = {}) {
+export function importCourseChunks({phone, filename, file, hash, chunk_index}, config = {}) {
     return new Promise((resolve, reject) => {
         request({
             method: "post",
@@ -139,6 +139,7 @@ export function importCourseChunks({phone, filename, file, hash}, config = {}) {
                 filename,
                 file,
                 hash,
+                chunk_index,
             },
             headers: {
                 'accept': 'application/json',

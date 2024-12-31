@@ -232,6 +232,7 @@ export class FileUploader {
             filename: this.file.name,
             file: this.file.slice(start, end),
             hash: this.hash,
+            chunk_index: chunkIndex,
         }, {
             signal: this.abortController.signal,
         }).catch(err => {

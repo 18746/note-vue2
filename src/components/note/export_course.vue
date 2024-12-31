@@ -111,7 +111,7 @@ export default {
                 type: 'success',
                 message: '开始导出'
             })
-            await sleep(200)
+            await sleep(400)
             this.downloader.startDownload();
         },
         player() {
@@ -132,7 +132,7 @@ export default {
                 type: 'success',
                 message: '导出完成'
             });
-            await sleep(600)
+            await sleep(800)
             this.cancal();
         }
     }
