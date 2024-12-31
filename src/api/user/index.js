@@ -35,7 +35,7 @@ export function userLogout(params) {
     return request({
         method: "delete",
         url: "/login/logout",
-    })
+    }).catch(err => {})
 }
 
 export function getUserInfo(params) {
