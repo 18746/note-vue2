@@ -48,6 +48,7 @@
             @success="updateSuccess"
         />
         <exportCourse v-if="exportVisible" :visible.sync="exportVisible" :parame="exportParame" />
+        <importCourse v-if="importVisible" :visible.sync="importVisible" :parame="importParame" @success="importSuccess" />
     </div>
 </template>
 
@@ -55,9 +56,10 @@
 import addDialog from '@/components/note/course/add_dialog.vue';
 import updateDialog from '@/components/note/course/update_dialog.vue';
 import exportCourse from '@/components/note/export_course.vue';
+import importCourse from '@/components/note/import_course.vue';
 
-import { getCourseByTypeList, exportCourseChunks, importCourseChunks, importCourseChunksDone, delCourse } from '@/api/note';
-import { FileDownloader, FileUploader } from '@/utils/index.js';
+import { getCourseByTypeList, importCourseChunks, importCourseChunksDone, delCourse } from '@/api/note';
+import { FileUploader } from '@/utils/index.js';
 export default {
     name: 'note',
     props: {
@@ -74,6 +76,7 @@ export default {
         addDialog,
         updateDialog,
         exportCourse,
+        importCourse,
     },
     data() {
         return {
@@ -88,6 +91,9 @@ export default {
 
             exportVisible: false,
             exportParame: {},
+
+            importVisible: false,
+            importParame: {},
         }
     },
     watch: {
@@ -202,78 +208,19 @@ export default {
                 },
                 fileName: course.name + ".zip",
             }
-
-            // const downloader = new FileDownloader({
-            //     request: exportCourseChunks,
-            //     data: {
-            //         phone: this.phone,
-            //         course_no: course.course_no,
-            //         key: Date.now().toString(),
-            //     },
-            //     fileName: course.name + ".zip",
-            //     // chunkSize: 1024 * 1024 * 5,
-            //     cb: () => {
-            //         this.$message({
-            //             type: 'success',
-            //             message: '导出完成'
-            //         });
-            //     }
-            // })
-            // downloader.startDownload();
-            // this.$message({
-            //     type: 'info',
-            //     message: '开始导出，请不要关闭页面...'
-            // })
         },
         import_course() {
-            let input = document.createElement("input")
-            input.type = "file"
-            input.accept = ".zip"
-            input.onchange = (e) => {
-                let file = e.target.files[0]
-                if (file.size > 1024 * 1024 * 1024) {
-                    this.$message({
-                        type: 'error',
-                        message: '文件大小不能超过1GB'
-                    });
-                    return
-                }
-                if (file.name.split('.').pop() != 'zip') {
-                    this.$message({
-                        type: 'error',
-                        message: '文件格式不正确，必须为zip文件'
-                    });
-                    return
-                }
-
-                const uploader = new FileUploader({
-                    request: importCourseChunks,
-                    requestDone: importCourseChunksDone,
-                    data: {
-                        phone: this.phone,
-                        type_no: this.type_no,
-                    },
-                    file: file,
-                    // chunkSize: 1024 * 1024 * 5,
-                    cb: (res) => {
-                        this.$message({
-                            type: 'success',
-                            message: '导入成功'
-                        });
-                        this.course_list.unshift(res.data)
-
-                        input.value = ''
-                        input = null
-                    }
-                })
-                uploader.startUpload()
-                this.$message({
-                    type: 'info',
-                    message: '开始导入，请稍等...'
-                });
+            this.importVisible = true;
+            this.importParame = {
+                data: {
+                    phone: this.phone,
+                    type_no: this.type_no,
+                },
             }
-            input.click()
         },
+        importSuccess(course) {
+            this.course_list.unshift(course)
+        }
     }
 }
 </script>

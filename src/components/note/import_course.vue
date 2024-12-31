@@ -1,9 +1,9 @@
 <template>
-    <div v-if="visibleDialog" ref="exportCourse" class="export-course">
-        <div class="export-body">
+    <div v-if="visibleDialog && selectFlag" ref="importCourse" class="import-course">
+        <div class="import-body">
             <el-progress type="circle" :percentage="percentage" :format="format" color="rgb(19, 206, 102)"></el-progress>
-            <div class="export-info">导出进度：{{ downloadedSize | formatBytes }} / {{ fileSize | formatBytes }}</div>
-            <div class="export-button">
+            <div class="import-info">导入进度：{{ uploadSize | formatBytes }} / {{ fileSize | formatBytes }}</div>
+            <div class="import-button">
                 <el-button-group>
                     <el-button v-if="playing" type="success" icon="el-icon-video-pause" @click="pause"></el-button>
                     <el-button v-else type="success" icon="el-icon-video-play" @click="player"></el-button>
@@ -15,11 +15,11 @@
 </template>
 
 <script>
-import { exportCourseChunks } from '@/api/note';
+import { importCourseChunks, importCourseChunksDone } from '@/api/note';
 
-import { FileDownloader, sleep } from '@/utils/index.js';
+import { FileUploader, sleep } from '@/utils/index.js';
 export default {
-    name: 'export-course',
+    name: 'import-course',
     props: {
         visible: {
             type: Boolean,
@@ -29,7 +29,6 @@ export default {
             type: Object,
             default: () => ({
                 data: {},
-                fileName: ''
             })
         }
     },
@@ -49,11 +48,12 @@ export default {
     },
     data() {
         return {
-            downloader: null,
+            uploader: null,
+            selectFlag: false,
 
             playing: false,
 
-            downloadedSize: 0,
+            uploadSize: 0,
             fileSize: 0,
             currentChunk: 0,
             totalChunks: 0,
@@ -71,76 +71,114 @@ export default {
         percentage() {
             if (this.fileSize === 0) {
                 return 0;
-            } else if (this.downloadedSize === this.fileSize) {
+            } else if (this.uploadSize === this.fileSize) {
                 return 100;
             }
-            return parseInt((this.downloadedSize / this.fileSize) * 100);
+            return parseInt((this.uploadSize / this.fileSize) * 100);
         },
     },
     created() {
-        this.export()
+        this.import()
     },
     mounted() {
-        document.body.appendChild(this.$refs.exportCourse)
     },
     methods: {
         format(percentage) {
             return percentage === 100 ? '完成' : `${percentage}%`;
         },
 
-        async export() {
-            this.downloader = new FileDownloader({
-                request: exportCourseChunks,
-                data: this.parame.data,
-                fileName: this.parame.fileName,
-                // chunkSize: 1024 * 100,
-                progress: this.progressFun,
-                cb: this.down,
-            })
-            this.startPlayer()
+        async import() {
+            let input = document.createElement("input")
+            input.type = "file"
+            input.accept = ".zip"
+            input.onchange = (e) => {
+                this.selectFlag = true
+                this.$nextTick(() => {
+                    document.body.appendChild(this.$refs.importCourse)
+                })
+                let file = e.target.files[0]
+                if (file.size > 1024 * 1024 * 1024) {
+                    this.$message({
+                        type: 'error',
+                        message: '文件大小不能超过1GB'
+                    });
+                    return
+                }
+                if (file.name.split('.').pop() != 'zip') {
+                    this.$message({
+                        type: 'error',
+                        message: '文件格式不正确，必须为zip文件'
+                    });
+                    return
+                }
+
+                this.uploader = new FileUploader({
+                    request: importCourseChunks,
+                    requestDone: importCourseChunksDone,
+                    data: this.parame.data,
+                    file: file,
+                    // chunkSize: 1024 * 200,
+                    progress: this.progressFun,
+                    errorCB: this.errorFun,
+                    cb: this.down
+                })
+                this.startUpload()
+                
+                input.value = ''
+                input = null
+            }
+            input.click()
         },
         progressFun(progress) {
-            this.downloadedSize = progress.downloadedSize // 已经下载的大小
+            this.uploadSize = progress.uploadSize     // 已经上传的大小
             this.fileSize = progress.fileSize             // 文件大小
-            this.currentChunk = progress.currentChunk     // 当前下载的块
+            this.currentChunk = progress.currentChunk     // 当前上传的块
             this.totalChunks = progress.totalChunks       // 总共的块数
         },
-        async startPlayer() {
+        async startUpload() {
             this.playing = true;
             this.$message({
                 type: 'success',
-                message: '开始导出'
+                message: '开始导入'
             })
             await sleep(200)
-            this.downloader.startDownload();
+            this.uploader.startUpload();
         },
         player() {
             this.playing = true;
-            this.downloader.resumeDownload();
+            this.uploader.resumeUpload();
         },
         pause() {
             this.playing = false;
-            this.downloader.pauseDownload();
+            this.uploader.pauseUpload();
         },
         cancal() {
             this.playing = false;
-            this.downloader.cancelDownload();
+            this.uploader.cancelUpload();
             this.visibleDialog = false;
         },
-        async down() {
+        errorFun(err) {
+            this.playing = false;
+            this.$message({
+                type: 'error',
+                message: err.data.detail || '导入失败，请重试'
+            })
+        },
+        async down(res) {
             this.$message({
                 type: 'success',
-                message: '导出完成'
+                message: '导入成功'
             });
+            this.$emit('success', res.data);
             await sleep(600)
             this.cancal();
-        }
+        },
     }
 }
 </script>
 
 <style lang="less" scoped>
-.export-course {
+.import-course {
     width: 100vw;
     height: 100vh;
     position: fixed;
@@ -152,23 +190,20 @@ export default {
     background-color: #00000022;
     z-index: 9999;
 
-    .export-body {
+    .import-body {
         display: flex;
         flex-direction: column;
         /* justify-content: center; */
         align-items: center;
     }
 
-    .export-info {
+    .import-info {
         font-size: 16px;
         margin-top: 16px;
         color: #333;
     }
-    .export-button {
+    .import-button {
         margin-top: 10px;
-        .el-button {
-            // padding: 6px;
-        }
     }
 }
 </style>

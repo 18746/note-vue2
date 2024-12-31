@@ -1,5 +1,3 @@
-import { Message } from 'element-ui';
-
 import CryptoJS from 'crypto-js'
 
 export const sleep = (time) => new Promise((resolve) => {
@@ -103,6 +101,8 @@ export class FileDownloader {
         const start = chunkIndex * this.chunkSize;
         const end = Math.min(this.fileSize, (chunkIndex + 1) * this.chunkSize - 1);
 
+        // await sleep(1000);
+
         const response = await this.request(this.data, {
             signal: this.abortController.signal,
             headers: { Range: `bytes=${start}-${end}` },
@@ -111,6 +111,7 @@ export class FileDownloader {
         const blob = response.data;
         this.chunks[chunkIndex] = blob;
         this.downloadedSize += blob.size;
+        this.currentChunk++;
         
         this.progress && this.progress({
             downloadedSize: this.downloadedSize, // 已经下载的大小
@@ -119,10 +120,9 @@ export class FileDownloader {
             totalChunks: this.totalChunks,       // 总共的块数
         });
     
-        if (!this.paused && this.currentChunk < this.totalChunks - 1) {
-            this.currentChunk++;
+        if (!this.paused && this.currentChunk < this.totalChunks) {
             this.downloadChunk(this.currentChunk);
-        } else if (this.currentChunk === this.totalChunks - 1) {
+        } else if (this.currentChunk === this.totalChunks) {
             this.mergeChunks();
         }
     }
@@ -180,19 +180,21 @@ export class FileDownloader {
 
 
 export class FileUploader {
-    constructor({request, requestDone, data, file, chunkSize = 5 * 1024 * 1024, progress, cb}) {
+    constructor({request, requestDone, data, file, chunkSize = 5 * 1024 * 1024, progress, errorCB, cb}) {
         this.request = request;    // 请求方法
         this.requestDone = requestDone // 请求完成方法
         this.data = data;          // 请求参数
         this.file = file;          // 文件
         this.hash = '';            // 文件hash
         this.chunkSize = chunkSize;    // 每块大小
+        this.uploadSize = 0;           // 已经上传的文件大小
         this.fileSize = 0;             // 文件大小
         this.totalChunks = 0;          // 总块数
         this.currentChunk = 0;         // 当前上传的块
         this.abortController = new AbortController();  
         this.paused = false;           // 是否暂停
         this.progress = progress       // 进度回调
+        this.errorCB = errorCB         // 失败回调
         this.cb = cb                   // 成功回调
     }
     // 获取文件大小，初始化上传
@@ -201,6 +203,7 @@ export class FileUploader {
         this.totalChunks = Math.ceil(this.fileSize / this.chunkSize);
 
         this.progress && this.progress({
+            uploadSize: this.uploadSize,
             fileSize: this.fileSize,
             currentChunk: this.currentChunk,
             totalChunks: this.totalChunks,
@@ -222,6 +225,8 @@ export class FileUploader {
         const start = chunkIndex * this.chunkSize;
         const end = Math.min(this.fileSize, (chunkIndex + 1) * this.chunkSize);
 
+        // await sleep(500)
+
         await this.request({
             ...this.data,
             filename: this.file.name,
@@ -230,23 +235,23 @@ export class FileUploader {
         }, {
             signal: this.abortController.signal,
         }).catch(err => {
-            Message({
-                type: 'error',
-                message: err.data.detail || '导入失败，请重试'
-            });
+            this.errorCB && this.errorCB(err)
             throw err;
         });
 
+        this.uploadSize += end - start;
+        this.currentChunk++;
+
         this.progress && this.progress({
+            uploadSize: this.uploadSize,
             fileSize: this.fileSize,
             currentChunk: this.currentChunk,
             totalChunks: this.totalChunks,
         })
 
-        if (!this.paused && this.currentChunk < this.totalChunks - 1) {
-            this.currentChunk++;
+        if (!this.paused && this.currentChunk < this.totalChunks) {
             this.uploadChunk(this.currentChunk);
-        } else if (this.currentChunk === this.totalChunks - 1) {
+        } else if (this.currentChunk === this.totalChunks) {
             this.mergeChunks();
         }
     }
@@ -283,10 +288,7 @@ export class FileUploader {
             this.cb && this.cb(res)
             this.reset();
         }).catch(err => {
-            Message({
-                type: 'error',
-                message: err.data.detail || '导入失败，请重试'
-            });
+            this.errorCB && this.errorCB(err)
         });
     }
     // 重置上传
@@ -295,6 +297,7 @@ export class FileUploader {
         this.hash = '';
         this.chunkSize = 0;
         this.fileSize = 0;
+        this.uploadSize = 0;
         this.totalChunks = 0;
         this.currentChunk = 0;
         this.paused = false;           // 是否暂停
