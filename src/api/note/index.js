@@ -260,11 +260,17 @@ export function delUnit(phone, course_no, unit_no) {
 }
 
 const contentDoURL = (phone, content) => {
-    return content.replaceAll(`/unit/picture/${phone}/`, `${process.env.BASE_API}/unit/picture/${phone}/`);
+    const path = process.env.BASE_APP === "/" ? "" : `/${process.env.BASE_APP}`
+
+    return content
+        .replaceAll(`/unit/picture/${phone}/`, `${process.env.BASE_API}/unit/picture/${phone}/`)
+        .replace(/\((\/note)/g, `(${location.origin}${path}/note`);
 }
 
 const contentUnURL = (phone, content) => {
-    return content.replaceAll(`${process.env.BASE_API}/unit/picture/${phone}/`, `/unit/picture/${phone}/`);
+    return content
+        .replaceAll(`${process.env.BASE_API}/unit/picture/${phone}/`, `/unit/picture/${phone}/`)
+        .replace(/\((http.*?\/note)/g, '(/note');
 }
 
 export function getUnitContent(phone, course, unit) {
