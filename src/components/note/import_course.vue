@@ -1,14 +1,14 @@
 <template>
-    <div v-if="selectFlag" ref="importCourse" class="import-course">
-        <div class="import-body">
-            <el-progress type="circle" :percentage="percentage" :format="format" color="rgb(19, 206, 102)"></el-progress>
-            <div class="import-info">导入进度：{{ uploadSize | formatBytes }} / {{ fileSize | formatBytes }}</div>
-            <div class="import-button">
-                <el-button-group>
-                    <el-button v-if="playing" type="success" icon="el-icon-video-pause" @click="pause"></el-button>
-                    <el-button v-else type="success" icon="el-icon-video-play" @click="player"></el-button>
-                    <el-button type="danger" icon="el-icon-close" @click="cancal"></el-button>
-                </el-button-group>
+    <div class="import-or-export-body">
+        <div class="import-or-export-title">{{ parame.file && parame.file.name }}</div>
+        <el-progress :percentage="percentage" color="rgb(19, 206, 102)"></el-progress>
+        <div class="import-or-export-info">
+            <div class="import-or-export-progress">导入：{{ uploadSize | formatBytes }} / {{ fileSize | formatBytes }}</div>
+
+            <div class="import-or-export-button">
+                <el-button type="text" v-if="playing" icon="el-icon-video-pause" @click="pause"></el-button>
+                <el-button type="text" v-else icon="el-play el-icon-video-play" @click="player"></el-button>
+                <el-button type="text" icon="el-close el-icon-close" @click="cancal"></el-button>
             </div>
         </div>
     </div>
@@ -21,14 +21,11 @@ import { FileUploader, sleep } from '@/utils/index.js';
 export default {
     name: 'import-course',
     props: {
-        visible: {
-            type: Boolean,
-            default: false
-        },
         parame: {
             type: Object,
             default: () => ({
                 data: {},
+                file: null,
             })
         }
     },
@@ -49,8 +46,6 @@ export default {
     data() {
         return {
             uploader: null,
-            selectFlag: false,
-
             playing: false,
 
             uploadSize: 0,
@@ -69,52 +64,22 @@ export default {
             return parseInt((this.uploadSize / this.fileSize) * 100);
         },
     },
+    created() {
+        this.import();
+    },
     methods: {
-        format(percentage) {
-            return percentage === 100 ? '完成' : `${percentage}%`;
-        },
-
         async import() {
-            let input = document.createElement("input")
-            input.type = "file"
-            input.accept = ".zip"
-            input.onchange = (e) => {
-                this.selectFlag = true
-                this.$nextTick(() => {
-                    document.body.appendChild(this.$refs.importCourse)
-                })
-                let file = e.target.files[0]
-                if (file.size > 1024 * 1024 * 1024) {
-                    this.$message({
-                        type: 'error',
-                        message: '文件大小不能超过1GB'
-                    });
-                    return
-                }
-                if (file.name.split('.').pop() != 'zip') {
-                    this.$message({
-                        type: 'error',
-                        message: '文件格式不正确，必须为zip文件'
-                    });
-                    return
-                }
-
-                this.uploader = new FileUploader({
-                    request: importCourseChunks,
-                    requestDone: importCourseChunksDone,
-                    data: this.parame.data,
-                    file: file,
-                    // chunkSize: 1024 * 200,
-                    progress: this.progressFun,
-                    errorCB: this.errorFun,
-                    cb: this.down
-                })
-                this.startUpload()
-                
-                input.value = ''
-                input = null
-            }
-            input.click()
+            this.uploader = new FileUploader({
+                request: importCourseChunks,
+                requestDone: importCourseChunksDone,
+                data: this.parame.data,
+                file: this.parame.file,
+                // chunkSize: 1024 * 200,
+                progress: this.progressFun,
+                errorCB: this.errorFun,
+                cb: this.down
+            })
+            this.startUpload()
         },
         progressFun(progress) {
             this.uploadSize = progress.uploadSize     // 已经上传的大小
@@ -129,10 +94,6 @@ export default {
             this.totalChunks = 0;
 
             this.playing = true;
-            this.$message({
-                type: 'success',
-                message: '开始导入'
-            })
             await sleep(400)
             this.uploader.startUpload();
         },
@@ -147,7 +108,7 @@ export default {
         cancal() {
             this.playing = false;
             this.uploader.cancelUpload();
-            this.selectFlag = false;
+            this.$emit('error', this.parame.file.name);
         },
         errorFun(err) {
             this.playing = false;
@@ -155,6 +116,7 @@ export default {
                 type: 'error',
                 message: err.data.detail || '导入失败，请重试'
             })
+            this.cancal();
         },
         async down(res) {
             this.$message({
@@ -170,32 +132,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.import-course {
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #00000022;
-    z-index: 9999;
 
-    .import-body {
-        display: flex;
-        flex-direction: column;
-        /* justify-content: center; */
-        align-items: center;
-    }
-
-    .import-info {
-        font-size: 16px;
-        margin-top: 16px;
-        color: #333;
-    }
-    .import-button {
-        margin-top: 10px;
-    }
-}
 </style>

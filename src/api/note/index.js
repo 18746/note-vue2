@@ -166,6 +166,7 @@ export function importCourseChunksDone({phone, type_no, filename, hash}, config 
             },
             ...config,
         }).then(res => {
+            res.data.type_no = res.data.type_no ? res.data.type_no : "0"
             res.data.picture = doURL(res.data.picture)
             resolve(res)
         }).catch(err => {

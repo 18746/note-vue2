@@ -1,14 +1,14 @@
 <template>
-    <div v-if="visibleDialog" ref="exportCourse" class="export-course">
-        <div class="export-body">
-            <el-progress type="circle" :percentage="percentage" :format="format" color="rgb(19, 206, 102)"></el-progress>
-            <div class="export-info">导出进度：{{ downloadedSize | formatBytes }} / {{ fileSize | formatBytes }}</div>
-            <div class="export-button">
-                <el-button-group>
-                    <el-button v-if="playing" type="success" icon="el-icon-video-pause" @click="pause"></el-button>
-                    <el-button v-else type="success" icon="el-icon-video-play" @click="player"></el-button>
-                    <el-button type="danger" icon="el-icon-close" @click="cancal"></el-button>
-                </el-button-group>
+    <div class="import-or-export-body">
+        <div class="import-or-export-title">{{ parame.data.name }}</div>
+        <el-progress :percentage="percentage" color="rgb(19, 206, 102)"></el-progress>
+        <div class="import-or-export-info">
+            <div class="import-or-export-progress">下载：{{ downloadedSize | formatBytes }} / {{ fileSize | formatBytes }}</div>
+
+            <div class="import-or-export-button">
+                <el-button type="text" v-if="playing" icon="el-icon-video-pause" @click="pause"></el-button>
+                <el-button type="text" v-else icon="el-play el-icon-video-play" @click="player"></el-button>
+                <el-button type="text" icon="el-close el-icon-close" @click="cancal"></el-button>
             </div>
         </div>
     </div>
@@ -21,9 +21,9 @@ import { FileDownloader, sleep } from '@/utils/index.js';
 export default {
     name: 'export-course',
     props: {
-        visible: {
-            type: Boolean,
-            default: false
+        ikey: {
+            type: String,
+            default: '',
         },
         parame: {
             type: Object,
@@ -31,7 +31,7 @@ export default {
                 data: {},
                 fileName: ''
             })
-        }
+        },
     },
     filters: {
         formatBytes(value) {
@@ -50,7 +50,6 @@ export default {
     data() {
         return {
             downloader: null,
-
             playing: false,
 
             downloadedSize: 0,
@@ -60,14 +59,6 @@ export default {
         }
     },
     computed: {
-        visibleDialog: {
-            get() {
-                return this.visible;
-            },
-            set(val) {
-                this.$emit('update:visible', val);
-            }
-        },
         percentage() {
             if (this.fileSize === 0) {
                 return 0;
@@ -80,14 +71,7 @@ export default {
     created() {
         this.export()
     },
-    mounted() {
-        document.body.appendChild(this.$refs.exportCourse)
-    },
     methods: {
-        format(percentage) {
-            return percentage === 100 ? '完成' : `${percentage}%`;
-        },
-
         async export() {
             this.downloader = new FileDownloader({
                 request: exportCourseChunks,
@@ -107,10 +91,6 @@ export default {
         },
         async startPlayer() {
             this.playing = true;
-            this.$message({
-                type: 'success',
-                message: '开始导出'
-            })
             await sleep(400)
             this.downloader.startDownload();
         },
@@ -125,12 +105,12 @@ export default {
         cancal() {
             this.playing = false;
             this.downloader.cancelDownload();
-            this.visibleDialog = false;
+            this.$emit("success", this.ikey);
         },
         async down() {
             this.$message({
                 type: 'success',
-                message: '导出完成'
+                message: `${this.parame.data.name} 导出完成`
             });
             await sleep(800)
             this.cancal();
@@ -140,35 +120,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.export-course {
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    top: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #00000022;
-    z-index: 9999;
 
-    .export-body {
-        display: flex;
-        flex-direction: column;
-        /* justify-content: center; */
-        align-items: center;
-    }
-
-    .export-info {
-        font-size: 16px;
-        margin-top: 16px;
-        color: #333;
-    }
-    .export-button {
-        margin-top: 10px;
-        .el-button {
-            // padding: 6px;
-        }
-    }
-}
 </style>

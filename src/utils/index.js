@@ -225,7 +225,7 @@ export class FileUploader {
         const start = chunkIndex * this.chunkSize;
         const end = Math.min(this.fileSize, (chunkIndex + 1) * this.chunkSize);
 
-        // await sleep(500)
+        // await sleep(1000)
 
         await this.request({
             ...this.data,

@@ -47,8 +47,20 @@
             :course="updateCourse"
             @success="updateSuccess"
         />
-        <exportCourse v-if="exportVisible" :visible.sync="exportVisible" :parame="exportParame" />
-        <importCourse ref="importCourse" :parame="importParame" @success="importSuccess" />
+        <div class="my-import-or-export">
+            <exportCourse
+                v-for="exportCourse in exportCourseList" :key="exportCourse.id"
+                :ikey="exportCourse.id"
+                :parame="exportCourse.parame"
+                @success="exportSuccess"
+            />
+            <importCourse
+                v-for="importCourse in importCourseList" :key="importCourse.id"
+                :parame="importCourse.parame"
+                @success="importSuccess"
+                @error="importError"
+            />
+        </div>
     </div>
 </template>
 
@@ -88,10 +100,8 @@ export default {
 
             line_type: true,
 
-            exportVisible: false,
-            exportParame: {},
-
-            importParame: {},
+            exportCourseList: [],
+            importCourseList: [],
         }
     },
     watch: {
@@ -197,28 +207,81 @@ export default {
             }).catch(action => {});
         },
         async download(course) {
-            this.exportVisible = true;
-            this.exportParame = {
-                data: {
-                    phone: this.phone,
-                    course_no: course.course_no,
-                    key: Date.now().toString(),
-                },
-                fileName: course.name + ".zip",
+            if (!this.exportCourseList.some(item => item.parame.data.course_no === course.course_no)) {
+                this.exportCourseList.push({
+                    id: Date.now().toString(),
+                    parame: {
+                        data: {
+                            phone: this.phone,
+                            course_no: course.course_no,
+                            name: course.name,
+                            key: Date.now().toString(),
+                        },
+                        fileName: course.name + ".zip",
+                    },
+                });
+            } else {
+                this.$message({
+                    type: "warning",
+                    message: "该课程正在导出中，请勿重复操作",
+                });
             }
+        },
+        exportSuccess(id) {
+            let index = this.exportCourseList.findIndex(item => item.id === id)
+            this.exportCourseList.splice(index, 1);
         },
         import_course() {
-            this.$refs.importCourse && this.$refs.importCourse.import();
-            this.importParame = {
-                data: {
-                    phone: this.phone,
-                    type_no: this.type_no,
-                },
+            let input = document.createElement("input")
+            input.type = "file"
+            input.accept = ".zip"
+            input.onchange = (e) => {
+                let file = e.target.files[0]
+                if (!this.importCourseList.some(item => item.parame.file.name === file.name)) {
+                    if (file.size > 1024 * 1024 * 1024) {
+                        this.$message({
+                            type: 'error',
+                            message: '文件大小不能超过1GB'
+                        });
+                        return
+                    }
+                    if (file.name.split('.').pop() != 'zip') {
+                        this.$message({
+                            type: 'error',
+                            message: '文件格式不正确，必须为zip文件'
+                        });
+                        return
+                    }
+                    this.importCourseList.push({
+                        id: Date.now().toString(),
+                        parame: {
+                            data: {
+                                phone: this.phone,
+                                type_no: this.type_no,
+                            },
+                            file: file,
+                        },
+                    })
+                } else {
+                    this.$message({
+                        type: "warning",
+                        message: "该课程正在导入中，请勿重复操作",
+                    });
+                }
+                input.value = ''
+                input = null
             }
+            input.click()
         },
         importSuccess(course) {
-            this.course_list.unshift(course)
-        }
+            if (course.type_no == this.type_no) {
+                this.course_list.unshift(course)
+            }
+        },
+        importError(filename) {
+            let index = this.importCourseList.findIndex(item => item.parame.file.name === filename)
+            this.importCourseList.splice(index, 1);
+        },
     }
 }
 </script>
