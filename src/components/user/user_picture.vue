@@ -44,6 +44,7 @@ import userinfoUpdateDialog from "@/components/user/userinfo/update_dialog.vue"
 import userinfoViewDialog from "@/components/user/userinfo/view_dialog.vue"
 import userinfoUpdatePasswordDialog from "@/components/user/userinfo/update_password_dialog.vue"
 
+import { userLogout, } from '@/api/user';
 export default {
     name: "user-picture",
     components: {
@@ -113,7 +114,8 @@ export default {
         setPassword() {
             this.updatePasswordVisible = true;
         },
-        logout() {
+        async logout() {
+            await userLogout()
             this.$store.commit('user/setInfo', null)
             this.$store.commit('user/setToken', null)
             this.$router.push("/login")

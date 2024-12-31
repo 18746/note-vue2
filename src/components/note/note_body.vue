@@ -58,8 +58,7 @@ import updateDialog from '@/components/note/course/update_dialog.vue';
 import exportCourse from '@/components/note/export_course.vue';
 import importCourse from '@/components/note/import_course.vue';
 
-import { getCourseByTypeList, importCourseChunks, importCourseChunksDone, delCourse } from '@/api/note';
-import { FileUploader } from '@/utils/index.js';
+import { getCourseByTypeList, delCourse } from '@/api/note';
 export default {
     name: 'note',
     props: {

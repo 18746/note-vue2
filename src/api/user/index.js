@@ -31,6 +31,13 @@ export function register(params) {
     })
 }
 
+export function userLogout(params) {
+    return request({
+        method: "delete",
+        url: "/login/logout",
+    })
+}
+
 export function getUserInfo(params) {
     return new Promise((resolve, reject) => {
         request({

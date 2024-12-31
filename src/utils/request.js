@@ -35,7 +35,12 @@ service.interceptors.request.use(async config => {
  
 // 3.响应拦截器
 service.interceptors.response.use(response => {
-
+    if (response.headers["not-token"] === "1") {
+        Message({
+            type: 'warning',
+            message: '账号异地登录，请注意保存重要数据'
+        })
+    }
     return response
 }, error => {
     console.error(error)
