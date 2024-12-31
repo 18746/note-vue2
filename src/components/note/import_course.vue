@@ -1,5 +1,5 @@
 <template>
-    <div v-if="visibleDialog && selectFlag" ref="importCourse" class="import-course">
+    <div v-if="selectFlag" ref="importCourse" class="import-course">
         <div class="import-body">
             <el-progress type="circle" :percentage="percentage" :format="format" color="rgb(19, 206, 102)"></el-progress>
             <div class="import-info">导入进度：{{ uploadSize | formatBytes }} / {{ fileSize | formatBytes }}</div>
@@ -60,14 +60,6 @@ export default {
         }
     },
     computed: {
-        visibleDialog: {
-            get() {
-                return this.visible;
-            },
-            set(val) {
-                this.$emit('update:visible', val);
-            }
-        },
         percentage() {
             if (this.fileSize === 0) {
                 return 0;
@@ -76,11 +68,6 @@ export default {
             }
             return parseInt((this.uploadSize / this.fileSize) * 100);
         },
-    },
-    created() {
-        this.import()
-    },
-    mounted() {
     },
     methods: {
         format(percentage) {
@@ -136,6 +123,11 @@ export default {
             this.totalChunks = progress.totalChunks       // 总共的块数
         },
         async startUpload() {
+            this.uploadSize = 0;
+            this.fileSize = 0;
+            this.currentChunk = 0;
+            this.totalChunks = 0;
+
             this.playing = true;
             this.$message({
                 type: 'success',
@@ -155,7 +147,7 @@ export default {
         cancal() {
             this.playing = false;
             this.uploader.cancelUpload();
-            this.visibleDialog = false;
+            this.selectFlag = false;
         },
         errorFun(err) {
             this.playing = false;

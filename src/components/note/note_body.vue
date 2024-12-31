@@ -48,7 +48,7 @@
             @success="updateSuccess"
         />
         <exportCourse v-if="exportVisible" :visible.sync="exportVisible" :parame="exportParame" />
-        <importCourse v-if="importVisible" :visible.sync="importVisible" :parame="importParame" @success="importSuccess" />
+        <importCourse ref="importCourse" :parame="importParame" @success="importSuccess" />
     </div>
 </template>
 
@@ -91,7 +91,6 @@ export default {
             exportVisible: false,
             exportParame: {},
 
-            importVisible: false,
             importParame: {},
         }
     },
@@ -209,7 +208,7 @@ export default {
             }
         },
         import_course() {
-            this.importVisible = true;
+            this.$refs.importCourse && this.$refs.importCourse.import();
             this.importParame = {
                 data: {
                     phone: this.phone,
