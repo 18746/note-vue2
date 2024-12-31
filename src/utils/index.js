@@ -62,7 +62,7 @@ export const throttle = (fn, delay) => {
 }
 
 export class FileDownloader {
-    constructor({request, data, fileName, chunkSize = 5 * 1024 * 1024, cb}) {
+    constructor({request, data, fileName, chunkSize = 5 * 1024 * 1024, progress, cb}) {
         this.request = request;    // 请求方法
         this.data = data;          // 请求参数
         this.fileName = fileName;      // 文件名
@@ -74,6 +74,7 @@ export class FileDownloader {
         this.chunks = [];              // 下载的块
         this.abortController = new AbortController();  
         this.paused = false;           // 是否暂停
+        this.progress = progress       // 进度回调
         this.cb = cb                   // 成功回调
     }
     // 获取文件大小，初始化下载
@@ -89,12 +90,19 @@ export class FileDownloader {
         const contentLength = response.headers.get("content-range").split("/")[1];
         this.fileSize = parseInt(contentLength);
         this.totalChunks = Math.ceil(this.fileSize / this.chunkSize);
+
+        this.progress && this.progress({
+            downloadedSize: this.downloadedSize, // 已经下载的大小
+            fileSize: this.fileSize,             // 文件大小
+            currentChunk: this.currentChunk,     // 当前下载的块
+            totalChunks: this.totalChunks + 1,       // 总共的块数
+        })
     }
     // 下载文件块
     async downloadChunk(chunkIndex) {
         const start = chunkIndex * this.chunkSize;
         const end = Math.min(this.fileSize, (chunkIndex + 1) * this.chunkSize - 1);
-    
+
         const response = await this.request(this.data, {
             signal: this.abortController.signal,
             headers: { Range: `bytes=${start}-${end}` },
@@ -103,6 +111,13 @@ export class FileDownloader {
         const blob = response.data;
         this.chunks[chunkIndex] = blob;
         this.downloadedSize += blob.size;
+        
+        this.progress && this.progress({
+            downloadedSize: this.downloadedSize, // 已经下载的大小
+            fileSize: this.fileSize,             // 文件大小
+            currentChunk: this.currentChunk + 1, // 当前下载的块
+            totalChunks: this.totalChunks,       // 总共的块数
+        });
     
         if (!this.paused && this.currentChunk < this.totalChunks - 1) {
             this.currentChunk++;
@@ -165,7 +180,7 @@ export class FileDownloader {
 
 
 export class FileUploader {
-    constructor({request, requestDone, data, file, chunkSize = 5 * 1024 * 1024, cb}) {
+    constructor({request, requestDone, data, file, chunkSize = 5 * 1024 * 1024, progress, cb}) {
         this.request = request;    // 请求方法
         this.requestDone = requestDone // 请求完成方法
         this.data = data;          // 请求参数
@@ -177,12 +192,20 @@ export class FileUploader {
         this.currentChunk = 0;         // 当前上传的块
         this.abortController = new AbortController();  
         this.paused = false;           // 是否暂停
+        this.progress = progress       // 进度回调
         this.cb = cb                   // 成功回调
     }
     // 获取文件大小，初始化上传
     async getFileSize() {
         this.fileSize = this.file.size;
         this.totalChunks = Math.ceil(this.fileSize / this.chunkSize);
+
+        this.progress && this.progress({
+            fileSize: this.fileSize,
+            currentChunk: this.currentChunk,
+            totalChunks: this.totalChunks,
+        })
+
         return new Promise((resolve) => {
             let read = new FileReader();
             read.readAsArrayBuffer(this.file)
@@ -198,7 +221,7 @@ export class FileUploader {
     async uploadChunk(chunkIndex) {
         const start = chunkIndex * this.chunkSize;
         const end = Math.min(this.fileSize, (chunkIndex + 1) * this.chunkSize);
-    
+
         await this.request({
             ...this.data,
             filename: this.file.name,
@@ -213,7 +236,13 @@ export class FileUploader {
             });
             throw err;
         });
-    
+
+        this.progress && this.progress({
+            fileSize: this.fileSize,
+            currentChunk: this.currentChunk,
+            totalChunks: this.totalChunks,
+        })
+
         if (!this.paused && this.currentChunk < this.totalChunks - 1) {
             this.currentChunk++;
             this.uploadChunk(this.currentChunk);
@@ -229,16 +258,16 @@ export class FileUploader {
         this.uploadChunk(this.currentChunk);
     }
     // 暂停上传
-    pauseDownload() {
+    pauseUpload() {
         this.paused = true;
     }
     // 恢复上传
-    resumeDownload() {
+    resumeUpload() {
         this.paused = false;
         this.uploadChunk(this.currentChunk);
     }
     // 取消上传
-    cancelDownload() {
+    cancelUpload() {
         this.abortController.abort();
         this.reset();
     }

@@ -47,14 +47,16 @@
             :course="updateCourse"
             @success="updateSuccess"
         />
+        <exportCourse v-if="exportVisible" :visible.sync="exportVisible" :parame="exportParame" />
     </div>
 </template>
 
 <script>
 import addDialog from '@/components/note/course/add_dialog.vue';
 import updateDialog from '@/components/note/course/update_dialog.vue';
+import exportCourse from '@/components/note/export_course.vue';
 
-import { getCourseByTypeList, exportCourse, exportCourseChunks, importCourse, importCourseChunks, importCourseChunksDone, delCourse } from '@/api/note';
+import { getCourseByTypeList, exportCourseChunks, importCourseChunks, importCourseChunksDone, delCourse } from '@/api/note';
 import { FileDownloader, FileUploader } from '@/utils/index.js';
 export default {
     name: 'note',
@@ -71,6 +73,7 @@ export default {
     components: {
         addDialog,
         updateDialog,
+        exportCourse,
     },
     data() {
         return {
@@ -82,6 +85,9 @@ export default {
             updateCourse: {},
 
             line_type: true,
+
+            exportVisible: false,
+            exportParame: {},
         }
     },
     watch: {
@@ -187,29 +193,37 @@ export default {
             }).catch(action => {});
         },
         async download(course) {
-            // exportCourse(this.phone, course.course_no)
-
-            const downloader = new FileDownloader({
-                request: exportCourseChunks,
+            this.exportVisible = true;
+            this.exportParame = {
                 data: {
                     phone: this.phone,
                     course_no: course.course_no,
                     key: Date.now().toString(),
                 },
                 fileName: course.name + ".zip",
-                // chunkSize: 1024 * 1024 * 5,
-                cb: () => {
-                    this.$message({
-                        type: 'success',
-                        message: '导出完成'
-                    });
-                }
-            })
-            downloader.startDownload();
-            this.$message({
-                type: 'info',
-                message: '开始导出，请不要关闭页面...'
-            })
+            }
+
+            // const downloader = new FileDownloader({
+            //     request: exportCourseChunks,
+            //     data: {
+            //         phone: this.phone,
+            //         course_no: course.course_no,
+            //         key: Date.now().toString(),
+            //     },
+            //     fileName: course.name + ".zip",
+            //     // chunkSize: 1024 * 1024 * 5,
+            //     cb: () => {
+            //         this.$message({
+            //             type: 'success',
+            //             message: '导出完成'
+            //         });
+            //     }
+            // })
+            // downloader.startDownload();
+            // this.$message({
+            //     type: 'info',
+            //     message: '开始导出，请不要关闭页面...'
+            // })
         },
         import_course() {
             let input = document.createElement("input")
@@ -257,22 +271,6 @@ export default {
                     type: 'info',
                     message: '开始导入，请稍等...'
                 });
-
-                // importCourse(this.phone, this.type_no, e.target.files[0]).then(res => {
-                //     this.$message({
-                //         type: 'success',
-                //         message: '导入成功'
-                //     });
-                //     this.course_list.unshift(res.data)
-                // }).catch(err => {
-                //     this.$message({
-                //         type: 'error',
-                //         message: err.data.detail || '导入失败，请重试'
-                //     });
-                // })
-
-                // input.value = ''
-                // input = null
             }
             input.click()
         },

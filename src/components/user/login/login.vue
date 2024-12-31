@@ -60,12 +60,9 @@ export default {
             formLogin: {
                 phone: '',
                 pwd: '',
-                time_limit: 30
+                time_limit: 120
             },
             time_limit_options: [{
-                value: 30,
-                label: "30分钟"
-            }, {
                 value: 60,
                 label: "一小时"
             }, {
@@ -80,9 +77,6 @@ export default {
             }, {
                 value: 960,
                 label: "十六小时"
-            }, {
-                value: 1440,
-                label: "二十四小时"
             }],
 
             // 表单验证
