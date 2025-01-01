@@ -17,7 +17,7 @@
                 prop="name"
                 :rules="UnitNameRules"
             >
-                <el-input v-model="form.name" maxlength="30" show-word-limit placeholder="请输入类型名"></el-input>
+                <el-input v-model="form.name" maxlength="30" show-word-limit placeholder="请输入类型名" @keyup.enter.native="add"></el-input>
             </el-form-item>
             <el-form-item
                 label="目录"
